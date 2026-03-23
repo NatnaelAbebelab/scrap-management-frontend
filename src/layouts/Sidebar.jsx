@@ -155,6 +155,10 @@ const Sidebar = ({ selected }) => {
       label: 'Settings',
       children: [
         {
+          key: 'settings:user-management',
+          label: <Link to="/settings/user-management" style={{ textDecoration: 'none' }}>User Management</Link>
+        },
+        {
           key: 'settings:plants-management',
           label: <Link to="/settings/plants-management" style={{ textDecoration: 'none' }}>Plants Management</Link>
         },

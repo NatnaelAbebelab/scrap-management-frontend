@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useNavigate, Navigate } from 'react-router-dom'
+import { USER_LOGOUT_URL } from '../api/config'
 
 const AuthContext = createContext(null)
 
@@ -41,10 +42,49 @@ export const AuthProvider = ({ children }) => {
     setUser(u)
   }
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      if (token) {
+        // Extract Django CSRF token from cookies
+        let csrfToken = null
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';')
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim()
+            if (cookie.substring(0, 10) === 'csrftoken=') {
+              csrfToken = decodeURIComponent(cookie.substring(10))
+              break
+            }
+          }
+        }
+
+        const headers = {
+          'Authorization': `Bearer ${token}`
+        }
+        if (csrfToken) {
+          headers['X-CSRFToken'] = csrfToken
+        }
+
+        await fetch(USER_LOGOUT_URL, {
+          method: 'POST',
+          headers
+        })
+      }
+    } catch (err) {
+      console.error('Backend logout failed', err)
+    }
+
+    // Force clear state
     setToken(null)
     setRefreshToken(null)
     setUser(null)
+
+    // Explicitly clear browser local storage to eliminate cached items
+    localStorage.removeItem('ce_token')
+    localStorage.removeItem('ce_refresh_token')
+    localStorage.removeItem('ce_user')
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('authUser')
   }
 
   return (

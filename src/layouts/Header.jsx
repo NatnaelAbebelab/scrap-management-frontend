@@ -41,7 +41,8 @@ const Header = ({ onMenuClick }) => {
 
   const handleLogout = async () => {
     try {
-      auth.logout()
+      // Made awaitable so the backend request fires reliably before unmount
+      await auth.logout()
       navigate('/login')
     } catch (err) {
       console.error('Logout failed', err)
