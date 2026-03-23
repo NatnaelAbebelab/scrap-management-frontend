@@ -21,6 +21,8 @@ import CsvExcelUploader from './scrapPurchase/CsvExcelUploader'
 import PurchaseRecords from './scrapPurchase/PurchaseRecords'
 import MaterialPriceSetting from './scrapPurchase/MaterialPriceSetting'
 import AgencyRegistration from './scrapTransport/AgencyRegistration'
+import UserManagement from './settings/UserManagement'
+import Profile from './settings/Profile'
 
 const root = createRoot(document.getElementById('root'))
 root.render(
@@ -41,9 +43,12 @@ root.render(
           <Route path="/interactions/performa" element={<PerformaRequisition />} />
           <Route path="/proformas" element={<RequireAuth><ProformaList /></RequireAuth>} />
           
+          <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
+
           <Route path="/material-management/issue" element={<RequireAuth><MaterialIssue /></RequireAuth>} />
 
           <Route path="/settings" element={<RequireAuth><SettingsDashboard /></RequireAuth>} />
+          <Route path="/settings/user-management" element={<RequireAuth><UserManagement /></RequireAuth>} />
           <Route path="/settings/materials" element={<RequireAuth><MaterialManagement /></RequireAuth>} />
           <Route path="/settings/melting-plants" element={<RequireAuth><MeltingPlants /></RequireAuth>} />
 
