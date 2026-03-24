@@ -16,8 +16,11 @@ export const USER_UPDATE_PROFILE_URL = `${API_BASE_URL}/user/update-profile/`
 export const USER_CHANGE_PASSWORD_URL = `${API_BASE_URL}/user/change-password/`
 export const USER_GET_ME_URL = (id) => `${API_BASE_URL}/user/get-me/${id}/`
 export const USER_LOGOUT_URL = `${API_BASE_URL}/user/logout/`
- 
+
 // --- Dashboard Reports ---
 export const DASHBOARD_YEARLY_PURCHASE_URL = `${API_BASE_URL}/report/yearly-purchase-report/`
 export const DASHBOARD_GENERAL_METRICS_URL = `${API_BASE_URL}/report/general-metrics/`
 export const DASHBOARD_SCRAP_GRADE_URL = `${API_BASE_URL}/report/scrap-grade-percentage/`
+
+// --- Scrap Purchase ---
+export const SCRAP_PURCHASE_UPLOAD_URL = `${API_BASE_URL}/grn/upload/`

@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import { API_BASE_URL } from './config'
-import { useAuth } from '../auth/AuthProvider'
+import { apiRequest } from './core/apiRequest'
+import { SCRAP_PURCHASE_UPLOAD_URL } from './config'
 
 export const useUploadGrnCsv = () => {
-  const auth = useAuth()
   const [isUploading, setIsUploading] = useState(false)
   const [summary, setSummary] = useState(null)
 
@@ -14,29 +13,23 @@ export const useUploadGrnCsv = () => {
 
     setIsUploading(true)
     try {
-      const headers = {}
-      if (auth?.token) {
-        headers.Authorization = `Bearer ${auth.token}`
-      }
-
-      const res = await fetch(`${API_BASE_URL}/grn/upload/`, {
+      const response = await apiRequest({
+        url: SCRAP_PURCHASE_UPLOAD_URL,
         method: 'POST',
-        headers,
-        body: formData
+        data: formData
       })
 
-      if (!res.ok) {
-        const text = await res.text()
-        throw new Error(text || 'Upload failed')
+      if (response.result === 'error') {
+        throw new Error(response.message || 'Upload failed')
       }
 
-      const data = await res.json()
+      const data = response.content
       const skipped = data?.skipped_records || {}
       const total = data?.total_records
 
       const mappedSummary = {
-        message: data?.message || 'File uploaded successfully',
-        result: data?.result,
+        message: response.message || 'File uploaded successfully',
+        result: response.result,
         totalRecords: typeof total === 'number' ? total : null,
         skipped
       }

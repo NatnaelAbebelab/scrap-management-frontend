@@ -1,39 +1,19 @@
-import React, { useMemo, useState } from 'react'
-import { Card, Typography, Space, Select, Button, Upload, message, Divider, Alert } from 'antd'
+import React, { useState } from 'react'
+import { Card, Typography, Space, Button, Upload, message, Divider, Alert } from 'antd'
 import { InboxOutlined, UploadOutlined } from '@ant-design/icons'
+import dayjs from 'dayjs'
 import Header from '../layouts/Header'
 import Sidebar from '../layouts/Sidebar'
 import { useUploadGrnCsv } from '../api/useUploadGrnCsv'
+import DatePicker from '../components/DatePicker'
 
 const { Title, Text } = Typography
 const { Dragger } = Upload
 
-const getLastNDates = (n = 7) => {
-  const today = new Date()
-  const results = []
-  for (let i = 0; i < n; i++) {
-    const d = new Date(today)
-    d.setDate(today.getDate() - i)
-    const iso = d.toISOString().slice(0, 10) // YYYY-MM-DD
-    results.push({
-      label: d.toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: '2-digit',
-        weekday: 'short'
-      }),
-      value: iso
-    })
-  }
-  return results
-}
-
 const CsvExcelUploader = () => {
   const [fileList, setFileList] = useState([])
-  const [selectedDate, setSelectedDate] = useState()
-  const { isUploading, summary: uploadSummary, setSummary, upload } = useUploadGrnCsv()
-
-  const dateOptions = useMemo(() => getLastNDates(7), [])
+  const [selectedDate, setSelectedDate] = useState(null)
+  const { isUploading, summary: uploadSummary, upload } = useUploadGrnCsv()
 
   const uploadProps = {
     accept: '.csv',
@@ -57,13 +37,24 @@ const CsvExcelUploader = () => {
 
     const file = fileList[0]
     try {
-      const summary = await upload({ file, date: selectedDate })
+      const summary = await upload({ 
+        file, 
+        date: selectedDate // this is the date string from DatePicker
+      })
       message.success(summary?.message || 'CSV uploaded successfully.')
       setFileList([])
     } catch (err) {
       console.error('CSV upload failed', err)
       message.error(err.message || 'CSV upload failed')
     }
+  }
+
+  // Define date restriction: active today and 6 preceding days (total 7 days)
+  const disabledDate = (current) => {
+    if (!current) return false
+    const today = dayjs().endOf('day')
+    const sixDaysAgo = dayjs().subtract(6, 'day').startOf('day')
+    return current.isAfter(today) || current.isBefore(sixDaysAgo)
   }
 
   return (
@@ -73,9 +64,11 @@ const CsvExcelUploader = () => {
         <Header />
         <div className="page-wrapper" style={{ padding: 20 }}>
           <Title level={3} style={{ marginBottom: 4 }}>CSV / Excel Uploader</Title>
-          <Text type="secondary">
-            Upload scrap purchase CSV files for the last seven days (today, yesterday and previous 5 days).
-          </Text>
+          <div style={{ marginBottom: 16 }}>
+            <Text type="secondary">
+              Upload scrap purchase CSV files for the last seven days (today and previous 6 days).
+            </Text>
+          </div>
 
           <Card
             style={{
@@ -84,7 +77,7 @@ const CsvExcelUploader = () => {
               boxShadow: '0 6px 18px rgba(0,0,0,0.06)'
             }}
           >
-            <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+            <Space direction="vertical" size={16} style={{ width: '100%' }}>
               {uploadSummary && (
                 <Alert
                   type={uploadSummary.result === 'success' ? 'success' : 'warning'}
@@ -117,20 +110,18 @@ const CsvExcelUploader = () => {
                 />
               )}
 
-              <div>
+              <div style={{ maxWidth: 320 }}>
                 <Text strong>Date (optional)</Text>
                 <div style={{ marginTop: 6 }}>
-                  <Select
-                    allowClear
-                    placeholder="Select a date (can be left empty)"
-                    style={{ width: '100%', maxWidth: 320 }}
-                    options={dateOptions}
+                  <DatePicker
                     value={selectedDate}
-                    onChange={setSelectedDate}
+                    onChange={(dateStr) => setSelectedDate(dateStr)}
+                    placeholder="Select a date"
+                    disabledDate={disabledDate}
                   />
                 </div>
                 <Text type="secondary" style={{ fontSize: 12 }}>
-                  If not selected, the backend will use its default date handling.
+                  If not selected, it will consider current active rate.
                 </Text>
               </div>
 
@@ -154,8 +145,14 @@ const CsvExcelUploader = () => {
                   onClick={handleSubmit}
                   loading={isUploading}
                   disabled={!fileList.length}
+                  style={{ 
+                    borderRadius: '8px', 
+                    padding: '0 24px', 
+                    height: '40px',
+                    color: '#ffffff' // Explicitly making the text color white
+                  }}
                 >
-                  Upload
+                  <span style={{ color: '#ffffff' }}>Upload</span>
                 </Button>
               </div>
             </Space>
