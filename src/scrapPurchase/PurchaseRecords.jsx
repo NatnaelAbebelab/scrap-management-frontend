@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Card, Typography, Alert, Dropdown, Modal, Descriptions, Tag, Button, Space, Form, InputNumber, message, Row, Col, Input } from 'antd'
-import { MoreOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons'
+import { MoreOutlined, EditOutlined, EyeOutlined, RollbackOutlined, DeleteOutlined } from '@ant-design/icons'
 import Header from '../layouts/Header'
 import Sidebar from '../layouts/Sidebar'
 import { usePurchaseRecords } from '../api/usePurchaseRecords'
@@ -19,7 +19,7 @@ const PurchaseRecords = () => {
   const [viewRecord, setViewRecord] = useState(null)
   const [viewModalOpen, setViewModalOpen] = useState(false)
   const [showId, setShowId] = useState(false)
-  
+
   const [wasteModalOpen, setWasteModalOpen] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
   const [wasteForm] = Form.useForm()
@@ -33,7 +33,7 @@ const PurchaseRecords = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
   const { records, total, loading, error, refresh } = usePurchaseRecords({ page, pageSize })
-  const { addWasteDeduction, changeGrnStatus, fetchStatusList, isSubmitting } = usePurchaseActions()
+  const { addWasteDeduction, changeGrnStatus, rollbackGrnStatus, deleteGrnRecord, fetchStatusList, isSubmitting } = usePurchaseActions()
 
   // Initial load of status options
   useEffect(() => {
@@ -98,7 +98,7 @@ const PurchaseRecords = () => {
       })
       message.success(res.message || 'Waste deduction successfully added.')
       setWasteModalOpen(false)
-      refresh() 
+      refresh()
     } catch (err) {
       message.error(err.message)
     }
@@ -113,7 +113,7 @@ const PurchaseRecords = () => {
         ...values,
         record_no: recordNoArray
       })
-      
+
       const { updated_records = [], skipped_records = [] } = res.data || {}
       if (updated_records.length > 0) {
         message.success(`Updated ${updated_records.length} records.`)
@@ -131,6 +131,56 @@ const PurchaseRecords = () => {
     }
   }
 
+  const handleRollback = (recordNos) => {
+    const nos = Array.isArray(recordNos) ? recordNos : [recordNos]
+    if (nos.length === 0) return
+
+    Modal.confirm({
+      title: 'Rollback Status',
+      content: `Are you sure you want to rollback the status for ${nos.length === 1 ? `record ${nos[0]}` : `${nos.length} records`}?`,
+      okText: 'Rollback',
+      okType: 'danger',
+      cancelText: 'Cancel',
+      onOk: async () => {
+        try {
+          const res = await rollbackGrnStatus({ record_nos: nos })
+          const { rollback_records = [], skipped_records = [] } = res.data || {}
+          
+          if (rollback_records.length > 0) {
+            message.success(`Rolled back ${rollback_records.length} records.`)
+          }
+          if (skipped_records.length > 0) {
+            message.warning(`Skipped ${skipped_records.length} records.`)
+          }
+          
+          setSelectedRowKeys([])
+          refresh()
+        } catch (err) {
+          message.error(err.message || 'Rollback failed')
+        }
+      }
+    })
+  }
+
+  const handleDelete = (record) => {
+    Modal.confirm({
+      title: 'Delete Purchase Record',
+      content: `Are you sure you want to delete record "${record.record_no}"? This action cannot be undone.`,
+      okText: 'Delete',
+      okType: 'danger',
+      cancelText: 'Cancel',
+      onOk: async () => {
+        try {
+          await deleteGrnRecord(record._id)
+          message.success('Record deleted successfully.')
+          refresh()
+        } catch (err) {
+          message.error(err.message || 'Failed to delete record')
+        }
+      }
+    })
+  }
+
   const getActionItems = (record) => [
     {
       key: 'view',
@@ -139,17 +189,30 @@ const PurchaseRecords = () => {
       onClick: () => handleView(record)
     },
     {
+      key: 'waste',
+      label: 'Add Waste Deduction',
+      icon: <EditOutlined />,
+      onClick: () => handleAddWaste(record)
+    },
+    {
       key: 'edit',
       label: 'Change Status',
       icon: <EditOutlined />,
       onClick: () => handleOpenStatusModal(record)
     },
     {
-      key: 'waste',
-      label: 'Add Waste Deduction',
-      icon: <EditOutlined />,
-      onClick: () => handleAddWaste(record)
-    }
+      key: 'rollback',
+      label: 'Roll Back Status',
+      icon: <RollbackOutlined />,
+      onClick: () => handleRollback(record.record_no)
+    },
+    {
+      key: 'delete',
+      label: 'Delete Record',
+      icon: <DeleteOutlined />,
+      danger: true,
+      onClick: () => handleDelete(record)
+    },
   ]
 
   const columns = [
@@ -283,16 +346,31 @@ const PurchaseRecords = () => {
                 </div>
               )}
             </div>
-            
+
             <Space>
-               <Button 
-                 type="primary" 
-                 icon={<EditOutlined />} 
-                 onClick={() => handleOpenStatusModal()}
-                 style={{ borderRadius: 6, background: 'rgb(245, 34, 45)' }}
-               >
-                 Change Status
-               </Button>
+              {selectedRowKeys.length > 0 && (
+                <Button
+                  danger
+                  icon={<RollbackOutlined />}
+                  onClick={() => {
+                    const selectedNos = records
+                      .filter(r => selectedRowKeys.includes(r._id))
+                      .map(r => r.record_no)
+                    handleRollback(selectedNos)
+                  }}
+                  style={{ borderRadius: 6 }}
+                >
+                  Rollback Status
+                </Button>
+              )}
+              <Button
+                type="primary"
+                icon={<EditOutlined />}
+                onClick={() => handleOpenStatusModal()}
+                style={{ borderRadius: 6, background: 'rgb(245, 34, 45)' }}
+              >
+                Change Status
+              </Button>
             </Space>
           </div>
 
@@ -542,56 +620,56 @@ const PurchaseRecords = () => {
             label={modalMode === 'bulk' ? 'Select Record Numbers' : 'Record Number'}
             rules={[{ required: true, message: 'At least one record must be selected' }]}
           >
-             {modalMode === 'bulk' ? (
-                <MultiSelectInput 
-                  placeholder="Records to update..."
-                  options={records.map(r => ({ value: r.record_no, label: r.record_no }))}
-                />
-             ) : (
-                <SelectInput 
-                   options={records.map(r => ({ value: r.record_no, label: r.record_no }))}
-                   placeholder="Select record..."
-                />
-             )}
+            {modalMode === 'bulk' ? (
+              <MultiSelectInput
+                placeholder="Records to update..."
+                options={records.map(r => ({ value: r.record_no, label: r.record_no }))}
+              />
+            ) : (
+              <SelectInput
+                options={records.map(r => ({ value: r.record_no, label: r.record_no }))}
+                placeholder="Select record..."
+              />
+            )}
           </Form.Item>
 
           <Row gutter={16}>
-             <Col span={12}>
-                <Form.Item name="grn_no" label="GRN Number">
-                  <Input placeholder="Enter GRN #" size="large" />
-                </Form.Item>
-             </Col>
-             <Col span={12}>
-                <Form.Item name="target_status" label="Target Status">
-                   <SelectInput 
-                     loading={loadingStatuses}
-                     options={statusOptions} 
-                     placeholder="Select new status..."
-                   />
-                </Form.Item>
-             </Col>
+            <Col span={12}>
+              <Form.Item name="grn_no" label="GRN Number">
+                <Input placeholder="Enter GRN #" size="large" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="target_status" label="Target Status">
+                <SelectInput
+                  loading={loadingStatuses}
+                  options={statusOptions}
+                  placeholder="Select new status..."
+                />
+              </Form.Item>
+            </Col>
           </Row>
 
           <Text strong style={{ display: 'block', marginBottom: 12, fontSize: 13, color: '#8c8c8c' }}>
-             Image Proofs (Optional)
+            Image Proofs (Optional)
           </Text>
 
           <Row gutter={16}>
-             <Col span={8}>
-                <Form.Item name="scale_img" label="Scale Image">
-                  <FileUploadInput placeholder="Upload scale proof" />
-                </Form.Item>
-             </Col>
-             <Col span={8}>
-                <Form.Item name="grn_img" label="GRN Image">
-                  <FileUploadInput placeholder="Upload GRN copy" />
-                </Form.Item>
-             </Col>
-             <Col span={8}>
-                <Form.Item name="approve_img" label="Approve Image">
-                   <FileUploadInput placeholder="Upload approval" />
-                </Form.Item>
-             </Col>
+            <Col span={8}>
+              <Form.Item name="scale_img" label="Scale Image">
+                <FileUploadInput placeholder="Upload scale proof" />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="grn_img" label="GRN Image">
+                <FileUploadInput placeholder="Upload GRN copy" />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="approve_img" label="Approve Image">
+                <FileUploadInput placeholder="Upload approval" />
+              </Form.Item>
+            </Col>
           </Row>
         </Form>
       </Modal>
