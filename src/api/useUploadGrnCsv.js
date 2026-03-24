@@ -23,14 +23,16 @@ export const useUploadGrnCsv = () => {
         throw new Error(response.message || 'Upload failed')
       }
 
-      const data = response.content
-      const skipped = data?.skipped_records || {}
-      const total = data?.total_records
+      const data = response.content || {}
+      const skipped = data.skipped_records || {}
+      const totalGrns = data.total_grns
+      const stockRecordsCreated = data.stock_records_created
 
       const mappedSummary = {
         message: response.message || 'File uploaded successfully',
         result: response.result,
-        totalRecords: typeof total === 'number' ? total : null,
+        totalGrns: typeof totalGrns === 'number' ? totalGrns : null,
+        stockRecordsCreated: typeof stockRecordsCreated === 'number' ? stockRecordsCreated : null,
         skipped
       }
 

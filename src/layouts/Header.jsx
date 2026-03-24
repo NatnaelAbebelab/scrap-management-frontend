@@ -66,8 +66,18 @@ const Header = ({ onMenuClick }) => {
     if (path.startsWith('/interactions')) return 'Interactions'
     if (path.startsWith('/customer-engagement')) return 'Complaints'
     if (path.startsWith('/proformas')) return 'Proformas'
-    if (path.startsWith('/settings')) return 'Settings'
-    return 'Apollo'
+    if (path.startsWith('/settings/user-management')) return 'User Management'
+    if (path.startsWith('/settings/materials')) return 'Material Management'
+    if (path.startsWith('/settings/melting-plants')) return 'Melting Plant'
+    if (path.startsWith('/settings/grn-serial')) return 'GRN Serial Number'
+    if (path.startsWith('/settings/stock-beginning-balance')) return 'Stock Beginning Balance'
+    if (path === '/settings') return 'Settings Dashboard'
+    if (path.startsWith('/scrap-purchase/csv-excel-uploader')) return 'CSV/Excel Uploader'
+    if (path.startsWith('/scrap-purchase/purchase-records')) return 'Purchase Records'
+    if (path.startsWith('/scrap-purchase/material-rate')) return 'Material Rate'
+    if (path.startsWith('/scrap-transport/agency-registration')) return 'Agency Registration'
+    if (path.startsWith('/profile')) return 'User Profile'
+    return 'Steely RMI'
   }
 
   // User dropdown menu

@@ -24,3 +24,16 @@ export const DASHBOARD_SCRAP_GRADE_URL = `${API_BASE_URL}/report/scrap-grade-per
 
 // --- Scrap Purchase ---
 export const SCRAP_PURCHASE_UPLOAD_URL = `${API_BASE_URL}/grn/upload/`
+export const GRN_RECORDS_URL = `${API_BASE_URL}/grn/grn/`
+export const GRN_ADD_WASTE_URL = `${API_BASE_URL}/grn/add-waste/`
+export const GRN_CHANGE_STATUS_URL = `${API_BASE_URL}/grn/change-grn-status/`
+export const GRN_STATUS_LIST_URL = `${API_BASE_URL}/grn/get-status-list/`
+export const GRN_SERIAL_INITIALIZE_URL = `${API_BASE_URL}/grn/initialize-grn-serial-number/`
+export const GRN_SERIAL_GET_URL = `${API_BASE_URL}/grn/get-grn-serial-numbers/`
+export const MELTING_PLANT_ADD_URL = `${API_BASE_URL}/material/add-melting-plant/`
+export const MELTING_PLANT_GET_URL = `${API_BASE_URL}/material/get-melting-plants/`
+export const STOCK_BEGINNING_BALANCE_URL = `${API_BASE_URL}/stock/add-beginning-balance/`
+export const STOCK_SUMMARY_GET_URL = `${API_BASE_URL}/stock/get-stock-summery/`
+export const RATE_ADD_URL = `${API_BASE_URL}/rate/add/`
+export const RATE_ARCHIVE_URL = `${API_BASE_URL}/rate/archive/`
+export const MATERIAL_TYPES_GET_URL = `${API_BASE_URL}/grn/get-material-types/`

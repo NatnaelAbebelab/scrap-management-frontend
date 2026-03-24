@@ -18,7 +18,13 @@ const SettingsDashboard = () => {
                 <Button type="primary" block>Material Management</Button>
               </Link>
               <Link to="/settings/melting-plants">
-                <Button type="primary" block>Melting Plants</Button>
+                <Button type="primary" block>Melting Plants Management</Button>
+              </Link>
+              <Link to="/settings/grn-serial">
+                <Button type="primary" block>GRN Serial Initializer</Button>
+              </Link>
+              <Link to="/settings/stock-beginning-balance">
+                <Button type="primary" block>Stock Beginning Balance</Button>
               </Link>
             </Space>
           </Card>

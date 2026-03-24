@@ -26,6 +26,9 @@ const DataTableWithPagination = ({
   onSearch,
   rowKey = 'id',
   minRows = 10,
+  selectable = false,
+  selectedRowKeys = [],
+  onSelectionChange,
   ...rest
 }) => {
   const [localSearch, setLocalSearch] = useState('');
@@ -46,6 +49,13 @@ const DataTableWithPagination = ({
       )
       : dataSource);
 
+  // Configure row selection if enabled
+  const rowSelection = selectable ? {
+    selectedRowKeys,
+    onChange: (keys, rows) => onSelectionChange && onSelectionChange(keys, rows),
+    preserveSelectedRowKeys: true,
+  } : undefined;
+
   return (
     <div className="data-table-container">
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
@@ -62,6 +72,7 @@ const DataTableWithPagination = ({
         columns={columns}
         dataSource={displayData}
         loading={loading}
+        rowSelection={rowSelection}
         pagination={{
           current: page,
           pageSize: pageSize || minRows,

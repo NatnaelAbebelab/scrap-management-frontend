@@ -19,10 +19,12 @@ import SettingsDashboard from './settings/SettingsDashboard'
 import MaterialIssue from './materialManagement/MaterialIssue'
 import CsvExcelUploader from './scrapPurchase/CsvExcelUploader'
 import PurchaseRecords from './scrapPurchase/PurchaseRecords'
-import MaterialPriceSetting from './scrapPurchase/MaterialPriceSetting'
+import MaterialRate from './scrapPurchase/MaterialRate'
 import AgencyRegistration from './scrapTransport/AgencyRegistration'
 import UserManagement from './settings/UserManagement'
 import Profile from './settings/Profile'
+import GrnSerialSettings from './settings/GrnSerialSettings'
+import StockBeginningBalance from './settings/StockBeginningBalance'
 
 import { ConfigProvider } from 'antd'
 
@@ -61,6 +63,8 @@ root.render(
           <Route path="/settings/user-management" element={<RequireAuth><UserManagement /></RequireAuth>} />
           <Route path="/settings/materials" element={<RequireAuth><MaterialManagement /></RequireAuth>} />
           <Route path="/settings/melting-plants" element={<RequireAuth><MeltingPlants /></RequireAuth>} />
+          <Route path="/settings/grn-serial" element={<RequireAuth><GrnSerialSettings /></RequireAuth>} />
+          <Route path="/settings/stock-beginning-balance" element={<RequireAuth><StockBeginningBalance /></RequireAuth>} />
 
           {/* Scrap Purchase */}
           <Route
@@ -72,8 +76,8 @@ root.render(
             element={<RequireAuth><PurchaseRecords /></RequireAuth>}
           />
           <Route
-            path="/scrap-purchase/material-price-setting"
-            element={<RequireAuth><MaterialPriceSetting /></RequireAuth>}
+            path="/scrap-purchase/material-rate"
+            element={<RequireAuth><MaterialRate /></RequireAuth>}
           />
 
           {/* Scrap Transport */}
