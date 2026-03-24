@@ -13,7 +13,8 @@ import {
   ShoppingCartOutlined,
   CarOutlined,
   DatabaseOutlined,
-  BarChartOutlined
+  BarChartOutlined,
+  UserOutlined,
 } from '@ant-design/icons'
 
 const { Text, Title } = Typography
@@ -150,14 +151,15 @@ const Sidebar = ({ selected }) => {
       ]
     },
     {
+      key: 'settings:user-management',
+      icon: <UserOutlined style={{ fontSize: '16px' }} />,
+      label: <Link to="/settings/user-management" style={{ textDecoration: 'none' }}>User Management</Link>
+    },
+    {
       key: 'settings',
       icon: <SettingOutlined style={{ fontSize: '16px' }} />,
       label: 'Settings',
       children: [
-        {
-          key: 'settings:user-management',
-          label: <Link to="/settings/user-management" style={{ textDecoration: 'none' }}>User Management</Link>
-        },
         {
           key: 'settings:plants-management',
           label: <Link to="/settings/plants-management" style={{ textDecoration: 'none' }}>Plants Management</Link>
@@ -205,7 +207,7 @@ const Sidebar = ({ selected }) => {
           border: '1px solid #f0f0f0'
         }}>
           <img
-            src="/public/steely.jpg"
+            src="/steely.jpg"
             alt="Steely Logo"
             style={{
               width: '100%',
@@ -267,7 +269,7 @@ const Sidebar = ({ selected }) => {
               label: 'Logout',
               onClick: () => { logout(); navigate('/login') },
               style: {
-                color: '#ff4d4f',
+                color: 'rgb(245, 34, 45)',
                 borderRadius: '6px',
                 margin: '0 8px'
               }

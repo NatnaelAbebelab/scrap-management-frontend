@@ -1,0 +1,99 @@
+=========================================================
+API DIRECTION FLOW & USAGE GUIDE (Using apiRequest)
+=========================================================
+
+This document explains how API requests flow from your React Pages (components) down to the centralized Axios API Requester, using "Get Users" as an example.
+
+---------------------------------------------------------
+THE FLOW:  Page -> Hook -> apiRequest -> apiClient -> Backend
+---------------------------------------------------------
+
+1. PAGE / COMPONENT (e.g., src/settings/UserManagement.jsx)
+   - The component is responsible for UI and state presentation.
+   - It imports and calls a custom hook (e.g., `useUsers`) to handle data operations.
+   
+   Example:
+   ```javascript
+   import { useUsers } from '../api/useUsers';
+   import { useEffect, useState } from 'react';
+
+   const UserManagement = () => {
+       const { fetchUsers, loading, error } = useUsers();
+       const [users, setUsers] = useState([]);
+
+       useEffect(() => {
+           loadUsers();
+       }, []);
+
+       const loadUsers = async () => {
+           // We pass pagination params down to the hook
+           const response = await fetchUsers(1, 10);
+           if (response && response.status === 200) {
+               setUsers(response.content.results);
+           }
+       };
+
+       // ... render UI
+   };
+   ```
+
+2. CUSTOM HOOK (e.g., src/api/useUsers.js)
+   - The hook abstracts the raw API calls away from the component.
+   - It imports `apiRequest` from our centralized API core and passes the correct URL, method, and parameters.
+   
+   Example:
+   ```javascript
+   import { useState } from 'react';
+   import { apiRequest } from './core/apiRequest';
+   import { USERS_GET_URL } from './config';
+
+   export const useUsers = () => {
+       const [loading, setLoading] = useState(false);
+       const [error, setError] = useState(null);
+
+       const fetchUsers = async (page = 1, pageSize = 10) => {
+           setLoading(true);
+           try {
+               // Here we use our centralized API requester
+               const response = await apiRequest({
+                   url: USERS_GET_URL,
+                   method: 'GET',
+                   pagination: {
+                       page: page,
+                       page_size: pageSize
+                   }
+               });
+               
+               // The response is already standardized!
+               // { result, message, content, status }
+               return response;
+               
+           } catch (err) {
+               setError(err.message);
+           } finally {
+               setLoading(false);
+           }
+       };
+
+       return { fetchUsers, loading, error };
+   };
+   ```
+
+3. API REQUESTER (src/api/core/apiRequest.ts)
+   - This function takes the standard options we passed from the hook.
+   - It extracts the `pagination` object and merges it into the `params`.
+   - It then calls the Axios `apiClient` and standardizes the response output (always returning `{ result, message, content, status }`).
+
+4. API CLIENT & INTERCEPTORS (src/api/core/apiClient.ts)
+   - The Axios instance receives the request.
+   - **Request Interceptor**: Automatically fetches the access token from `tokenService.ts` and attaches it (`Authorization: Bearer <token>`).
+   - The request hits the Django Backend.
+   - **Response Interceptor**: If Django returns a `401 Unauthorized` (Token Expired), the interceptor halts the throw, calls `authService.refreshToken()`, gets a new access token, updates `localStorage`, and seamlessly **retries** the original "Get Users" request. If the refresh token is also expired, it logs the user out.
+
+---------------------------------------------------------
+SUMMARY OF BENEFITS
+---------------------------------------------------------
+- NO MORE manually passing tokens in every fetch block.
+- NO MORE manually writing token refresh logic in components or hooks.
+- Consistent response objects: you always know you will get `content` and `status`.
+- Pagination is handled gracefully simply by passing the `pagination: { page, page_size }` object.

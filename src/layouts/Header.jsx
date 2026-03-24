@@ -205,7 +205,7 @@ const Header = ({ onMenuClick }) => {
                 <Avatar
                   size={32}
                   style={{
-                    background: 'linear-gradient(135deg, #1890ff 0%, #52c41a 100%)',
+                    background: 'linear-gradient(135deg, rgb(245, 34, 45) 0%, #D32F2F 100%)',
                     border: '2px solid #f0f0f0'
                   }}
                   icon={<UserOutlined />}
