@@ -37,7 +37,7 @@ const useElementWidth = () => {
 }
 
 // Better line chart (responsive + grid + smooth line + area fill + tooltip)
-const LineChart = ({ points, labels, height = 220, color = '#7539FF' }) => {
+const LineChart = ({ points, labels, height = 220, color = 'rgb(245, 34, 45)' }) => {
   const [wrapRef, wrapWidth] = useElementWidth()
   const [hoverIndex, setHoverIndex] = useState(null)
 
@@ -266,7 +266,7 @@ const PieChart = ({ data, size = 180 }) => {
                 cx={0}
                 cy={0}
                 fill="transparent"
-                stroke={colors[key] || '#1890ff'}
+                stroke={colors[key] || 'rgb(245, 34, 45)'}
                 strokeWidth={22}
                 strokeDasharray={`${strokeLength} ${circumference - strokeLength}`}
                 strokeDashoffset={-offset}
@@ -289,7 +289,7 @@ const PieChart = ({ data, size = 180 }) => {
                   width: 10,
                   height: 10,
                   borderRadius: 999,
-                  background: colors[key] || '#1890ff',
+                  background: colors[key] || 'rgb(245, 34, 45)',
                   marginRight: 8
                 }}
               />

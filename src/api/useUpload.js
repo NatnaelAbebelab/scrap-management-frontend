@@ -1,39 +1,47 @@
-import { useState, useMemo } from 'react'
-import { API_BASE_URL } from './config'
-import { useAuth } from '../auth/AuthProvider'
-import { createFetchWithAuth } from './fetchWithAuth'
+import { useState } from 'react'
+import apiClient from './core/apiClient'
 
 export function useUpload() {
-  const auth = useAuth()
-  const authFetch = useMemo(() => createFetchWithAuth(auth), [auth])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   const uploadFile = async (file, url) => {
-    if (!file) return null
+    if (!file) {
+      console.warn('uploadFile called with no file')
+      return null
+    }
+
     setLoading(true)
     setError(null)
+    
     try {
+      // Robust check for file type
+      const actualFile = (file instanceof File || file instanceof Blob) 
+        ? file 
+        : (file?.originFileObj instanceof File ? file.originFileObj : file)
+
+      if (!(actualFile instanceof File || actualFile instanceof Blob)) {
+        console.error('Invalid file object passed to uploadFile:', actualFile)
+        throw new Error('Selected data is not a valid file')
+      }
+
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('file', actualFile, actualFile.name || 'filename.png')
 
-      // We use standard fetch with Authorization explicitly if we don't want to rely on authFetch for FormData
-      // authFetch also works with FormData as seen in useAgencies.js
-      const response = await authFetch(url, {
-        method: 'POST',
-        body: formData,
-      })
+      const response = await apiClient.post(url, formData)
 
-      if (!response.ok) {
-        const errText = await response.text()
-        throw new Error(errText || 'Failed to upload file')
+      // The backend returns { result: 'success', content: { file_name: '...' } }
+      // or just { file_name: '...' }
+      const data = response.data
+      if (data?.result === 'error') {
+        throw new Error(data.message || 'Failed to upload file')
       }
       
-      const result = await response.json()
-      return result
+      return data?.content || data
     } catch (e) {
-      setError(e.message || 'Upload failed')
-      throw e
+      const msg = e.response?.data?.message || e.response?.data?.detail || e.message || 'Upload failed'
+      setError(msg)
+      throw new Error(msg)
     } finally {
       setLoading(false)
     }

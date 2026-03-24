@@ -25,6 +25,7 @@ import {
 import Header from '../layouts/Header'
 import Sidebar from '../layouts/Sidebar'
 import { useUsers } from '../api/useUsers'
+import DataTableWithPagination from '../components/DataTableWithPagination'
 
 const { Title, Text } = Typography
 const { Option } = Select
@@ -186,7 +187,7 @@ const UserManagement = () => {
         <Space>
           <Button
             type="text"
-            icon={<EditOutlined style={{ color: '#1890ff' }} />}
+            icon={<EditOutlined style={{ color: 'rgb(245, 34, 45)' }} />}
             onClick={() => openEdit(record)}
           />
           <Button
@@ -316,9 +317,9 @@ const UserManagement = () => {
             title={
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Space>
-                  <UserOutlined style={{ color: '#1890ff' }} />
+                  <UserOutlined style={{ color: 'rgb(245, 34, 45)' }} />
                   <span>Users</span>
-                  <Tag color="blue">{total}</Tag>
+                  <Tag color="red">{total}</Tag>
                 </Space>
                 <Space>
                   <Button
@@ -337,7 +338,7 @@ const UserManagement = () => {
                       setFileList([])
                       setAddModalOpen(true)
                     }}
-                    style={{ background: '#262626', borderColor: '#262626' }}
+                    style={{ background: 'rgb(245, 34, 45)', borderColor: 'rgb(245, 34, 45)' }}
                   >
                     Add User
                   </Button>
@@ -345,21 +346,18 @@ const UserManagement = () => {
               </div>
             }
           >
-            <Table
+            <DataTableWithPagination
               rowKey={(record) => record._id || record.id}
               columns={columns}
               dataSource={users}
               loading={loading}
-              pagination={{
-                current: page,
-                pageSize,
-                total,
-                showSizeChanger: true,
-                pageSizeOptions: ['10', '20', '50'],
-                showTotal: (t) => `Total ${t} users`,
-                onChange: (p, ps) => { setPage(p); setPageSize(ps) },
+              page={page}
+              pageSize={pageSize}
+              total={total}
+              onPaginationChange={(p, ps) => {
+                setPage(p)
+                setPageSize(ps)
               }}
-              scroll={{ x: 800 }}
               locale={{ emptyText: 'No users registered yet' }}
             />
           </Card>
@@ -377,7 +375,7 @@ const UserManagement = () => {
         }
         onCancel={() => { setAddModalOpen(false); addForm.resetFields(); setFormError('') }}
         footer={null}
-        destroyOnClose
+        destroyOnHidden
         width={700}
       >
         {formError && (
@@ -412,7 +410,7 @@ const UserManagement = () => {
         }
         onCancel={() => { setEditModalOpen(false); setSelectedUser(null); editForm.resetFields(); setFormError('') }}
         footer={null}
-        destroyOnClose
+        destroyOnHidden
         width={700}
       >
         {formError && (
@@ -428,7 +426,7 @@ const UserManagement = () => {
               type="primary"
               htmlType="submit"
               loading={formLoading}
-              style={{ background: '#262626', borderColor: '#262626' }}
+              style={{ background: 'rgb(245, 34, 45)', borderColor: 'rgb(245, 34, 45)' }}
             >
               Update User
             </Button>

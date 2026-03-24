@@ -29,7 +29,6 @@ const Login = () => {
       })
       if (!res.ok) throw new Error(await res.text() || 'Login failed')
       const data = await res.json()
-      console.log('LOGIN RESPONSE', data)
       // If backend indicates OTP is required, redirect to OTP verification
       if (
         data.otpToken || data.otpRequired ||

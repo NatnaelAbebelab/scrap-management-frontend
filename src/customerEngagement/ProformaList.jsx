@@ -94,7 +94,7 @@ const ProformaList = () => {
     } else if (status === 'PENDING') {
       return <Badge status="processing" text={<Text strong style={{ color: '#faad14' }}>Pending Approval</Text>} />
     } else if (status === 'REJECTED') {
-      return <Badge status="error" text={<Text strong style={{ color: '#ff4d4f' }}>Rejected</Text>} />
+      return <Badge status="error" text={<Text strong style={{ color: 'rgb(245, 34, 45)' }}>Rejected</Text>} />
     } else {
       return <Badge status="default" text={<Text>{status}</Text>} />
     }
@@ -309,7 +309,7 @@ const ProformaList = () => {
                   title="Rejected"
                   value={stats.rejected}
                   prefix={<Badge status="error" />}
-                  valueStyle={{ color: '#ff4d4f' }}
+                  valueStyle={{ color: 'rgb(245, 34, 45)' }}
                 />
               </Card>
             </Col>
@@ -325,7 +325,7 @@ const ProformaList = () => {
           >
             {error && (
               <div style={{
-                color: '#ff4d4f',
+                color: 'rgb(245, 34, 45)',
                 marginBottom: 16,
                 padding: 12,
                 background: '#fff2f0',

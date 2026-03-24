@@ -1,12 +1,9 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
-import { API_BASE_URL, USERS_GET_URL, USER_ADD_URL, USER_UPDATE_URL, USER_DELETE_URL, USER_GET_ROLES_URL, FILE_UPLOAD_URL } from './config'
-import { useAuth } from '../auth/AuthProvider'
-import { createFetchWithAuth } from './fetchWithAuth'
+import { useState, useEffect, useCallback } from 'react'
+import { USERS_GET_URL, USER_ADD_URL, USER_UPDATE_URL, USER_DELETE_URL, USER_GET_ROLES_URL, FILE_UPLOAD_URL } from './config'
 import { useUpload } from './useUpload'
+import { apiRequest } from './core/apiRequest'
 
 export const useUsers = ({ page = 1, pageSize = 10 } = {}) => {
-  const auth = useAuth()
-  const authFetch = useMemo(() => createFetchWithAuth(auth), [auth])
   const { uploadFile } = useUpload()
 
   const [users, setUsers] = useState([])
@@ -20,47 +17,75 @@ export const useUsers = ({ page = 1, pageSize = 10 } = {}) => {
     setLoading(true)
     setError(null)
     try {
-      // Note: the user endpoint gets paginated like /user/get?page=1&page_size=10
-      const url = new URL(USERS_GET_URL)
-      url.searchParams.set('page', page)
-      url.searchParams.set('page_size', pageSize)
+      const response = await apiRequest({
+        url: USERS_GET_URL,
+        method: 'GET',
+        pagination: { page, page_size: pageSize }
+      })
 
-      const res = await authFetch(url.toString())
-      if (!res.ok) {
-        const text = await res.text()
-        throw new Error(text || 'Failed to fetch users')
+      if (response.result === 'error') {
+        throw new Error(response.message || 'Failed to fetch users')
       }
-      const json = await res.json()
-      // API typically returns results in `data.results` and total in `data.count` or directly in `json`
-      // Assumed standard DRF paginated response or custom response format
-      setUsers(json?.data?.results || json?.results || json?.data || [])
-      setTotal(json?.data?.count || json?.count || 0)
+
+      const content = response.content
+      // API typically returns results in `content.results` or `content.data.results`
+      let userList = []
+      let count = 0
+
+      if (content?.results && Array.isArray(content.results)) {
+        userList = content.results
+        count = content.count || content.total || 0
+      } else if (content?.data?.results && Array.isArray(content.data.results)) {
+        userList = content.data.results
+        count = content.data.count || content.data.total || 0
+      } else if (content?.data && Array.isArray(content.data)) {
+        userList = content.data
+        count = content.count || content.total || userList.length || 0
+      } else if (Array.isArray(content)) {
+        userList = content
+        count = userList.length
+      }
+
+      setUsers(userList)
+      setTotal(count)
     } catch (err) {
       setError(err.message || 'Failed to fetch users')
     } finally {
       setLoading(false)
     }
-  }, [authFetch, page, pageSize])
+  }, [page, pageSize])
 
   const fetchRoles = useCallback(async () => {
     setRolesLoading(true)
     try {
-      const res = await authFetch(USER_GET_ROLES_URL)
-      const data = await res.json()
-      if (res.ok && data?.result === 'success') {
-        setRoles(data.roles || [])
+      const response = await apiRequest({
+        url: USER_GET_ROLES_URL,
+        method: 'GET'
+      })
+      if (response.result === 'success') {
+        const content = response.content
+        let roleList = []
+        if (content?.roles && Array.isArray(content.roles)) {
+          roleList = content.roles
+        } else if (Array.isArray(content)) {
+          roleList = content
+        }
+        setRoles(roleList)
       }
     } catch (e) {
       console.error('Failed to fetch roles', e)
     } finally {
       setRolesLoading(false)
     }
-  }, [authFetch])
+  }, [])
 
   useEffect(() => {
     fetchUsers()
+  }, [fetchUsers])
+
+  useEffect(() => {
     fetchRoles()
-  }, [fetchUsers, fetchRoles])
+  }, [fetchRoles])
 
   const registerUser = async (values, fileList) => {
     let signatureFileName = ''
@@ -70,20 +95,17 @@ export const useUsers = ({ page = 1, pageSize = 10 } = {}) => {
     }
     const payload = { ...values, signature: signatureFileName }
 
-    const res = await authFetch(USER_ADD_URL, {
+    const response = await apiRequest({
+      url: USER_ADD_URL,
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
+      data: payload,
     })
 
-    if (!res.ok) {
-      const text = await res.text()
-      throw new Error(text || 'Failed to register user')
+    if (response.result === 'error') {
+      throw new Error(response.message || 'Failed to register user')
     }
     await fetchUsers()
-    return res
+    return response
   }
 
   const updateUser = async (id, values, fileList, existingSignature) => {
@@ -104,34 +126,31 @@ export const useUsers = ({ page = 1, pageSize = 10 } = {}) => {
       signature: signatureFileName || null
     }
 
-    const res = await authFetch(USER_UPDATE_URL, {
+    const response = await apiRequest({
+      url: USER_UPDATE_URL,
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
+      data: payload,
     })
 
-    if (!res.ok) {
-      const text = await res.text()
-      throw new Error(text || 'Failed to update user')
+    if (response.result === 'error') {
+      throw new Error(response.message || 'Failed to update user')
     }
     await fetchUsers()
-    return res
+    return response
   }
 
   const deleteUser = async (id) => {
     const targetUrl = USER_DELETE_URL(id)
-    const res = await authFetch(targetUrl, {
+    const response = await apiRequest({
+      url: targetUrl,
       method: 'DELETE',
     })
 
-    if (!res.ok) {
-      const text = await res.text()
-      throw new Error(text || 'Failed to delete user')
+    if (response.result === 'error') {
+      throw new Error(response.message || 'Failed to delete user')
     }
     await fetchUsers()
-    return res
+    return response
   }
 
   return {

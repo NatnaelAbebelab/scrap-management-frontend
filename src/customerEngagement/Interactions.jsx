@@ -68,10 +68,10 @@ const Interactions = () => {
                     margin: '0 auto 24px',
                     border: '2px solid #ffccc7'
                   }}>
-                    <ExclamationCircleOutlined style={{ fontSize: 36, color: '#ff4d4f' }} />
+                    <ExclamationCircleOutlined style={{ fontSize: 36, color: 'rgb(245, 34, 45)' }} />
                   </div>
                   
-                  <Title level={3} style={{ margin: '0 0 12px 0', color: '#ff4d4f' }}>
+                  <Title level={3} style={{ margin: '0 0 12px 0', color: 'rgb(245, 34, 45)' }}>
                     Customer Complaint
                   </Title>
                   
@@ -85,8 +85,8 @@ const Interactions = () => {
                       size="large"
                       icon={<PlusOutlined />}
                       style={{ 
-                        background: '#ff4d4f', 
-                        borderColor: '#ff4d4f',
+                        background: 'rgb(245, 34, 45)', 
+                        borderColor: 'rgb(245, 34, 45)',
                         borderRadius: 8,
                         height: 44,
                         minWidth: 160

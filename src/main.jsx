@@ -24,10 +24,20 @@ import AgencyRegistration from './scrapTransport/AgencyRegistration'
 import UserManagement from './settings/UserManagement'
 import Profile from './settings/Profile'
 
+import { ConfigProvider } from 'antd'
+
 const root = createRoot(document.getElementById('root'))
 root.render(
   <React.StrictMode>
-    <AuthProvider>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: 'rgb(245, 34, 45)',
+          borderRadius: 6,
+        },
+      }}
+    >
+      <AuthProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -74,5 +84,6 @@ root.render(
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+    </ConfigProvider>
   </React.StrictMode>
 )

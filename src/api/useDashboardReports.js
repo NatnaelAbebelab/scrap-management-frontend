@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
-import { API_BASE_URL } from './config'
-import { useAuth } from '../auth/AuthProvider'
+import { DASHBOARD_YEARLY_PURCHASE_URL, DASHBOARD_GENERAL_METRICS_URL, DASHBOARD_SCRAP_GRADE_URL } from './config'
+import { apiRequest } from './core/apiRequest'
 
 export const useDashboardReports = () => {
-  const auth = useAuth()
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const [generalMetrics, setGeneralMetrics] = useState(null)
@@ -11,53 +10,42 @@ export const useDashboardReports = () => {
   const [scrapGrades, setScrapGrades] = useState(null)
 
   useEffect(() => {
-    const controller = new AbortController()
-
     const fetchData = async () => {
       setIsLoading(true)
       setError(null)
       try {
-        const base = `${API_BASE_URL}/report`
-        const headers = {}
-        if (auth?.token) {
-          headers.Authorization = `Bearer ${auth.token}`
-        }
-
         const [yearlyRes, generalRes, scrapRes] = await Promise.all([
-          fetch(`${base}/yearly-purchase-report/`, { signal: controller.signal, headers }),
-          fetch(`${base}/general-metrics/`, { signal: controller.signal, headers }),
-          fetch(`${base}/scrap-grade-percentage/`, { signal: controller.signal, headers })
+          apiRequest({ url: DASHBOARD_YEARLY_PURCHASE_URL, method: 'GET' }),
+          apiRequest({ url: DASHBOARD_GENERAL_METRICS_URL, method: 'GET' }),
+          apiRequest({ url: DASHBOARD_SCRAP_GRADE_URL, method: 'GET' })
         ])
 
-        if (!yearlyRes.ok || !generalRes.ok || !scrapRes.ok) {
+        if (yearlyRes.result === 'error' || generalRes.result === 'error' || scrapRes.result === 'error') {
           throw new Error('Failed to fetch dashboard data')
         }
 
-        const yearlyJson = await yearlyRes.json()
-        const generalJson = await generalRes.json()
-        const scrapJson = await scrapRes.json()
+        const yearlyContent = yearlyRes.content
+        const generalContent = generalRes.content
+        const scrapContent = scrapRes.content
 
-        setYearlyPurchase(yearlyJson?.data || {})
-        setGeneralMetrics(generalJson || {})
+        setYearlyPurchase(yearlyContent?.data || yearlyContent || {})
+        setGeneralMetrics(generalContent || {})
 
-        const gradeData = scrapJson?.data || {}
+        const gradeData = scrapContent?.data || scrapContent || {}
         const numericGrades = {}
         Object.entries(gradeData).forEach(([k, v]) => {
           numericGrades[k] = typeof v === 'string' ? parseFloat(v) || 0 : v
         })
         setScrapGrades(numericGrades)
       } catch (err) {
-        if (err.name !== 'AbortError') {
-          setError(err.message || 'Something went wrong')
-        }
+        setError(err.message || 'Something went wrong')
       } finally {
         setIsLoading(false)
       }
     }
 
     fetchData()
-    return () => controller.abort()
-  }, [auth?.token])
+  }, [])
 
   const monthIndex = (m) => {
     const map = {
