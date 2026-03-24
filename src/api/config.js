@@ -27,6 +27,8 @@ export const SCRAP_PURCHASE_UPLOAD_URL = `${API_BASE_URL}/grn/upload/`
 export const GRN_RECORDS_URL = `${API_BASE_URL}/grn/grn/`
 export const GRN_ADD_WASTE_URL = `${API_BASE_URL}/grn/add-waste/`
 export const GRN_CHANGE_STATUS_URL = `${API_BASE_URL}/grn/change-grn-status/`
+export const GRN_ROLLBACK_STATUS_URL = `${API_BASE_URL}/grn/rollback-grn-status/`
+export const GRN_DELETE_URL = (id) => `${API_BASE_URL}/grn/delete-grn/${id}/`
 export const GRN_STATUS_LIST_URL = `${API_BASE_URL}/grn/get-status-list/`
 export const GRN_SERIAL_INITIALIZE_URL = `${API_BASE_URL}/grn/initialize-grn-serial-number/`
 export const GRN_SERIAL_GET_URL = `${API_BASE_URL}/grn/get-grn-serial-numbers/`

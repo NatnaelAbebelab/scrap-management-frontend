@@ -1,59 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Upload, Button, message } from 'antd';
 import { UploadOutlined, LoadingOutlined } from '@ant-design/icons';
-import { FILE_UPLOAD_URL } from '../api/config';
-import { useAuth } from '../auth/AuthProvider';
 
 /**
- * FileUploadInput - generic uploader that returns filename to parent
+ * FileUploadInput - generic uploader that returns file object to parent
  * @param {Object} props
- * @param {String} props.value - Filename (from Form.Item)
+ * @param {Object|String} props.value - File object or Filename string
  * @param {Function} props.onChange - Handler to update value in Form
  * @param {String} props.placeholder - Placeholder text
  */
 const FileUploadInput = ({ value, onChange, placeholder = 'Click to upload' }) => {
-  const { auth } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const [fileList, setFileList] = useState([]);
 
-  const handleChange = (info) => {
-    if (info.file.status === 'uploading') {
-      setLoading(true);
-      return;
+  // Sync internal state with external value changes (like form reset)
+  useEffect(() => {
+    if (!value) {
+      setFileList([]);
+    } else if (value instanceof File && fileList.length === 0) {
+      setFileList([value]);
     }
-    if (info.file.status === 'done') {
-      setLoading(false);
-      // Backend typically returns { data: { filename: '...' } } or similar
-      const filename = info.file.response?.data?.filename || info.file.response?.filename;
-      if (filename) {
-        onChange(filename);
-        message.success(`${info.file.name} uploaded successfully`);
-      } else {
-        message.error('File uploaded but filename not returned.');
-      }
-    } else if (info.file.status === 'error') {
-      setLoading(false);
-      message.error(`${info.file.name} upload failed.`);
+  }, [value]);
+
+  // Handle file selection
+  const handleBeforeUpload = (file) => {
+    setFileList([file]);
+    if (onChange) {
+      onChange(file);
+    }
+    return false; // Stop automatic upload
+  };
+
+  // Handle file removal
+  const handleRemove = () => {
+    setFileList([]);
+    if (onChange) {
+      onChange(null);
     }
   };
 
   return (
     <div className="file-upload-input">
       <Upload
-        name="file"
-        action={FILE_UPLOAD_URL}
-        headers={{
-          Authorization: `Bearer ${auth?.token || localStorage.getItem('access_token')}`,
-        }}
+        fileList={fileList}
+        beforeUpload={handleBeforeUpload}
+        onRemove={handleRemove}
+        maxCount={1}
         showUploadList={false}
-        onChange={handleChange}
         accept="image/*"
       >
         <Button 
-          icon={loading ? <LoadingOutlined /> : <UploadOutlined />} 
+          icon={<UploadOutlined />} 
           style={{ width: '100%', borderRadius: '6px' }}
         >
           {value ? (
-            <span style={{ color: '#52c41a' }}>{value} (Uploaded)</span>
+            <span style={{ color: '#52c41a' }}>
+              {typeof value === 'string' ? value : value.name} (Selected)
+            </span>
           ) : (
             <span>{placeholder}</span>
           )}
