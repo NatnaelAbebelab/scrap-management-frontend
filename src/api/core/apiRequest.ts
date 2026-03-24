@@ -1,5 +1,6 @@
 import apiClient from './apiClient';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { formatErrorMessage } from '../../utils/messageFormatter';
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -54,7 +55,7 @@ export const apiRequest = async <T = any>(options: ApiRequestOptions): Promise<S
     const response: AxiosResponse = await apiClient(config);
     return {
       result: response.data?.result || 'success',
-      message: response.data?.message || 'Request successful',
+      message: formatErrorMessage(response.data?.message) || 'Request successful',
       content: response.data?.content !== undefined ? response.data.content : response.data,
       status: response.status,
     };
@@ -62,7 +63,7 @@ export const apiRequest = async <T = any>(options: ApiRequestOptions): Promise<S
     if (error.response) {
       return {
         result: error.response.data?.result || 'error',
-        message: error.response.data?.message || error.response.data?.detail || 'An error occurred during the request.',
+        message: formatErrorMessage(error.response.data?.message || error.response.data?.detail) || 'An error occurred during the request.',
         content: error.response.data?.content || error.response.data,
         status: error.response.status,
       };

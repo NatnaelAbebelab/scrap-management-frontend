@@ -4,7 +4,7 @@ import { useAuth } from '../auth/AuthProvider'
 import { createFetchWithAuth } from './fetchWithAuth'
 
 // Fetch paginated GRN purchase records
-export const usePurchaseRecords = ({ page = 1, pageSize = 5 } = {}) => {
+export const usePurchaseRecords = ({ page = 1, pageSize = 10 } = {}) => {
   const auth = useAuth()
   const authFetch = useMemo(() => createFetchWithAuth(auth), [auth])
 
@@ -12,6 +12,9 @@ export const usePurchaseRecords = ({ page = 1, pageSize = 5 } = {}) => {
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [refreshCount, setRefreshCount] = useState(0)
+
+  const triggerRefresh = () => setRefreshCount(prev => prev + 1)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -49,12 +52,13 @@ export const usePurchaseRecords = ({ page = 1, pageSize = 5 } = {}) => {
 
     fetchData()
     return () => controller.abort()
-  }, [page, pageSize, authFetch])
+  }, [page, pageSize, authFetch, refreshCount])
 
   return {
     records,
     total,
     loading,
     error,
+    refresh: triggerRefresh
   }
 }

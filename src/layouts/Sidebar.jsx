@@ -30,13 +30,28 @@ const Sidebar = ({ selected }) => {
   if (!token || isPublicRoute) return null
 
   const inferred =
-    path.startsWith('/dashboard') ? 'dashboard'
-      : path.startsWith('/scrap-purchase') ? 'scrap-purchase'
-        : path.startsWith('/scrap-transport') ? 'scrap-transport'
-          : path.startsWith('/material-management') ? 'material-management'
-            : path.startsWith('/reports') ? 'reports'
-              : path.startsWith('/settings') ? 'settings'
-                : 'dashboard'
+    path === '/dashboard' ? 'dashboard'
+      : path === '/scrap-purchase/csv-excel-uploader' ? 'scrap-purchase:csv-uploader'
+        : path === '/scrap-purchase/purchase-records' ? 'scrap-purchase:purchase-records'
+          : path === '/scrap-purchase/material-rate' ? 'scrap-purchase:material-rate'
+            : path === '/scrap-purchase/stock' ? 'scrap-purchase:stock'
+              : path === '/scrap-transport/agency-registration' ? 'scrap-transport:agency-registration'
+                : path === '/scrap-transport/internal-csv-upload' ? 'scrap-transport:internal-csv-upload'
+                  : path === '/scrap-transport/scrap-movers-approval' ? 'scrap-transport:movers-approval'
+                    : path === '/scrap-transport/scrap-movers-payment' ? 'scrap-transport:movers-payment'
+                      : path === '/material-management/requisition' ? 'material-management:requisition'
+                        : path === '/material-management/issue' ? 'material-management:issue'
+                          : path === '/settings/user-management' ? 'settings:user-management'
+                            : path === '/settings/melting-plants' ? 'settings:melting-plants'
+                              : path === '/settings/grn-serial' ? 'settings:grn-serial'
+                                : path === '/settings/stock-beginning-balance' ? 'settings:stock-beginning-balance'
+                                  : path.startsWith('/dashboard') ? 'dashboard'
+                                    : path.startsWith('/scrap-purchase') ? 'scrap-purchase'
+                                      : path.startsWith('/scrap-transport') ? 'scrap-transport'
+                                        : path.startsWith('/material-management') ? 'material-management'
+                                          : path.startsWith('/reports') ? 'reports'
+                                            : path.startsWith('/settings') ? 'settings'
+                                              : 'dashboard'
 
   const activeKey = selected || inferred
 
@@ -60,8 +75,8 @@ const Sidebar = ({ selected }) => {
           label: <Link to="/scrap-purchase/purchase-records" style={{ textDecoration: 'none' }}>Purchase Records</Link>
         },
         {
-          key: 'scrap-purchase:material-price-setting',
-          label: <Link to="/scrap-purchase/material-price-setting" style={{ textDecoration: 'none' }}>Material Price Setting</Link>
+          key: 'scrap-purchase:material-rate',
+          label: <Link to="/scrap-purchase/material-rate" style={{ textDecoration: 'none' }}>Material Rate</Link>
         },
         {
           key: 'scrap-purchase:stock',
@@ -161,12 +176,16 @@ const Sidebar = ({ selected }) => {
       label: 'Settings',
       children: [
         {
-          key: 'settings:plants-management',
-          label: <Link to="/settings/plants-management" style={{ textDecoration: 'none' }}>Plants Management</Link>
+          key: 'settings:melting-plants',
+          label: <Link to="/settings/melting-plants" style={{ textDecoration: 'none' }}>Melting Plant</Link>
         },
         {
-          key: 'settings:initialize-grn',
-          label: <Link to="/settings/initialize-grn" style={{ textDecoration: 'none' }}>Initialize GRN</Link>
+          key: 'settings:grn-serial',
+          label: <Link to="/settings/grn-serial" style={{ textDecoration: 'none' }}>GRN Serial Number</Link>
+        },
+        {
+          key: 'settings:stock-beginning-balance',
+          label: <Link to="/settings/stock-beginning-balance" style={{ textDecoration: 'none' }}>Stock Beginning Balance</Link>
         }
       ]
     }
@@ -239,6 +258,7 @@ const Sidebar = ({ selected }) => {
         <Menu
           mode="inline"
           selectedKeys={[activeKey]}
+          defaultOpenKeys={activeKey.includes(':') ? [activeKey.split(':')[0]] : []}
           items={menuItems}
           style={{
             borderRight: 0,

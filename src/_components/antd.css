@@ -87,16 +87,35 @@ td.ant-table-column-sort {
     border-radius: 8px !important;
 }
 
+.ant-select-selector {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.ant-select-selection-item,
+.ant-select-selection-placeholder {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.ant-select-suffix {
+    display: flex !important;
+    align-items: center !important;
+}
+
 /* Ensure selected text and placeholder are vertically centered */
 .ant-select-selection-item, .ant-select-selection-placeholder {
-    line-height: 1 !important;
-    padding-top: 2px !important;
+    line-height: 38px !important; /* MATCH height (40px) minus tiny border */
 }
 
 /* Position arrow clearly and allow pointer events */
-.ant-select .ant-select-arrow {
+.ant-select .ant-select-arrow, .ant-select .ant-select-suffix {
+    display: flex !important;
+    align-items: center !important;
     right: 12px !important;
-    pointer-events: auto !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin-top: 0 !important;
     color: rgba(0,0,0,0.45) !important;
 }
 
@@ -636,4 +655,32 @@ left: 28px !important;
 
 .ant-radio-wrapper {
     font-weight: 500;
+}
+/* Sidebar Menu Active Styling */
+.ant-menu-item-selected {
+    background-color: rgba(245, 34, 45, 0.1) !important;
+    color: rgb(245, 34, 45) !important;
+    font-weight: 500;
+}
+
+.ant-menu-item-selected a {
+    color: rgb(245, 34, 45) !important;
+}
+
+.ant-menu-item-selected .anticon {
+    color: rgb(245, 34, 45) !important;
+}
+
+/* For main menu items that are selected */
+.ant-menu-item:not(.ant-menu-item-selected):hover {
+    color: rgb(245, 34, 45) !important;
+}
+
+/* Submenu title active styling */
+.ant-menu-submenu-selected > .ant-menu-submenu-title {
+    color: rgb(245, 34, 45) !important;
+}
+
+.ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-item-icon {
+    color: rgb(245, 34, 45) !important;
 }

@@ -37,8 +37,8 @@ const CsvExcelUploader = () => {
 
     const file = fileList[0]
     try {
-      const summary = await upload({ 
-        file, 
+      const summary = await upload({
+        file,
         date: selectedDate // this is the date string from DatePicker
       })
       message.success(summary?.message || 'CSV uploaded successfully.')
@@ -59,7 +59,7 @@ const CsvExcelUploader = () => {
 
   return (
     <div style={{ display: 'flex' }}>
-      <Sidebar selected="scrap-purchase" />
+      <Sidebar />
       <div style={{ flex: 1, marginLeft: 220 }}>
         <Header />
         <div className="page-wrapper" style={{ padding: 20 }}>
@@ -78,38 +78,6 @@ const CsvExcelUploader = () => {
             }}
           >
             <Space direction="vertical" size={16} style={{ width: '100%' }}>
-              {uploadSummary && (
-                <Alert
-                  type={uploadSummary.result === 'success' ? 'success' : 'warning'}
-                  showIcon
-                  message={uploadSummary.message}
-                  description={(
-                    <div style={{ marginTop: 6 }}>
-                      {uploadSummary.totalRecords !== null && (
-                        <div>
-                          <Text strong>Total records: </Text>
-                          <Text>{uploadSummary.totalRecords}</Text>
-                        </div>
-                      )}
-                      {uploadSummary.skipped && Object.keys(uploadSummary.skipped).length > 0 && (
-                        <div style={{ marginTop: 6 }}>
-                          <Text strong>Skipped records:</Text>
-                          <ul style={{ paddingLeft: 18, marginTop: 4 }}>
-                            {Object.entries(uploadSummary.skipped).map(([key, arr]) => (
-                              <li key={key}>
-                                <Text>
-                                  {key.replace(/_/g, ' ')}: {Array.isArray(arr) ? arr.length : 0}
-                                </Text>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                />
-              )}
-
               <div style={{ maxWidth: 320 }}>
                 <Text strong>Date (optional)</Text>
                 <div style={{ marginTop: 6 }}>
@@ -145,9 +113,9 @@ const CsvExcelUploader = () => {
                   onClick={handleSubmit}
                   loading={isUploading}
                   disabled={!fileList.length}
-                  style={{ 
-                    borderRadius: '8px', 
-                    padding: '0 24px', 
+                  style={{
+                    borderRadius: '8px',
+                    padding: '0 24px',
                     height: '40px',
                     color: '#ffffff' // Explicitly making the text color white
                   }}
@@ -155,6 +123,47 @@ const CsvExcelUploader = () => {
                   <span style={{ color: '#ffffff' }}>Upload</span>
                 </Button>
               </div>
+
+              {uploadSummary && (
+                <Alert
+                  type={uploadSummary.result === 'success' ? 'success' : 'warning'}
+                  showIcon
+                  message={uploadSummary.message}
+                  description={(
+                    <div style={{ marginTop: 6 }}>
+                      {uploadSummary.totalGrns !== null && (
+                        <div>
+                          <Text strong>Total Records: </Text>
+                          <Text>{uploadSummary.totalGrns}</Text>
+                        </div>
+                      )}
+                      {uploadSummary.stockRecordsCreated !== null && (
+                        <div style={{ marginTop: 4 }}>
+                          <Text strong>Stock Records Created: </Text>
+                          <Text>{uploadSummary.stockRecordsCreated}</Text>
+                        </div>
+                      )}
+                      {uploadSummary.skipped && Object.keys(uploadSummary.skipped).length > 0 &&
+                        Object.values(uploadSummary.skipped).some(arr => Array.isArray(arr) && arr.length > 0) && (
+                          <div style={{ marginTop: 8 }}>
+                            <Text strong>Skipped records:</Text>
+                            <ul style={{ paddingLeft: 18, marginTop: 4 }}>
+                              {Object.entries(uploadSummary.skipped).map(([key, arr]) =>
+                                Array.isArray(arr) && arr.length > 0 ? (
+                                  <li key={key}>
+                                    <Text>
+                                      {key.replace(/_/g, ' ')}: {arr.length}
+                                    </Text>
+                                  </li>
+                                ) : null
+                              )}
+                            </ul>
+                          </div>
+                        )}
+                    </div>
+                  )}
+                />
+              )}
             </Space>
           </Card>
         </div>
