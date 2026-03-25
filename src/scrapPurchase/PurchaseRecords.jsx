@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Card, Typography, Alert, Dropdown, Modal, Descriptions, Tag, Button, Space, Form, InputNumber, message, Row, Col, Input } from 'antd'
-import { MoreOutlined, EditOutlined, EyeOutlined, RollbackOutlined, DeleteOutlined } from '@ant-design/icons'
+import { MoreOutlined, EditOutlined, EyeOutlined, RollbackOutlined, DeleteOutlined, DollarOutlined } from '@ant-design/icons'
 import Header from '../layouts/Header'
 import Sidebar from '../layouts/Sidebar'
 import { usePurchaseRecords } from '../api/usePurchaseRecords'
@@ -32,8 +32,13 @@ const PurchaseRecords = () => {
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
+  const [payModalOpen, setPayModalOpen] = useState(false)
+  const [payForm] = Form.useForm()
+  const [payModalMode, setPayModalMode] = useState('bulk') // 'bulk' or 'single'
+  const [selectedPayRecords, setSelectedPayRecords] = useState([])
+
   const { records, total, loading, error, refresh } = usePurchaseRecords({ page, pageSize })
-  const { addWasteDeduction, changeGrnStatus, rollbackGrnStatus, deleteGrnRecord, fetchStatusList, isSubmitting } = usePurchaseActions()
+  const { addWasteDeduction, changeGrnStatus, rollbackGrnStatus, payCustomer, deleteGrnRecord, fetchStatusList, isSubmitting } = usePurchaseActions()
 
   // Initial load of status options
   useEffect(() => {
@@ -90,6 +95,21 @@ const PurchaseRecords = () => {
     setStatusModalOpen(true)
   }
 
+  const handleOpenPayModal = (record = null) => {
+    payForm.resetFields()
+    if (record) {
+      setPayModalMode('single')
+      setSelectedPayRecords([record])
+      payForm.setFieldsValue({ record_no: record.record_no })
+    } else {
+      setPayModalMode('bulk')
+      const selected = records.filter(r => selectedRowKeys.includes(r._id))
+      setSelectedPayRecords(selected)
+      payForm.setFieldsValue({ record_no: selected.map(r => r.record_no) })
+    }
+    setPayModalOpen(true)
+  }
+
   const onWasteFinish = async (values) => {
     try {
       const res = await addWasteDeduction({
@@ -131,6 +151,20 @@ const PurchaseRecords = () => {
     }
   }
 
+  const onPayFinish = async (values) => {
+    try {
+      const recordNoArray = Array.isArray(values.record_no) ? values.record_no : [values.record_no]
+      const res = await payCustomer({ record_no: recordNoArray })
+
+      message.success(res.message || 'Payment successful')
+      setPayModalOpen(false)
+      setSelectedRowKeys([])
+      refresh()
+    } catch (err) {
+      message.error(err.message || 'Payment failed')
+    }
+  }
+
   const handleRollback = (recordNos) => {
     const nos = Array.isArray(recordNos) ? recordNos : [recordNos]
     if (nos.length === 0) return
@@ -145,14 +179,14 @@ const PurchaseRecords = () => {
         try {
           const res = await rollbackGrnStatus({ record_nos: nos })
           const { rollback_records = [], skipped_records = [] } = res.data || {}
-          
+
           if (rollback_records.length > 0) {
             message.success(`Rolled back ${rollback_records.length} records.`)
           }
           if (skipped_records.length > 0) {
             message.warning(`Skipped ${skipped_records.length} records.`)
           }
-          
+
           setSelectedRowKeys([])
           refresh()
         } catch (err) {
@@ -205,6 +239,12 @@ const PurchaseRecords = () => {
       label: 'Roll Back Status',
       icon: <RollbackOutlined />,
       onClick: () => handleRollback(record.record_no)
+    },
+    {
+      key: 'pay',
+      label: 'Pay Customer',
+      icon: <DollarOutlined />,
+      onClick: () => handleOpenPayModal(record)
     },
     {
       key: 'delete',
@@ -363,6 +403,14 @@ const PurchaseRecords = () => {
                   Rollback Status
                 </Button>
               )}
+              <Button
+                type="primary"
+                icon={<DollarOutlined />}
+                onClick={() => handleOpenPayModal()}
+                style={{ borderRadius: 6, background: '#52c41a', borderColor: '#52c41a' }}
+              >
+                Pay Customers
+              </Button>
               <Button
                 type="primary"
                 icon={<EditOutlined />}
@@ -671,6 +719,92 @@ const PurchaseRecords = () => {
               </Form.Item>
             </Col>
           </Row>
+        </Form>
+      </Modal>
+
+      {/* Pay Customer Modal */}
+      <Modal
+        title={
+          <Space>
+            <DollarOutlined style={{ color: '#52c41a' }} />
+            <span style={{ fontWeight: 700 }}>Pay Customer</span>
+          </Space>
+        }
+        open={payModalOpen}
+        onCancel={() => setPayModalOpen(false)}
+        onOk={() => payForm.submit()}
+        confirmLoading={isSubmitting}
+        okText="Confirm Payment"
+        okButtonProps={{ style: { borderRadius: 6, background: '#52c41a', borderColor: '#52c41a' } }}
+        width={500}
+      >
+        <Form
+          form={payForm}
+          layout="vertical"
+          onFinish={onPayFinish}
+          onValuesChange={(changedValues, allValues) => {
+            if (changedValues.record_no) {
+              const nos = Array.isArray(allValues.record_no) ? allValues.record_no : [allValues.record_no]
+              const selected = records.filter(r => nos.includes(r.record_no))
+              setSelectedPayRecords(selected)
+            }
+          }}
+        >
+          <Form.Item
+            name="record_no"
+            label={payModalMode === 'bulk' ? 'Select Records' : 'Record Number'}
+            rules={[{ required: true, message: 'At least one record must be selected' }]}
+          >
+            {payModalMode === 'bulk' ? (
+              <MultiSelectInput
+                placeholder="Select records..."
+                options={records.map(r => ({ value: r.record_no, label: r.record_no }))}
+              />
+            ) : (
+              <SelectInput
+                options={records.map(r => ({ value: r.record_no, label: r.record_no }))}
+                placeholder="Select record..."
+              />
+            )}
+          </Form.Item>
+
+          <div style={{
+            background: '#f6ffed',
+            border: '1px solid #b7eb8f',
+            padding: '16px',
+            borderRadius: '8px',
+            marginTop: '24px'
+          }}>
+            <Row gutter={16} align="middle">
+              <Col span={12}>
+                <Text type="secondary" style={{ display: 'block' }}>Total Amount to Pay</Text>
+                <Title level={4} style={{ margin: 0, color: '#52c41a' }}>
+                  Br.{selectedPayRecords.reduce((sum, r) => sum + (Number(r.net_price) || 0), 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </Title>
+              </Col>
+              <Col span={12} style={{ textAlign: 'right' }}>
+                <Text type="secondary">Records: </Text>
+                <Text strong>{selectedPayRecords.length}</Text>
+              </Col>
+            </Row>
+          </div>
+
+          {payModalMode === 'single' && selectedPayRecords[0] && (
+            <div style={{ marginTop: 12, padding: '0 8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                <Text type="secondary">Customer:</Text>
+                <Text strong>{selectedPayRecords[0].customer}</Text>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                <Text type="secondary">Net Weight:</Text>
+                <Text strong>{Number(selectedPayRecords[0].net_weight || 0).toLocaleString()} kg</Text>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Text type="secondary">Net Price:</Text>
+                <Text strong style={{ color: '#52c41a' }}>{Number(selectedPayRecords[0].net_price || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })} Br.</Text>
+              </div>
+            </div>
+          )}
         </Form>
       </Modal>
     </div>
