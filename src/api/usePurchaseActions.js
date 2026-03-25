@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { apiRequest } from './core/apiRequest'
-import { GRN_ADD_WASTE_URL, GRN_CHANGE_STATUS_URL, GRN_STATUS_LIST_URL, FILE_UPLOAD_URL, GRN_ROLLBACK_STATUS_URL, GRN_DELETE_URL } from './config'
+import { GRN_ADD_WASTE_URL, GRN_CHANGE_STATUS_URL, GRN_STATUS_LIST_URL, FILE_UPLOAD_URL, GRN_ROLLBACK_STATUS_URL, GRN_PAY_CUSTOMER_URL, GRN_DELETE_URL, MATERIAL_TYPES_GET_URL } from './config'
 import { useUpload } from './useUpload'
 
 export const usePurchaseActions = () => {
@@ -66,6 +66,21 @@ export const usePurchaseActions = () => {
     }
   }
 
+  const payCustomer = async ({ record_no }) => {
+    setIsSubmitting(true)
+    try {
+      const response = await apiRequest({
+        url: GRN_PAY_CUSTOMER_URL,
+        method: 'POST',
+        data: { record_no }
+      })
+      if (response.result === 'error') throw new Error(response.message)
+      return response
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   const rollbackGrnStatus = async ({ record_nos }) => {
     setIsSubmitting(true)
     try {
@@ -102,10 +117,26 @@ export const usePurchaseActions = () => {
         method: 'GET'
       })
       if (response.result === 'error') throw new Error(response.message)
-      return response.content.data || []
+      // Based on provided response structure, the array is in response.content.data
+      return response.content?.data || []
     } catch (err) {
       console.error('Failed to fetch status list:', err)
       return []
+    }
+  }
+
+  const fetchMaterialTypes = async () => {
+    try {
+      const response = await apiRequest({
+        url: MATERIAL_TYPES_GET_URL,
+        method: 'GET'
+      })
+      if (response.result === 'error') throw new Error(response.message)
+      // Based on provided response structure, this is an object: { key: value }
+      return response.content?.data || {}
+    } catch (err) {
+      console.error('Failed to fetch material types:', err)
+      return {}
     }
   }
 
@@ -113,8 +144,10 @@ export const usePurchaseActions = () => {
     addWasteDeduction,
     changeGrnStatus,
     rollbackGrnStatus,
+    payCustomer,
     deleteGrnRecord,
     fetchStatusList,
+    fetchMaterialTypes,
     isSubmitting
   }
 }

@@ -22,12 +22,14 @@ export const DASHBOARD_YEARLY_PURCHASE_URL = `${API_BASE_URL}/report/yearly-purc
 export const DASHBOARD_GENERAL_METRICS_URL = `${API_BASE_URL}/report/general-metrics/`
 export const DASHBOARD_SCRAP_GRADE_URL = `${API_BASE_URL}/report/scrap-grade-percentage/`
 
+
 // --- Scrap Purchase ---
 export const SCRAP_PURCHASE_UPLOAD_URL = `${API_BASE_URL}/grn/upload/`
 export const GRN_RECORDS_URL = `${API_BASE_URL}/grn/grn/`
 export const GRN_ADD_WASTE_URL = `${API_BASE_URL}/grn/add-waste/`
 export const GRN_CHANGE_STATUS_URL = `${API_BASE_URL}/grn/change-grn-status/`
 export const GRN_ROLLBACK_STATUS_URL = `${API_BASE_URL}/grn/rollback-grn-status/`
+export const GRN_PAY_CUSTOMER_URL = `${API_BASE_URL}/grn/pay-customer/`
 export const GRN_DELETE_URL = (id) => `${API_BASE_URL}/grn/delete-grn/${id}/`
 export const GRN_STATUS_LIST_URL = `${API_BASE_URL}/grn/get-status-list/`
 export const GRN_SERIAL_INITIALIZE_URL = `${API_BASE_URL}/grn/initialize-grn-serial-number/`
@@ -39,3 +41,12 @@ export const STOCK_SUMMARY_GET_URL = `${API_BASE_URL}/stock/get-stock-summery/`
 export const RATE_ADD_URL = `${API_BASE_URL}/rate/add/`
 export const RATE_ARCHIVE_URL = `${API_BASE_URL}/rate/archive/`
 export const MATERIAL_TYPES_GET_URL = `${API_BASE_URL}/grn/get-material-types/`
+export const GRN_PLAIN_REPORT_URL = `${API_BASE_URL}/report/plain-report/`
+export const GRN_AGGREGATE_REPORT_URL = `${API_BASE_URL}/report/aggregate-report/`
+
+// --- Customer Management ---
+export const CUSTOMERS_GET_URL = `${API_BASE_URL}/customer/get-customers/`
+export const CUSTOMER_ADD_URL = `${API_BASE_URL}/customer/add-customer/`
+export const CUSTOMER_EDIT_URL = (id) => `${API_BASE_URL}/customer/edit-customer/${id}/`
+export const CUSTOMER_FILTER_URL = `${API_BASE_URL}/customer/filter-customer/` // takes ?tin=
+export const CUSTOMER_DELETE_URL = (id) => `${API_BASE_URL}/customer/delete-customer/${id}/`

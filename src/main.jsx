@@ -25,6 +25,9 @@ import UserManagement from './settings/UserManagement'
 import Profile from './settings/Profile'
 import GrnSerialSettings from './settings/GrnSerialSettings'
 import StockBeginningBalance from './settings/StockBeginningBalance'
+import CustomerList from './customerManagement/CustomerList'
+import PlainGrnReport from './reports/PlainGrnReport'
+import AggregateGrnReport from './reports/AggregateGrnReport'
 
 import { ConfigProvider } from 'antd'
 
@@ -40,54 +43,70 @@ root.render(
       }}
     >
       <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/otp-verification" element={<OtpVerification />} />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/otp-verification" element={<OtpVerification />} />
 
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/customer-engagement" element={<RequireAuth><CustomerEngagement /></RequireAuth>} />
-          <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
-          <Route path="/complaints/:id" element={<RequireAuth><ComplaintDetails /></RequireAuth>} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/customer-engagement" element={<RequireAuth><CustomerEngagement /></RequireAuth>} />
+            <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+            <Route path="/complaints/:id" element={<RequireAuth><ComplaintDetails /></RequireAuth>} />
 
-          <Route path="/interactions" element={<RequireAuth><Interactions /></RequireAuth>} />
-          <Route path="/interactions/complaint" element={<CustomerComplaint />} />
-          <Route path="/interactions/performa" element={<PerformaRequisition />} />
-          <Route path="/proformas" element={<RequireAuth><ProformaList /></RequireAuth>} />
-          
-          <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
+            <Route path="/interactions" element={<RequireAuth><Interactions /></RequireAuth>} />
+            <Route path="/interactions/complaint" element={<CustomerComplaint />} />
+            <Route path="/interactions/performa" element={<PerformaRequisition />} />
+            <Route path="/proformas" element={<RequireAuth><ProformaList /></RequireAuth>} />
 
-          <Route path="/material-management/issue" element={<RequireAuth><MaterialIssue /></RequireAuth>} />
+            <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
 
-          <Route path="/settings" element={<RequireAuth><SettingsDashboard /></RequireAuth>} />
-          <Route path="/settings/user-management" element={<RequireAuth><UserManagement /></RequireAuth>} />
-          <Route path="/settings/materials" element={<RequireAuth><MaterialManagement /></RequireAuth>} />
-          <Route path="/settings/melting-plants" element={<RequireAuth><MeltingPlants /></RequireAuth>} />
-          <Route path="/settings/grn-serial" element={<RequireAuth><GrnSerialSettings /></RequireAuth>} />
-          <Route path="/settings/stock-beginning-balance" element={<RequireAuth><StockBeginningBalance /></RequireAuth>} />
+            <Route path="/material-management/issue" element={<RequireAuth><MaterialIssue /></RequireAuth>} />
 
-          {/* Scrap Purchase */}
-          <Route
-            path="/scrap-purchase/csv-excel-uploader"
-            element={<RequireAuth><CsvExcelUploader /></RequireAuth>}
-          />
-          <Route
-            path="/scrap-purchase/purchase-records"
-            element={<RequireAuth><PurchaseRecords /></RequireAuth>}
-          />
-          <Route
-            path="/scrap-purchase/material-rate"
-            element={<RequireAuth><MaterialRate /></RequireAuth>}
-          />
+            <Route path="/settings" element={<RequireAuth><SettingsDashboard /></RequireAuth>} />
+            <Route path="/settings/user-management" element={<RequireAuth><UserManagement /></RequireAuth>} />
+            <Route path="/settings/materials" element={<RequireAuth><MaterialManagement /></RequireAuth>} />
+            <Route path="/settings/melting-plants" element={<RequireAuth><MeltingPlants /></RequireAuth>} />
+            <Route path="/settings/grn-serial" element={<RequireAuth><GrnSerialSettings /></RequireAuth>} />
+            <Route path="/settings/stock-beginning-balance" element={<RequireAuth><StockBeginningBalance /></RequireAuth>} />
 
-          {/* Scrap Transport */}
-          <Route
-            path="/scrap-transport/agency-registration"
-            element={<RequireAuth><AgencyRegistration /></RequireAuth>}
-          />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+            {/* Scrap Purchase */}
+            <Route
+              path="/scrap-purchase/csv-excel-uploader"
+              element={<RequireAuth><CsvExcelUploader /></RequireAuth>}
+            />
+            <Route
+              path="/scrap-purchase/purchase-records"
+              element={<RequireAuth><PurchaseRecords /></RequireAuth>}
+            />
+            <Route
+              path="/scrap-purchase/material-rate"
+              element={<RequireAuth><MaterialRate /></RequireAuth>}
+            />
+
+            {/* Customer Management */}
+            <Route
+              path="/customer-management"
+              element={<RequireAuth><CustomerList /></RequireAuth>}
+            />
+
+            {/* Scrap Transport */}
+            <Route
+              path="/scrap-transport/agency-registration"
+              element={<RequireAuth><AgencyRegistration /></RequireAuth>}
+            />
+
+            {/* Reports */}
+            <Route
+              path="/reports/plain-report"
+              element={<RequireAuth><PlainGrnReport /></RequireAuth>}
+            />
+            <Route
+              path="/reports/aggregate-report"
+              element={<RequireAuth><AggregateGrnReport /></RequireAuth>}
+            />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </ConfigProvider>
   </React.StrictMode>
 )

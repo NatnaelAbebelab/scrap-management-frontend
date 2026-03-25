@@ -1,12 +1,9 @@
-"use client"
-
-import React from 'react'
+import React, { useState } from 'react'
 import { useAuth } from '../auth/AuthProvider'
 import { useNavigate } from 'react-router-dom'
-import { Menu, Typography } from 'antd'
+import { Menu, Typography, Tooltip } from 'antd'
 import { Link, useLocation } from 'react-router-dom'
 import {
-  MessageOutlined,
   SettingOutlined,
   DashboardOutlined,
   LogoutOutlined,
@@ -15,6 +12,7 @@ import {
   DatabaseOutlined,
   BarChartOutlined,
   UserOutlined,
+  TeamOutlined, // Added TeamOutlined
 } from '@ant-design/icons'
 
 const { Text, Title } = Typography
@@ -32,160 +30,233 @@ const Sidebar = ({ selected }) => {
   const inferred =
     path === '/dashboard' ? 'dashboard'
       : path === '/scrap-purchase/csv-excel-uploader' ? 'scrap-purchase:csv-uploader'
-        : path === '/scrap-purchase/purchase-records' ? 'scrap-purchase:purchase-records'
-          : path === '/scrap-purchase/material-rate' ? 'scrap-purchase:material-rate'
-            : path === '/scrap-purchase/stock' ? 'scrap-purchase:stock'
-              : path === '/scrap-transport/agency-registration' ? 'scrap-transport:agency-registration'
-                : path === '/scrap-transport/internal-csv-upload' ? 'scrap-transport:internal-csv-upload'
-                  : path === '/scrap-transport/scrap-movers-approval' ? 'scrap-transport:movers-approval'
-                    : path === '/scrap-transport/scrap-movers-payment' ? 'scrap-transport:movers-payment'
-                      : path === '/material-management/requisition' ? 'material-management:requisition'
-                        : path === '/material-management/issue' ? 'material-management:issue'
-                          : path === '/settings/user-management' ? 'settings:user-management'
-                            : path === '/settings/melting-plants' ? 'settings:melting-plants'
-                              : path === '/settings/grn-serial' ? 'settings:grn-serial'
-                                : path === '/settings/stock-beginning-balance' ? 'settings:stock-beginning-balance'
-                                  : path.startsWith('/dashboard') ? 'dashboard'
-                                    : path.startsWith('/scrap-purchase') ? 'scrap-purchase'
-                                      : path.startsWith('/scrap-transport') ? 'scrap-transport'
-                                        : path.startsWith('/material-management') ? 'material-management'
-                                          : path.startsWith('/reports') ? 'reports'
-                                            : path.startsWith('/settings') ? 'settings'
-                                              : 'dashboard'
+      : path === '/scrap-purchase/purchase-records' ? 'scrap-purchase:purchase-records'
+      : path === '/scrap-purchase/material-rate' ? 'scrap-purchase:material-rate'
+      : path.startsWith('/scrap-purchase/stock') ? 'scrap-purchase:stock'
+      : path.startsWith('/scrap-purchase') ? 'scrap-purchase'
+      : path.startsWith('/customer-management') ? 'customer-management'
+      : path.startsWith('/scrap-transport/agency-registration') ? 'scrap-transport:agency-registration'
+      : path === '/scrap-transport/internal-csv-upload' ? 'scrap-transport:internal-csv-upload'
+      : path === '/scrap-transport/scrap-movers-approval' ? 'scrap-transport:movers-approval'
+      : path === '/scrap-transport/scrap-movers-payment' ? 'scrap-transport:movers-payment'
+      : path === '/material-management/requisition' ? 'material-management:requisition'
+      : path === '/material-management/issue' ? 'material-management:issue'
+      : path === '/settings/user-management' ? 'settings:user-management'
+      : path === '/settings/melting-plants' ? 'settings:melting-plants'
+      : path === '/settings/grn-serial' ? 'settings:grn-serial'
+      : path === '/settings/stock-beginning-balance' ? 'settings:stock-beginning-balance'
+      : path === '/reports/plain-report' ? 'reports:purchase-grn:plain-report'
+      : path.startsWith('/reports/aggregate-purchase') ? 'reports:aggregate-purchase'
+      : path.startsWith('/reports/daily-purchase-performance') ? 'reports:daily-purchase-performance'
+      : path.startsWith('/reports/daily-scrap-move-aggregate') ? 'reports:daily-scrap-move-aggregate'
+      : path.startsWith('/reports/agency-performance') ? 'reports:agency-performance'
+      : path.startsWith('/reports/stock') ? 'reports:stock'
+      : path.startsWith('/reports/material-requisition') ? 'reports:material-requisition'
+      : path.startsWith('/reports/material-issue') ? 'reports:material-issue'
+      : path.startsWith('/reports/grn-receipt') ? 'reports:grn-receipt'
+      : path.startsWith('/reports/scrap-purchase-approval-receipt') ? 'reports:scrap-purchase-approval-receipt'
+      : path.startsWith('/reports') ? 'reports'
+      : path.startsWith('/settings') ? 'settings'
+      : 'dashboard'
 
   const activeKey = selected || inferred
+
+  // Accordion: compute which root menu should be open based on active route
+  const getDefaultOpenKeys = () => {
+    if (!activeKey.includes(':')) return []
+    const parts = activeKey.split(':')
+    const keys = []
+    let current = ''
+    for (let i = 0; i < parts.length - 1; i++) {
+      current = current ? `${current}:${parts[i]}` : parts[i]
+      keys.push(current)
+    }
+    return keys
+  }
+  const [openKeys, setOpenKeys] = useState(getDefaultOpenKeys)
+
+  React.useEffect(() => {
+    setOpenKeys(prev => {
+      const neededKeys = getDefaultOpenKeys()
+      if (neededKeys.length === 0) return prev
+      const rootKey = neededKeys[0]
+      // keep only keys from the current root hierarchy
+      return Array.from(new Set([...prev.filter(k => k.startsWith(rootKey)), ...neededKeys]))
+    })
+  }, [activeKey])
+
+  const rootKeys = ['scrap-purchase', 'customer-management', 'scrap-transport', 'material-management', 'reports', 'settings']
+
+  const onOpenChange = (keys) => {
+    // Find which root key was newly opened
+    const newlyOpened = keys.find(k => !openKeys.includes(k))
+    if (newlyOpened && rootKeys.includes(newlyOpened)) {
+      // Keep only this root key (and any child sub-menus under it)
+      setOpenKeys(keys.filter(k => k.startsWith(newlyOpened)))
+    } else {
+      setOpenKeys(keys)
+    }
+  }
+
+  const primaryColor = 'rgb(245, 34, 45)'
+  const getStyle = (key) => ({
+    color: activeKey.startsWith(key) ? primaryColor : 'inherit',
+    fontWeight: activeKey.startsWith(key) ? 600 : 400,
+    textDecoration: 'none'
+  })
+
+  const withTooltip = (label, title) => (
+    <Tooltip title={title} placement="right">
+      {label}
+    </Tooltip>
+  )
 
   const menuItems = [
     {
       key: 'dashboard',
-      icon: <DashboardOutlined style={{ fontSize: '16px' }} />,
-      label: <Link to="/dashboard" style={{ textDecoration: 'none' }}>Dashboard</Link>
+      icon: <DashboardOutlined style={getStyle('dashboard')} />,
+      label: withTooltip(<Link to="/dashboard" style={getStyle('dashboard')}>Dashboard</Link>, 'Dashboard')
     },
     {
       key: 'scrap-purchase',
-      icon: <ShoppingCartOutlined style={{ fontSize: '16px' }} />,
-      label: 'Scrap Purchase',
+      icon: <ShoppingCartOutlined style={getStyle('scrap-purchase')} />,
+      label: withTooltip(<span style={getStyle('scrap-purchase')}>Scrap Purchase</span>, 'Scrap Purchase'),
       children: [
         {
           key: 'scrap-purchase:csv-uploader',
-          label: <Link to="/scrap-purchase/csv-excel-uploader" style={{ textDecoration: 'none' }}>CSV/Excel Uploader</Link>
+          label: withTooltip(<Link to="/scrap-purchase/csv-excel-uploader" style={getStyle('scrap-purchase:csv-uploader')}>CSV/Excel Uploader</Link>, 'CSV/Excel Uploader')
         },
         {
           key: 'scrap-purchase:purchase-records',
-          label: <Link to="/scrap-purchase/purchase-records" style={{ textDecoration: 'none' }}>Purchase Records</Link>
+          label: withTooltip(<Link to="/scrap-purchase/purchase-records" style={getStyle('scrap-purchase:purchase-records')}>Purchase Records</Link>, 'Purchase Records')
         },
         {
           key: 'scrap-purchase:material-rate',
-          label: <Link to="/scrap-purchase/material-rate" style={{ textDecoration: 'none' }}>Material Rate</Link>
+          label: withTooltip(<Link to="/scrap-purchase/material-rate" style={getStyle('scrap-purchase:material-rate')}>Material Rate</Link>, 'Material Rate')
         },
         {
           key: 'scrap-purchase:stock',
-          label: <Link to="/scrap-purchase/stock" style={{ textDecoration: 'none' }}>Stock</Link>
+          label: withTooltip(<Link to="/scrap-purchase/stock" style={getStyle('scrap-purchase:stock')}>Stock</Link>, 'Stock')
         }
       ]
     },
     {
+      key: 'customer-management',
+      icon: <TeamOutlined style={getStyle('customer-management')} />,
+      label: withTooltip(<Link to="/customer-management" style={getStyle('customer-management')}>Customer Management</Link>, 'Customer Management')
+    },
+    {
       key: 'scrap-transport',
-      icon: <CarOutlined style={{ fontSize: '16px' }} />,
-      label: 'Scrap Transport',
+      icon: <CarOutlined style={getStyle('scrap-transport')} />,
+      label: withTooltip(<span style={getStyle('scrap-transport')}>Scrap Transport</span>, 'Scrap Transport'),
       children: [
         {
           key: 'scrap-transport:agency-registration',
-          label: <Link to="/scrap-transport/agency-registration" style={{ textDecoration: 'none' }}>Agency Registration</Link>
+          label: withTooltip(<Link to="/scrap-transport/agency-registration" style={getStyle('scrap-transport:agency-registration')}>Agency Registration</Link>, 'Agency Registration')
         },
         {
           key: 'scrap-transport:internal-csv-upload',
-          label: <Link to="/scrap-transport/internal-csv-upload" style={{ textDecoration: 'none' }}>Internal CSV upload</Link>
+          label: withTooltip(<Link to="/scrap-transport/internal-csv-upload" style={getStyle('scrap-transport:internal-csv-upload')}>Internal CSV upload</Link>, 'Internal CSV upload')
         },
         {
           key: 'scrap-transport:movers-approval',
-          label: <Link to="/scrap-transport/scrap-movers-approval" style={{ textDecoration: 'none' }}>Scrap Movers Approval</Link>
+          label: withTooltip(<Link to="/scrap-transport/scrap-movers-approval" style={getStyle('scrap-transport:movers-approval')}>Scrap Movers Approval</Link>, 'Scrap Movers Approval')
         },
         {
           key: 'scrap-transport:movers-payment',
-          label: <Link to="/scrap-transport/scrap-movers-payment" style={{ textDecoration: 'none' }}>Scrap Movers Payment</Link>
+          label: withTooltip(<Link to="/scrap-transport/scrap-movers-payment" style={getStyle('scrap-transport:movers-payment')}>Scrap Movers Payment</Link>, 'Scrap Movers Payment')
         }
       ]
     },
     {
       key: 'material-management',
-      icon: <DatabaseOutlined style={{ fontSize: '16px' }} />,
-      label: 'Material Management',
+      icon: <DatabaseOutlined style={getStyle('material-management')} />,
+      label: withTooltip(<span style={getStyle('material-management')}>Material Management</span>, 'Material Management'),
       children: [
         {
           key: 'material-management:requisition',
-          label: <Link to="/material-management/requisition" style={{ textDecoration: 'none' }}>Material Requisition</Link>
+          label: withTooltip(<Link to="/material-management/requisition" style={getStyle('material-management:requisition')}>Material Requisition</Link>, 'Material Requisition')
         },
         {
           key: 'material-management:issue',
-          label: <Link to="/material-management/issue" style={{ textDecoration: 'none' }}>Material Issue</Link>
+          label: withTooltip(<Link to="/material-management/issue" style={getStyle('material-management:issue')}>Material Issue</Link>, 'Material Issue')
         }
       ]
     },
     {
       key: 'reports',
-      icon: <BarChartOutlined style={{ fontSize: '16px' }} />,
-      label: 'Reports',
+      icon: <BarChartOutlined style={getStyle('reports')} />,
+      label: withTooltip(<span style={getStyle('reports')}>Reports</span>, 'Reports'),
       children: [
         {
-          key: 'reports:aggregate-purchase',
-          label: <Link to="/reports/aggregate-purchase" style={{ textDecoration: 'none' }}>Aggregate Purchase Report</Link>
+          key: 'reports:purchase-grn',
+          label: withTooltip(<span style={getStyle('reports:purchase-grn')}>Purchase/GRN Reports</span>, 'Purchase/GRN Reports'),
+          children: [
+            {
+              key: 'reports:purchase-grn:plain-report',
+              label: withTooltip(<Link to="/reports/plain-report" style={getStyle('reports:purchase-grn:plain-report')}>Plain GRN Report</Link>, 'Plain GRN Report')
+            },
+            {
+              key: 'reports:purchase-grn:aggregate-report',
+              label: withTooltip(<Link to="/reports/aggregate-report" style={getStyle('reports:purchase-grn:aggregate-report')}>Aggregate Report</Link>, 'Aggregate Report')
+            }
+          ]
         },
         {
           key: 'reports:daily-purchase-performance',
-          label: <Link to="/reports/daily-purchase-performance" style={{ textDecoration: 'none' }}>Daily Purchase Performance Report</Link>
+          label: withTooltip(<Link to="/reports/daily-purchase-performance" style={getStyle('reports:daily-purchase-performance')}>Daily Purchase Performance Report</Link>, 'Daily Purchase Performance Report')
         },
         {
           key: 'reports:daily-scrap-move-aggregate',
-          label: <Link to="/reports/daily-scrap-move-aggregate" style={{ textDecoration: 'none' }}>Daily Scrap Move Aggregate Report</Link>
+          label: withTooltip(<Link to="/reports/daily-scrap-move-aggregate" style={getStyle('reports:daily-scrap-move-aggregate')}>Daily Scrap Move Aggregate Report</Link>, 'Daily Scrap Move Aggregate Report')
         },
         {
           key: 'reports:agency-performance',
-          label: <Link to="/reports/agency-performance" style={{ textDecoration: 'none' }}>Agency Performance Report</Link>
+          label: withTooltip(<Link to="/reports/agency-performance" style={getStyle('reports:agency-performance')}>Agency Performance Report</Link>, 'Agency Performance Report')
         },
         {
           key: 'reports:stock',
-          label: <Link to="/reports/stock" style={{ textDecoration: 'none' }}>Stock Report</Link>
+          label: withTooltip(<Link to="/reports/stock" style={getStyle('reports:stock')}>Stock Report</Link>, 'Stock Report')
         },
         {
           key: 'reports:material-requisition',
-          label: <Link to="/reports/material-requisition" style={{ textDecoration: 'none' }}>Material Requisition Report</Link>
+          label: withTooltip(<Link to="/reports/material-requisition" style={getStyle('reports:material-requisition')}>Material Requisition Report</Link>, 'Material Requisition Report')
         },
         {
           key: 'reports:material-issue',
-          label: <Link to="/reports/material-issue" style={{ textDecoration: 'none' }}>Material Issue</Link>
+          label: withTooltip(<Link to="/reports/material-issue" style={getStyle('reports:material-issue')}>Material Issue</Link>, 'Material Issue')
         },
         {
           key: 'reports:grn-receipt',
-          label: <Link to="/reports/grn-receipt" style={{ textDecoration: 'none' }}>GRN Receipt</Link>
+          label: withTooltip(<Link to="/reports/grn-receipt" style={getStyle('reports:grn-receipt')}>GRN Receipt</Link>, 'GRN Receipt')
         },
         {
           key: 'reports:scrap-purchase-approval-receipt',
-          label: <Link to="/reports/scrap-purchase-approval-receipt" style={{ textDecoration: 'none' }}>Scrap Purchase Approval Receipt</Link>
+          label: withTooltip(<Link to="/reports/scrap-purchase-approval-receipt" style={getStyle('reports:scrap-purchase-approval-receipt')}>Scrap Purchase Approval Receipt</Link>, 'Scrap Purchase Approval Receipt')
         }
       ]
     },
     {
       key: 'settings:user-management',
-      icon: <UserOutlined style={{ fontSize: '16px' }} />,
-      label: <Link to="/settings/user-management" style={{ textDecoration: 'none' }}>User Management</Link>
+      icon: <UserOutlined style={getStyle('settings:user-management')} />,
+      label: withTooltip(<Link to="/settings/user-management" style={getStyle('settings:user-management')}>User Management</Link>, 'User Management')
     },
     {
       key: 'settings',
-      icon: <SettingOutlined style={{ fontSize: '16px' }} />,
-      label: 'Settings',
+      icon: <SettingOutlined style={getStyle('settings')} />,
+      label: withTooltip(<span style={getStyle('settings')}>Settings</span>, 'Settings'),
       children: [
         {
           key: 'settings:melting-plants',
-          label: <Link to="/settings/melting-plants" style={{ textDecoration: 'none' }}>Melting Plant</Link>
+          label: withTooltip(<Link to="/settings/melting-plants" style={getStyle('settings:melting-plants')}>Melting Plant</Link>, 'Melting Plant')
         },
         {
           key: 'settings:grn-serial',
-          label: <Link to="/settings/grn-serial" style={{ textDecoration: 'none' }}>GRN Serial Number</Link>
+          label: withTooltip(<Link to="/settings/grn-serial" style={getStyle('settings:grn-serial')}>GRN Serial Number</Link>, 'GRN Serial Number')
         },
         {
           key: 'settings:stock-beginning-balance',
-          label: <Link to="/settings/stock-beginning-balance" style={{ textDecoration: 'none' }}>Stock Beginning Balance</Link>
+          label: withTooltip(<Link to="/settings/stock-beginning-balance" style={getStyle('settings:stock-beginning-balance')}>Stock Beginning Balance</Link>, 'Stock Beginning Balance')
         }
       ]
     }
@@ -258,7 +329,8 @@ const Sidebar = ({ selected }) => {
         <Menu
           mode="inline"
           selectedKeys={[activeKey]}
-          defaultOpenKeys={activeKey.includes(':') ? [activeKey.split(':')[0]] : []}
+          openKeys={openKeys}
+          onOpenChange={onOpenChange}
           items={menuItems}
           style={{
             borderRight: 0,
