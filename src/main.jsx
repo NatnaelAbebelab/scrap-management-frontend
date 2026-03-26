@@ -28,6 +28,8 @@ import StockBeginningBalance from './settings/StockBeginningBalance'
 import CustomerList from './customerManagement/CustomerList'
 import PlainGrnReport from './reports/PlainGrnReport'
 import AggregateGrnReport from './reports/AggregateGrnReport'
+import CustomerPlainReport from './reports/CustomerPlainReport'
+import CustomerAggregateReport from './reports/CustomerAggregateReport'
 
 import { ConfigProvider } from 'antd'
 
@@ -103,6 +105,14 @@ root.render(
             <Route
               path="/reports/aggregate-report"
               element={<RequireAuth><AggregateGrnReport /></RequireAuth>}
+            />
+            <Route
+              path="/reports/customer-plain-report"
+              element={<RequireAuth><CustomerPlainReport /></RequireAuth>}
+            />
+            <Route
+              path="/reports/customer-aggregate-report"
+              element={<RequireAuth><CustomerAggregateReport /></RequireAuth>}
             />
           </Routes>
         </BrowserRouter>

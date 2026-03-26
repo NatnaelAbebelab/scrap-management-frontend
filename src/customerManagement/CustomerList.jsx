@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Typography, Table, Button, Space, Input, Modal, Form, Dropdown, message, Row, Col, Popconfirm } from 'antd'
-import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, EllipsisOutlined } from '@ant-design/icons'
+import { Card, Typography, Table, Button, Space, Input, Modal, Form, Dropdown, message, Row, Col, Popconfirm, Select } from 'antd'
+import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, EllipsisOutlined, DollarOutlined } from '@ant-design/icons'
 import Sidebar from '../layouts/Sidebar'
 import Header from '../layouts/Header'
 import { useCustomerManagement } from '../api/useCustomerManagement'
@@ -8,9 +8,16 @@ import { formatDate } from '../utils/dateFormatter'
 
 const { Title, Text } = Typography
 
+const capitalize = (s) => typeof s === 'string' && s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : s
+
 const CustomerList = () => {
   const [form] = Form.useForm()
-  const { fetchCustomers, addCustomer, editCustomer, deleteCustomer, loading } = useCustomerManagement()
+  const [payForm] = Form.useForm()
+  const { fetchCustomers, addCustomer, editCustomer, deleteCustomer, fetchCustomerGrns, payCustomer, loading } = useCustomerManagement()
+
+  const [isPayModalVisible, setIsPayModalVisible] = useState(false)
+  const [payGrnOptions, setPayGrnOptions] = useState([])
+  const [loadingGrns, setLoadingGrns] = useState(false)
 
   const [customers, setCustomers] = useState([])
   const [total, setTotal] = useState(0)
@@ -106,16 +113,22 @@ const CustomerList = () => {
     {
       title: 'Customer Name',
       key: 'name',
-      render: (_, record) => (
-        <Space direction="vertical" size={0}>
-          <Text strong style={{ fontFamily: "'CircularStd', sans-serif" }}>
-            {record.first_name || record.last_name ? `${record.first_name} ${record.last_name}` : record.business_name || 'N/A'}
-          </Text>
-          {(record.first_name || record.last_name) && record.business_name && (
-            <Text type="secondary" style={{ fontSize: 12 }}>{record.business_name}</Text>
-          )}
-        </Space>
-      )
+      render: (_, record) => {
+        const hasName = record.first_name || record.last_name
+        const cFirst = capitalize(record.first_name)
+        const cLast = capitalize(record.last_name)
+        const cBusiness = capitalize(record.business_name)
+        return (
+          <Space direction="vertical" size={0}>
+            <Text strong style={{ fontFamily: "'CircularStd', sans-serif" }}>
+              {hasName ? `${cFirst || ''} ${cLast || ''}`.trim() : cBusiness || 'N/A'}
+            </Text>
+            {hasName && record.business_name && (
+              <Text type="secondary" style={{ fontSize: 12 }}>{cBusiness}</Text>
+            )}
+          </Space>
+        )
+      }
     },
     {
       title: 'TIN',
@@ -231,14 +244,22 @@ const CustomerList = () => {
               <Title level={3} style={{ marginBottom: 4 }}>Customer Management</Title>
               <Text type="secondary">Manage scrap sellers, their details, and review associated balances.</Text>
             </div>
-            <Button 
-              type="primary" 
-              icon={<PlusOutlined />} 
-              onClick={() => handleOpenModal()} 
-              style={{ background: 'rgb(245, 34, 45)' }}
-            >
-              Add Customer
-            </Button>
+            <Space>
+              <Button 
+                icon={<DollarOutlined />} 
+                onClick={() => setIsPayModalVisible(true)}
+              >
+                Pay Customer
+              </Button>
+              <Button 
+                type="primary" 
+                icon={<PlusOutlined />} 
+                onClick={() => handleOpenModal()} 
+                style={{ background: 'rgb(245, 34, 45)' }}
+              >
+                Add Customer
+              </Button>
+            </Space>
           </div>
 
           <Card style={{ borderRadius: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: 'none' }}>
@@ -323,6 +344,105 @@ const CustomerList = () => {
               <Button onClick={handleCloseModal}>Cancel</Button>
               <Button type="primary" htmlType="submit" loading={loading} style={{ background: 'rgb(245, 34, 45)' }}>
                 {isEditing ? 'Save Changes' : 'Add Customer'}
+              </Button>
+            </Space>
+          </div>
+        </Form>
+      </Modal>
+
+      <Modal
+        title="Pay Customer"
+        open={isPayModalVisible}
+        onCancel={() => {
+          setIsPayModalVisible(false)
+          payForm.resetFields()
+          setPayGrnOptions([])
+        }}
+        footer={null}
+        destroyOnClose
+      >
+        <Form
+          form={payForm}
+          layout="vertical"
+          onFinish={async (values) => {
+            try {
+              await payCustomer(values.tin, values.record_nos)
+              message.success('Payment recorded successfully')
+              setIsPayModalVisible(false)
+              payForm.resetFields()
+              setPayGrnOptions([])
+              loadCustomers(currentPage, pageSize, searchTin)
+            } catch (err) {
+              message.error(err.message || 'Payment failed')
+            }
+          }}
+        >
+          <Form.Item name="tin" label="Customer TIN" rules={[{ required: true, message: 'TIN is required' }]}>
+            <Input 
+              placeholder="Enter TIN" 
+              onBlur={async (e) => {
+                const tinValue = e.target.value
+                if (!tinValue) {
+                  setPayGrnOptions([])
+                  payForm.setFieldsValue({ record_nos: [] })
+                  return
+                }
+                setLoadingGrns(true)
+                try {
+                  const grns = await fetchCustomerGrns(tinValue)
+                  const options = grns
+                    .filter(g => g.status === 'approved')
+                    .map(g => ({ value: g.record_no, label: g.record_no }))
+                  setPayGrnOptions(options)
+                } catch(err) {
+                  setPayGrnOptions([])
+                  message.error('Failed to load GRNs for TIN')
+                } finally {
+                  setLoadingGrns(false)
+                }
+              }} 
+            />
+          </Form.Item>
+          <Form.Item name="record_nos" label="Select Records to Pay" rules={[{ required: true, message: 'Please select at least one record' }]}>
+            <Select
+              mode="multiple"
+              placeholder="Select Record Nos"
+              options={payGrnOptions}
+              loading={loadingGrns}
+              onDropdownVisibleChange={async (open) => {
+                if (open) {
+                  const tinValue = payForm.getFieldValue('tin')
+                  if (!tinValue) {
+                    message.warning('Please enter a TIN first')
+                    return
+                  }
+                  setLoadingGrns(true)
+                  try {
+                    const grns = await fetchCustomerGrns(tinValue)
+                    // Ensure the dropdown populates precisely with approved record_nos
+                    const options = grns
+                      .filter(g => g.status === 'approved')
+                      .map(g => ({ value: String(g.record_no), label: String(g.record_no) }))
+                    setPayGrnOptions(options)
+                  } catch (err) {
+                    setPayGrnOptions([])
+                    message.error('Failed to load GRNs for TIN')
+                  } finally {
+                    setLoadingGrns(false)
+                  }
+                }
+              }}
+            />
+          </Form.Item>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+            <Space>
+              <Button onClick={() => {
+                setIsPayModalVisible(false)
+                payForm.resetFields()
+                setPayGrnOptions([])
+              }}>Cancel</Button>
+              <Button type="primary" htmlType="submit" loading={loading} style={{ background: 'rgb(245, 34, 45)' }}>
+                Process Payment
               </Button>
             </Space>
           </div>

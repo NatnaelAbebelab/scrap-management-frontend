@@ -46,6 +46,8 @@ const Sidebar = ({ selected }) => {
       : path === '/settings/grn-serial' ? 'settings:grn-serial'
       : path === '/settings/stock-beginning-balance' ? 'settings:stock-beginning-balance'
       : path === '/reports/plain-report' ? 'reports:purchase-grn:plain-report'
+      : path === '/reports/customer-plain-report' ? 'reports:purchase-grn:customer-plain-report'
+      : path === '/reports/customer-aggregate-report' ? 'reports:purchase-grn:customer-aggregate-report'
       : path.startsWith('/reports/aggregate-purchase') ? 'reports:aggregate-purchase'
       : path.startsWith('/reports/daily-purchase-performance') ? 'reports:daily-purchase-performance'
       : path.startsWith('/reports/daily-scrap-move-aggregate') ? 'reports:daily-scrap-move-aggregate'
@@ -199,6 +201,14 @@ const Sidebar = ({ selected }) => {
             {
               key: 'reports:purchase-grn:aggregate-report',
               label: withTooltip(<Link to="/reports/aggregate-report" style={getStyle('reports:purchase-grn:aggregate-report')}>Aggregate Report</Link>, 'Aggregate Report')
+            },
+            {
+              key: 'reports:purchase-grn:customer-plain-report',
+              label: withTooltip(<Link to="/reports/customer-plain-report" style={getStyle('reports:purchase-grn:customer-plain-report')}>Customer Plain Report</Link>, 'Customer Plain Report')
+            },
+            {
+              key: 'reports:purchase-grn:customer-aggregate-report',
+              label: withTooltip(<Link to="/reports/customer-aggregate-report" style={getStyle('reports:purchase-grn:customer-aggregate-report')}>Customer Aggregated Report</Link>, 'Customer Aggregated Report')
             }
           ]
         },

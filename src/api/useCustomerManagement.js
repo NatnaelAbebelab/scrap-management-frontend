@@ -4,7 +4,8 @@ import {
   CUSTOMER_ADD_URL,
   CUSTOMER_EDIT_URL,
   CUSTOMER_FILTER_URL,
-  CUSTOMER_DELETE_URL
+  CUSTOMER_DELETE_URL,
+  CUSTOMER_PAY_URL
 } from './config'
 import { useAuth } from '../auth/AuthProvider'
 import { createFetchWithAuth } from './fetchWithAuth'
@@ -146,11 +147,59 @@ export const useCustomerManagement = () => {
     }
   }
 
+  const fetchCustomerGrns = async (tin) => {
+    try {
+      const response = await authFetch(`${CUSTOMER_FILTER_URL}?tin=${encodeURIComponent(tin)}`, { method: 'GET' })
+      if (!response.ok) {
+        throw new Error('Failed to fetch customer GRNs')
+      }
+      const data = await response.json()
+      if (data.result === 'error') throw new Error(data.message)
+      
+      return data.data?.grns || []
+    } catch (err) {
+      console.error(err)
+      throw err
+    }
+  }
+
+  const payCustomer = async (tin, recordNos) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await authFetch(CUSTOMER_PAY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tin: tin,
+          record_nos: recordNos
+        })
+      })
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}))
+        throw new Error(errData.message || 'Failed to process payment')
+      }
+
+      const data = await response.json()
+      if (data.result === 'error') throw new Error(data.message)
+
+      return data
+    } catch (err) {
+      setError(err.message)
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     fetchCustomers,
     addCustomer,
     editCustomer,
     deleteCustomer,
+    fetchCustomerGrns,
+    payCustomer,
     loading,
     error
   }
