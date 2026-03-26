@@ -50,3 +50,6 @@ export const CUSTOMER_ADD_URL = `${API_BASE_URL}/customer/add-customer/`
 export const CUSTOMER_EDIT_URL = (id) => `${API_BASE_URL}/customer/edit-customer/${id}/`
 export const CUSTOMER_FILTER_URL = `${API_BASE_URL}/customer/filter-customer/` // takes ?tin=
 export const CUSTOMER_DELETE_URL = (id) => `${API_BASE_URL}/customer/delete-customer/${id}/`
+export const CUSTOMER_PAY_URL = `${API_BASE_URL}/customer/pay-customer/`
+export const CUSTOMER_PLAIN_REPORT_URL = `${API_BASE_URL}/customer/purchase-customer-report/`
+export const CUSTOMER_AGGREGATE_REPORT_URL = `${API_BASE_URL}/customer/purchase-customer-aggregated-report/`
