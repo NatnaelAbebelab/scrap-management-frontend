@@ -79,7 +79,8 @@ const Header = ({ onMenuClick }) => {
     if (path.startsWith('/profile')) return 'User Profile'
     if (path.startsWith('/reports')) return 'Report'
     if (path.startsWith('/customer-management')) return 'Customers'
-    return 'Steely RMI'
+    if (path.startsWith('/scrap-purchase/stock')) return 'Stock'
+    return 'Stock'
   }
 
   // User dropdown menu

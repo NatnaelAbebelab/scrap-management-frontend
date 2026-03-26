@@ -12,7 +12,8 @@ import {
   DatabaseOutlined,
   BarChartOutlined,
   UserOutlined,
-  TeamOutlined, // Added TeamOutlined
+  TeamOutlined,
+  InboxOutlined,
 } from '@ant-design/icons'
 
 const { Text, Title } = Typography
@@ -32,7 +33,7 @@ const Sidebar = ({ selected }) => {
       : path === '/scrap-purchase/csv-excel-uploader' ? 'scrap-purchase:csv-uploader'
       : path === '/scrap-purchase/purchase-records' ? 'scrap-purchase:purchase-records'
       : path === '/scrap-purchase/material-rate' ? 'scrap-purchase:material-rate'
-      : path.startsWith('/scrap-purchase/stock') ? 'scrap-purchase:stock'
+      : path.startsWith('/scrap-purchase/stock') ? 'stock-management'
       : path.startsWith('/scrap-purchase') ? 'scrap-purchase'
       : path.startsWith('/customer-management') ? 'customer-management'
       : path.startsWith('/scrap-transport/agency-registration') ? 'scrap-transport:agency-registration'
@@ -52,7 +53,10 @@ const Sidebar = ({ selected }) => {
       : path.startsWith('/reports/daily-purchase-performance') ? 'reports:daily-purchase-performance'
       : path.startsWith('/reports/daily-scrap-move-aggregate') ? 'reports:daily-scrap-move-aggregate'
       : path.startsWith('/reports/agency-performance') ? 'reports:agency-performance'
-      : path.startsWith('/reports/stock') ? 'reports:stock'
+      : path === '/reports/stock-report' ? 'reports:stock-reports:stock-report'
+      : path === '/reports/stock-card' ? 'reports:stock-reports:stock-card'
+      : path === '/reports/stock-aggregated-report' ? 'reports:stock-reports:stock-aggregated-report'
+      : path.startsWith('/reports/stock') ? 'reports:stock-reports'
       : path.startsWith('/reports/material-requisition') ? 'reports:material-requisition'
       : path.startsWith('/reports/material-issue') ? 'reports:material-issue'
       : path.startsWith('/reports/grn-receipt') ? 'reports:grn-receipt'
@@ -87,7 +91,7 @@ const Sidebar = ({ selected }) => {
     })
   }, [activeKey])
 
-  const rootKeys = ['scrap-purchase', 'customer-management', 'scrap-transport', 'material-management', 'reports', 'settings']
+  const rootKeys = ['scrap-purchase', 'stock-management', 'customer-management', 'scrap-transport', 'material-management', 'reports', 'settings']
 
   const onOpenChange = (keys) => {
     // Find which root key was newly opened
@@ -135,12 +139,13 @@ const Sidebar = ({ selected }) => {
         {
           key: 'scrap-purchase:material-rate',
           label: withTooltip(<Link to="/scrap-purchase/material-rate" style={getStyle('scrap-purchase:material-rate')}>Material Rate</Link>, 'Material Rate')
-        },
-        {
-          key: 'scrap-purchase:stock',
-          label: withTooltip(<Link to="/scrap-purchase/stock" style={getStyle('scrap-purchase:stock')}>Stock</Link>, 'Stock')
         }
       ]
+    },
+    {
+      key: 'stock-management',
+      icon: <InboxOutlined style={getStyle('stock-management')} />,
+      label: withTooltip(<Link to="/scrap-purchase/stock" style={getStyle('stock-management')}>Stock Management</Link>, 'Stock Management')
     },
     {
       key: 'customer-management',
@@ -225,8 +230,22 @@ const Sidebar = ({ selected }) => {
           label: withTooltip(<Link to="/reports/agency-performance" style={getStyle('reports:agency-performance')}>Agency Performance Report</Link>, 'Agency Performance Report')
         },
         {
-          key: 'reports:stock',
-          label: withTooltip(<Link to="/reports/stock" style={getStyle('reports:stock')}>Stock Report</Link>, 'Stock Report')
+          key: 'reports:stock-reports',
+          label: withTooltip(<span style={getStyle('reports:stock-reports')}>Stock Reports</span>, 'Stock Reports'),
+          children: [
+            {
+              key: 'reports:stock-reports:stock-report',
+              label: withTooltip(<Link to="/reports/stock-report" style={getStyle('reports:stock-reports:stock-report')}>Stock Report</Link>, 'Stock Report')
+            },
+            {
+              key: 'reports:stock-reports:stock-card',
+              label: withTooltip(<Link to="/reports/stock-card" style={getStyle('reports:stock-reports:stock-card')}>Stock Card</Link>, 'Stock Card')
+            },
+            {
+              key: 'reports:stock-reports:stock-aggregated-report',
+              label: withTooltip(<Link to="/reports/stock-aggregated-report" style={getStyle('reports:stock-reports:stock-aggregated-report')}>Stock Aggregated Report</Link>, 'Stock Aggregated Report')
+            }
+          ]
         },
         {
           key: 'reports:material-requisition',
@@ -322,7 +341,7 @@ const Sidebar = ({ selected }) => {
           fontSize: '16px',
           fontWeight: 600
         }}>
-          Steely RMI
+          Stock
         </Title>
         <Text style={{
           color: '#8c8c8c',
@@ -389,7 +408,7 @@ const Sidebar = ({ selected }) => {
             color: '#8c8c8c',
             fontSize: '11px'
           }}>
-            © 2026 Steely RMI
+            © 2026 Stock
           </Text>
         </div>
       </div>

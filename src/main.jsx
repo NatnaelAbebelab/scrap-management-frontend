@@ -30,6 +30,10 @@ import PlainGrnReport from './reports/PlainGrnReport'
 import AggregateGrnReport from './reports/AggregateGrnReport'
 import CustomerPlainReport from './reports/CustomerPlainReport'
 import CustomerAggregateReport from './reports/CustomerAggregateReport'
+import StockReport from './reports/StockReport'
+import StockCard from './reports/StockCard'
+import StockAggregatedReport from './reports/StockAggregatedReport'
+import StockManagement from './stockManagement/StockManagement'
 
 import { ConfigProvider } from 'antd'
 
@@ -84,6 +88,10 @@ root.render(
               path="/scrap-purchase/material-rate"
               element={<RequireAuth><MaterialRate /></RequireAuth>}
             />
+            <Route
+              path="/scrap-purchase/stock"
+              element={<RequireAuth><StockManagement /></RequireAuth>}
+            />
 
             {/* Customer Management */}
             <Route
@@ -113,6 +121,18 @@ root.render(
             <Route
               path="/reports/customer-aggregate-report"
               element={<RequireAuth><CustomerAggregateReport /></RequireAuth>}
+            />
+            <Route
+              path="/reports/stock-report"
+              element={<RequireAuth><StockReport /></RequireAuth>}
+            />
+            <Route
+              path="/reports/stock-card"
+              element={<RequireAuth><StockCard /></RequireAuth>}
+            />
+            <Route
+              path="/reports/stock-aggregated-report"
+              element={<RequireAuth><StockAggregatedReport /></RequireAuth>}
             />
           </Routes>
         </BrowserRouter>
