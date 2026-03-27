@@ -145,10 +145,10 @@ const StockAggregatedReport = () => {
           <Card style={{ borderRadius: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: 'none', marginBottom: 24 }}>
             <Form form={form} layout="inline" onFinish={onFinish} initialValues={{ type: 'all', period: 'daily' }}>
               <Form.Item name="dateRange" label="Period">
-                <RangePicker style={{ borderRadius: 6 }} />
+                <RangePicker style={{ borderRadius: 6 }} size="large" />
               </Form.Item>
               <Form.Item name="period" label="Group By">
-                <Select style={{ width: 120, borderRadius: 6 }}>
+                <Select style={{ width: 120, borderRadius: 6 }} size="large">
                   <Option value="daily">Daily</Option>
                   <Option value="weekly">Weekly</Option>
                   <Option value="monthly">Monthly</Option>
@@ -157,7 +157,7 @@ const StockAggregatedReport = () => {
                 </Select>
               </Form.Item>
               <Form.Item name="type" label="Flow Type">
-                <Select style={{ width: 140, borderRadius: 6 }}>
+                <Select style={{ width: 140, borderRadius: 6 }} size="large">
                   <Option value="all">All Flows</Option>
                   <Option value="purchase">Purchases only</Option>
                   <Option value="issue">Issues only</Option>
@@ -165,8 +165,8 @@ const StockAggregatedReport = () => {
               </Form.Item>
               <Form.Item>
                 <Space>
-                  <Button type="primary" htmlType="submit" icon={<SearchOutlined />} style={{ borderRadius: 6, backgroundColor: 'rgb(245, 34, 45)', borderColor: 'rgb(245, 34, 45)' }}>Generate</Button>
-                  <Button onClick={handleReset} icon={<ClearOutlined />} style={{ borderRadius: 6 }}>Reset</Button>
+                  <Button type="primary" htmlType="submit" icon={<SearchOutlined />} style={{ borderRadius: 6, backgroundColor: 'rgb(245, 34, 45)', borderColor: 'rgb(245, 34, 45)' }} size="large">Generate</Button>
+                  <Button onClick={handleReset} icon={<ClearOutlined />} style={{ borderRadius: 6 }} size="large">Reset</Button>
                 </Space>
               </Form.Item>
             </Form>

@@ -213,17 +213,17 @@ const PlainGrnReport = () => {
               <Row gutter={16}>
                 <Col span={6}>
                   <Form.Item name="tin" label="Customer TIN">
-                    <Input placeholder="Enter TIN" prefix={<SearchOutlined />} />
+                    <Input placeholder="Enter TIN" prefix={<SearchOutlined />} size="large" />
                   </Form.Item>
                 </Col>
                 <Col span={6}>
                   <Form.Item name="plate_no" label="Plate Number">
-                    <Input placeholder="Enter Plate #" />
+                    <Input placeholder="Enter Plate #" size="large" />
                   </Form.Item>
                 </Col>
                 <Col span={6}>
                   <Form.Item name="material_type" label="Material Type">
-                    <Select allowClear placeholder="Select material type" loading={loadingOptions}>
+                    <Select allowClear placeholder="Select material type" loading={loadingOptions} size="large">
                       {Array.isArray(materialOptions) && materialOptions.map(opt => (
                         <Select.Option key={opt.id} value={opt.id}>{opt.name}</Select.Option>
                       ))}
@@ -232,7 +232,7 @@ const PlainGrnReport = () => {
                 </Col>
                 <Col span={6}>
                   <Form.Item name="status" label="Status">
-                    <Select allowClear placeholder="Select status" loading={loadingOptions}>
+                    <Select allowClear placeholder="Select status" loading={loadingOptions} size="large">
                       {Array.isArray(statusOptions) && statusOptions.map(opt => (
                         <Select.Option key={opt.value} value={opt.value}>{opt.label}</Select.Option>
                       ))}
@@ -241,17 +241,17 @@ const PlainGrnReport = () => {
                 </Col>
               </Row>
               <Row gutter={16} align="bottom">
-                <Col span={12}>
+                <Col span={10}>
                   <Form.Item name="dateRange" label="Date Range(YYYY-MM-DD)">
-                    <RangePicker style={{ width: '100%' }} format="YYYY-MM-DD" placeholder={['Start Date', 'End Date']} />
+                    <RangePicker style={{ width: '100%' }} format="YYYY-MM-DD" placeholder={['Start Date', 'End Date']} size="large" />
                   </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col span={14}>
                   <Form.Item>
                     <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
-                      <Button icon={<ClearOutlined />} onClick={handleReset}>Reset Filters</Button>
-                      <Button type="primary" icon={<SearchOutlined />} htmlType="submit" style={{ background: 'rgb(245, 34, 45)' }}>
-                        Search Records
+                      <Button icon={<ClearOutlined />} onClick={handleReset} size="large">Reset Filters</Button>
+                      <Button type="primary" icon={<SearchOutlined />} htmlType="submit" style={{ background: 'rgb(245, 34, 45)' }} size="large">
+                        Search
                       </Button>
                     </Space>
                   </Form.Item>

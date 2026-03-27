@@ -585,7 +585,7 @@ left: 28px !important;
 }
 
 .ant-table-tbody > tr:hover > td {
-    background-color: #e6f7ff !important;
+    background-color: rgba(245, 34, 45, 0.06) !important;
 }
 
 .ant-card {

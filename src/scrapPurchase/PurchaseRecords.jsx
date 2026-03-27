@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Typography, Alert, Dropdown, Modal, Descriptions, Tag, Button, Space, Form, InputNumber, message, Row, Col, Input } from 'antd'
-import { MoreOutlined, EditOutlined, EyeOutlined, RollbackOutlined, DeleteOutlined, DollarOutlined } from '@ant-design/icons'
+import { Card, Typography, Alert, Dropdown, Modal, Descriptions, Tag, Button, Space, Form, InputNumber, message, Row, Col, Input, Select, DatePicker } from 'antd'
+import { MoreOutlined, EditOutlined, EyeOutlined, RollbackOutlined, DeleteOutlined, DollarOutlined, SearchOutlined, ClearOutlined } from '@ant-design/icons'
 import Header from '../layouts/Header'
 import Sidebar from '../layouts/Sidebar'
 import { usePurchaseRecords } from '../api/usePurchaseRecords'
@@ -10,8 +10,11 @@ import { formatDate } from '../utils/dateFormatter'
 import MultiSelectInput from '../components/MultiSelectInput'
 import FileUploadInput from '../components/FileUploadInput'
 import SelectInput from '../components/SelectInput'
+import { useMaterialRate } from '../api/useMaterialRate'
 
 const { Title, Text } = Typography
+const { RangePicker } = DatePicker
+const { Option } = Select
 
 const PurchaseRecords = () => {
   const [page, setPage] = useState(1)
@@ -19,6 +22,17 @@ const PurchaseRecords = () => {
   const [viewRecord, setViewRecord] = useState(null)
   const [viewModalOpen, setViewModalOpen] = useState(false)
   const [showId, setShowId] = useState(false)
+
+  // Filters State
+  const [filters, setFilters] = useState({
+    tin: '',
+    material_type: '',
+    status: '',
+    plate_no: '',
+    start_date: '',
+    end_date: ''
+  })
+  const [filterForm] = Form.useForm()
 
   const [wasteModalOpen, setWasteModalOpen] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState(null)
@@ -37,8 +51,37 @@ const PurchaseRecords = () => {
   const [payModalMode, setPayModalMode] = useState('bulk') // 'bulk' or 'single'
   const [selectedPayRecords, setSelectedPayRecords] = useState([])
 
-  const { records, total, loading, error, refresh } = usePurchaseRecords({ page, pageSize })
+  const { materialTypes } = useMaterialRate()
+  const { records, total, loading, error, refresh } = usePurchaseRecords({ page, pageSize, filters })
   const { addWasteDeduction, changeGrnStatus, rollbackGrnStatus, payCustomer, deleteGrnRecord, fetchStatusList, isSubmitting } = usePurchaseActions()
+
+  const materialOptions = Object.entries(materialTypes || {}).map(([val, label]) => ({
+    value: val,
+    label: (label || val).toUpperCase()
+  }))
+
+  const handleFilterReset = () => {
+    filterForm.resetFields()
+    setFilters({
+      tin: '',
+      material_type: '',
+      status: '',
+      plate_no: '',
+      start_date: '',
+      end_date: ''
+    })
+    setPage(1)
+  }
+
+  const handleFilterApply = (values) => {
+    const { dates, ...rest } = values
+    setFilters({
+      ...rest,
+      start_date: dates?.[0]?.format('YYYY-MM-DD') || '',
+      end_date: dates?.[1]?.format('YYYY-MM-DD') || ''
+    })
+    setPage(1)
+  }
 
   // Initial load of status options
   useEffect(() => {
@@ -49,8 +92,14 @@ const PurchaseRecords = () => {
     setLoadingStatuses(true)
     try {
       const list = await fetchStatusList()
+      const allowed = ['new', 'prepared', 'inspected', 'verified', 'approved', 'paid']
       if (list && Array.isArray(list)) {
-        setStatusOptions(list)
+        const filtered = list.filter(item => allowed.includes(item.value.toLowerCase()))
+        setStatusOptions(filtered)
+      } else {
+        // Fallback in case API fails or returns null
+        const fallback = allowed.map(s => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) }))
+        setStatusOptions(fallback)
       }
     } catch (err) {
       console.error('Error in status fetching:', err)
@@ -421,6 +470,70 @@ const PurchaseRecords = () => {
               </Button>
             </Space>
           </div>
+
+          <Card style={{ 
+            borderRadius: 12, 
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)', 
+            border: 'none', 
+            marginBottom: 24 
+          }}>
+            <Form form={filterForm} layout="vertical" onFinish={handleFilterApply}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px' }}>
+                <Form.Item name="tin" label="TIN" style={{ marginBottom: 16 }}>
+                  <Input placeholder="Search TIN" size="large" style={{ borderRadius: 6, width: 220 }} />
+                </Form.Item>
+                <Form.Item name="plate_no" label="Plate No" style={{ marginBottom: 16 }}>
+                  <Input placeholder="Plate No" size="large" style={{ borderRadius: 6, width: 180 }} />
+                </Form.Item>
+                <Form.Item name="material_type" label="Material Type" style={{ marginBottom: 16 }}>
+                  <Select 
+                    placeholder="Material" 
+                    size="large" 
+                    style={{ borderRadius: 6, width: 220 }} 
+                    allowClear
+                    options={materialOptions}
+                  />
+                </Form.Item>
+                <Form.Item name="status" label="Status" style={{ marginBottom: 16 }}>
+                  <Select placeholder="Status" size="large" style={{ borderRadius: 6, width: 180 }} allowClear>
+                    <Option value="new">New</Option>
+                    <Option value="prepared">Prepared</Option>
+                    <Option value="inspected">Inspected</Option>
+                    <Option value="verified">Verified</Option>
+                    <Option value="approved">Approved</Option>
+                    <Option value="paid">Paid</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item name="dates" label="Date Range" style={{ marginBottom: 16 }}>
+                  <RangePicker size="large" style={{ borderRadius: 6, width: 320 }} />
+                </Form.Item>
+              </div>
+
+              <div style={{ marginTop: 8 }}>
+                <Form.Item style={{ marginBottom: 0 }}>
+                  <Space>
+                    <Button 
+                      type="primary" 
+                      htmlType="submit" 
+                      icon={<SearchOutlined />} 
+                      size="large" 
+                      style={{ borderRadius: 6, background: 'rgb(245, 34, 45)' }}
+                    >
+                      Search Records
+                    </Button>
+                    <Button 
+                      onClick={handleFilterReset} 
+                      icon={<ClearOutlined />} 
+                      size="large" 
+                      style={{ borderRadius: 6 }}
+                    >
+                      Reset Filters
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </div>
+            </Form>
+          </Card>
 
           <Card
             style={{

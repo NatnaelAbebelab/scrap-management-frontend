@@ -23,7 +23,7 @@ const CustomerList = () => {
   const [total, setTotal] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
-  
+
   const [searchTin, setSearchTin] = useState('')
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -172,7 +172,7 @@ const CustomerList = () => {
       render: (_, record) => {
         // Hide edit/delete for filtered proxy rows that don't have a real UUID
         if (record._id === record.TIN) return null;
-        
+
         const items = [
           {
             key: 'edit',
@@ -214,11 +214,13 @@ const CustomerList = () => {
       { title: 'Plate No', dataIndex: 'plate_no', render: v => <Text style={{ fontFamily: "'CircularStd', sans-serif" }}>{v}</Text> },
       { title: 'Status', dataIndex: 'status', render: v => <Text style={{ fontFamily: "'CircularStd', sans-serif" }}>{String(v).toUpperCase()}</Text> },
       { title: 'Net Weight (Kg)', dataIndex: 'net_weight', render: v => <Text strong style={{ fontFamily: "'CircularStd', sans-serif" }}>{Number(v).toLocaleString()}</Text> },
-      { title: 'Net Price (Br.)', dataIndex: 'net_price', render: v => (
-        <Text strong style={{ color: '#52c41a', fontFamily: "'CircularStd', sans-serif" }}>
-          {Number(v).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-        </Text>
-      ) }
+      {
+        title: 'Net Price (Br.)', dataIndex: 'net_price', render: v => (
+          <Text strong style={{ color: '#52c41a', fontFamily: "'CircularStd', sans-serif" }}>
+            {Number(v).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </Text>
+        )
+      }
     ]
     return (
       <Card size="small" title="Recent GRNs" style={{ margin: '16px 0', backgroundColor: '#fafafa' }}>
@@ -245,16 +247,16 @@ const CustomerList = () => {
               <Text type="secondary">Manage scrap sellers, their details, and review associated balances.</Text>
             </div>
             <Space>
-              <Button 
-                icon={<DollarOutlined />} 
+              <Button
+                icon={<DollarOutlined />}
                 onClick={() => setIsPayModalVisible(true)}
               >
                 Pay Customer
               </Button>
-              <Button 
-                type="primary" 
-                icon={<PlusOutlined />} 
-                onClick={() => handleOpenModal()} 
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => handleOpenModal()}
                 style={{ background: 'rgb(245, 34, 45)' }}
               >
                 Add Customer
@@ -378,8 +380,8 @@ const CustomerList = () => {
           }}
         >
           <Form.Item name="tin" label="Customer TIN" rules={[{ required: true, message: 'TIN is required' }]}>
-            <Input 
-              placeholder="Enter TIN" 
+            <Input
+              placeholder="Enter TIN"
               onBlur={async (e) => {
                 const tinValue = e.target.value
                 if (!tinValue) {
@@ -394,13 +396,13 @@ const CustomerList = () => {
                     .filter(g => g.status === 'approved')
                     .map(g => ({ value: g.record_no, label: g.record_no }))
                   setPayGrnOptions(options)
-                } catch(err) {
+                } catch (err) {
                   setPayGrnOptions([])
                   message.error('Failed to load GRNs for TIN')
                 } finally {
                   setLoadingGrns(false)
                 }
-              }} 
+              }}
             />
           </Form.Item>
           <Form.Item name="record_nos" label="Select Records to Pay" rules={[{ required: true, message: 'Please select at least one record' }]}>

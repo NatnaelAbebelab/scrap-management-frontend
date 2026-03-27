@@ -35,7 +35,9 @@ export const GRN_STATUS_LIST_URL = `${API_BASE_URL}/grn/get-status-list/`
 export const GRN_SERIAL_INITIALIZE_URL = `${API_BASE_URL}/grn/initialize-grn-serial-number/`
 export const GRN_SERIAL_GET_URL = `${API_BASE_URL}/grn/get-grn-serial-numbers/`
 export const MELTING_PLANT_ADD_URL = `${API_BASE_URL}/material/add-melting-plant/`
+export const MELTING_PLANT_EDIT_URL = `${API_BASE_URL}/material/edit-melting-plant/`
 export const MELTING_PLANT_GET_URL = `${API_BASE_URL}/material/get-melting-plants/`
+export const MELTING_PLANT_DELETE_URL = (id) => `${API_BASE_URL}/material/delete-melting-plant/${id}/`
 export const STOCK_BEGINNING_BALANCE_URL = `${API_BASE_URL}/stock/add-beginning-balance/`
 export const STOCK_SUMMARY_GET_URL = `${API_BASE_URL}/stock/get-stock-summery/`
 export const STOCK_BALANCE_GET_URL = `${API_BASE_URL}/stock/get-stock-balance/`
@@ -56,3 +58,23 @@ export const CUSTOMER_DELETE_URL = (id) => `${API_BASE_URL}/customer/delete-cust
 export const CUSTOMER_PAY_URL = `${API_BASE_URL}/customer/pay-customer/`
 export const CUSTOMER_PLAIN_REPORT_URL = `${API_BASE_URL}/customer/purchase-customer-report/`
 export const CUSTOMER_AGGREGATE_REPORT_URL = `${API_BASE_URL}/customer/purchase-customer-aggregated-report/`
+
+// --- Raw Material ---
+export const RAW_MATERIAL_GET_PLANTS_URL = `${API_BASE_URL}/material/get-plants/`
+export const RAW_MATERIAL_REQUISITION_ADD_URL = `${API_BASE_URL}/material/add-material-requisition/`
+export const RAW_MATERIAL_REQUISITION_GET_URL = `${API_BASE_URL}/material/get-material-requisitions/`
+export const RAW_MATERIAL_REQUISITION_DETAIL_URL = (id) => `${API_BASE_URL}/material/get-material-requisition/${id}/`
+export const RAW_MATERIAL_REQUISITION_DELETE_URL = (id) => `${API_BASE_URL}/material/delete-material-requisition/${id}/`
+export const RAW_MATERIAL_REQUISITION_APPROVE_URL = (id) => `${API_BASE_URL}/material/approve-material-requisition/${id}/`
+export const RAW_MATERIAL_REQUISITION_EDIT_URL = `${API_BASE_URL}/material/edit-material-requisition/`
+export const MATERIAL_REQUISITION_REPORT_URL = `${API_BASE_URL}/material/material-requisition-report/`
+export const MATERIAL_ISSUE_REPORT_URL = `${API_BASE_URL}/material/material-issue-report/`
+
+// --- Raw Material Issue ---
+export const RAW_MATERIAL_ISSUE_GET_URL = `${API_BASE_URL}/material/get-raw-material-issues/`
+export const RAW_MATERIAL_ISSUE_ADD_URL = `${API_BASE_URL}/material/add-raw-material-issue/`
+export const RAW_MATERIAL_ISSUE_EDIT_URL = `${API_BASE_URL}/material/edit-raw-material-issue/`
+export const RAW_MATERIAL_ISSUE_DELETE_URL = (id) => `${API_BASE_URL}/material/delete-raw-material-issue/${id}/`
+export const RAW_MATERIAL_ISSUE_DETAIL_URL = (id) => `${API_BASE_URL}/material/get-raw-material-issue/${id}/`
+export const RAW_MATERIAL_ISSUE_CHANGE_STATUS_URL = (id) => `${API_BASE_URL}/material/change-status-issue/${id}/`
+export const RAW_MATERIAL_ISSUE_GET_APPROVED_REQUISITIONS_URL = `${API_BASE_URL}/material/get-approved-material-requisitions/`

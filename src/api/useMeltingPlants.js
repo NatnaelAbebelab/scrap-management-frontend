@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { apiRequest } from './core/apiRequest'
-import { MELTING_PLANT_ADD_URL, MELTING_PLANT_GET_URL } from './config'
+import { MELTING_PLANT_ADD_URL, MELTING_PLANT_GET_URL, MELTING_PLANT_EDIT_URL, MELTING_PLANT_DELETE_URL } from './config'
 
 export const useMeltingPlants = ({ page = 1, pageSize = 10 } = {}) => {
   const [plants, setPlants] = useState([])
@@ -53,6 +53,31 @@ export const useMeltingPlants = ({ page = 1, pageSize = 10 } = {}) => {
     return response
   }
 
+  const updatePlant = async (id, newName) => {
+    const response = await apiRequest({
+      url: MELTING_PLANT_EDIT_URL,
+      method: 'PUT',
+      data: { _id: id, new_name: newName }
+    })
+
+    if (response.result === 'success') {
+      await fetchPlants()
+    }
+    return response
+  }
+
+  const deletePlant = async (id) => {
+    const response = await apiRequest({
+      url: MELTING_PLANT_DELETE_URL(id),
+      method: 'DELETE'
+    })
+
+    if (response.result === 'success') {
+      await fetchPlants()
+    }
+    return response
+  }
+
   return {
     plants,
     total,
@@ -60,5 +85,7 @@ export const useMeltingPlants = ({ page = 1, pageSize = 10 } = {}) => {
     error,
     fetchPlants,
     addPlant,
+    updatePlant,
+    deletePlant,
   }
 }

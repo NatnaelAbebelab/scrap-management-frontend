@@ -17,7 +17,16 @@ export const exportToExcel = ({ filename = 'export', sheetName = 'Sheet1', colum
   const rows = data.map((record) => {
     const row = {}
     columns.forEach((col) => {
-      const rawValue = col.dataIndex ? record[col.dataIndex] : ''
+      let rawValue = ''
+      if (col.dataIndex) {
+        if (Array.isArray(col.dataIndex)) {
+          rawValue = col.dataIndex.reduce((obj, key) => (obj && obj[key] !== undefined ? obj[key] : undefined), record)
+        } else if (typeof col.dataIndex === 'string' && col.dataIndex.includes('.')) {
+          rawValue = col.dataIndex.split('.').reduce((obj, key) => (obj && obj[key] !== undefined ? obj[key] : undefined), record)
+        } else {
+          rawValue = record[col.dataIndex]
+        }
+      }
       row[col.title] = col.exportValue ? col.exportValue(rawValue, record) : (rawValue ?? '')
     })
     return row

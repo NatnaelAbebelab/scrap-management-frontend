@@ -215,10 +215,10 @@ const StockManagement = () => {
           <Card style={{ borderRadius: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: 'none', marginBottom: 16 }}>
             <Form layout="inline" onValuesChange={handleFilterChange} initialValues={{ type: 'all' }}>
               <Form.Item name="dateRange" label="Material Input/Output Period">
-                <RangePicker style={{ borderRadius: 6 }} />
+                <RangePicker style={{ borderRadius: 6 }} size="large" />
               </Form.Item>
               <Form.Item name="type" label="Flow Type">
-                <Select style={{ width: 140 }}>
+                <Select style={{ width: 140 }} size="large">
                   <Select.Option value="all">All Transactions</Select.Option>
                   <Select.Option value="purchase">Purchases Only</Select.Option>
                   <Select.Option value="issue" disabled>Plant Issues Only</Select.Option>

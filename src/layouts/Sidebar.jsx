@@ -40,13 +40,14 @@ const Sidebar = ({ selected }) => {
       : path === '/scrap-transport/internal-csv-upload' ? 'scrap-transport:internal-csv-upload'
       : path === '/scrap-transport/scrap-movers-approval' ? 'scrap-transport:movers-approval'
       : path === '/scrap-transport/scrap-movers-payment' ? 'scrap-transport:movers-payment'
-      : path === '/material-management/requisition' ? 'material-management:requisition'
-      : path === '/material-management/issue' ? 'material-management:issue'
+      : path === '/raw-material/requisition' ? 'raw-material:requisition'
+      : path === '/raw-material/issue' ? 'raw-material:issue'
       : path === '/settings/user-management' ? 'settings:user-management'
       : path === '/settings/melting-plants' ? 'settings:melting-plants'
       : path === '/settings/grn-serial' ? 'settings:grn-serial'
       : path === '/settings/stock-beginning-balance' ? 'settings:stock-beginning-balance'
       : path === '/reports/plain-report' ? 'reports:purchase-grn:plain-report'
+      : path === '/reports/aggregate-report' ? 'reports:purchase-grn:aggregate-report'
       : path === '/reports/customer-plain-report' ? 'reports:purchase-grn:customer-plain-report'
       : path === '/reports/customer-aggregate-report' ? 'reports:purchase-grn:customer-aggregate-report'
       : path.startsWith('/reports/aggregate-purchase') ? 'reports:aggregate-purchase'
@@ -57,8 +58,8 @@ const Sidebar = ({ selected }) => {
       : path === '/reports/stock-card' ? 'reports:stock-reports:stock-card'
       : path === '/reports/stock-aggregated-report' ? 'reports:stock-reports:stock-aggregated-report'
       : path.startsWith('/reports/stock') ? 'reports:stock-reports'
-      : path.startsWith('/reports/material-requisition') ? 'reports:material-requisition'
-      : path.startsWith('/reports/material-issue') ? 'reports:material-issue'
+      : path.startsWith('/reports/raw-material/requisition') ? 'reports:raw-material:requisition'
+      : path.startsWith('/reports/raw-material/issue-report') ? 'reports:raw-material:issue'
       : path.startsWith('/reports/grn-receipt') ? 'reports:grn-receipt'
       : path.startsWith('/reports/scrap-purchase-approval-receipt') ? 'reports:scrap-purchase-approval-receipt'
       : path.startsWith('/reports') ? 'reports'
@@ -91,7 +92,7 @@ const Sidebar = ({ selected }) => {
     })
   }, [activeKey])
 
-  const rootKeys = ['scrap-purchase', 'stock-management', 'customer-management', 'scrap-transport', 'material-management', 'reports', 'settings']
+  const rootKeys = ['scrap-purchase', 'stock-management', 'customer-management', 'scrap-transport', 'raw-material', 'reports', 'settings']
 
   const onOpenChange = (keys) => {
     // Find which root key was newly opened
@@ -176,17 +177,17 @@ const Sidebar = ({ selected }) => {
       ]
     },
     {
-      key: 'material-management',
-      icon: <DatabaseOutlined style={getStyle('material-management')} />,
-      label: withTooltip(<span style={getStyle('material-management')}>Material Management</span>, 'Material Management'),
+      key: 'raw-material',
+      icon: <DatabaseOutlined style={getStyle('raw-material')} />,
+      label: withTooltip(<span style={getStyle('raw-material')}>Raw Material</span>, 'Raw Material'),
       children: [
         {
-          key: 'material-management:requisition',
-          label: withTooltip(<Link to="/material-management/requisition" style={getStyle('material-management:requisition')}>Material Requisition</Link>, 'Material Requisition')
+          key: 'raw-material:requisition',
+          label: withTooltip(<Link to="/raw-material/requisition" style={getStyle('raw-material:requisition')}>Material Requisition</Link>, 'Material Requisition')
         },
         {
-          key: 'material-management:issue',
-          label: withTooltip(<Link to="/material-management/issue" style={getStyle('material-management:issue')}>Material Issue</Link>, 'Material Issue')
+          key: 'raw-material:issue',
+          label: withTooltip(<Link to="/raw-material/issue" style={getStyle('raw-material:issue')}>Raw Material Issue</Link>, 'Raw Material Issue')
         }
       ]
     },
@@ -248,8 +249,18 @@ const Sidebar = ({ selected }) => {
           ]
         },
         {
-          key: 'reports:material-requisition',
-          label: withTooltip(<Link to="/reports/material-requisition" style={getStyle('reports:material-requisition')}>Material Requisition Report</Link>, 'Material Requisition Report')
+          key: 'reports:raw-material',
+          label: withTooltip(<span style={getStyle('reports:raw-material')}>Raw Material Reports</span>, 'Raw Material Reports'),
+          children: [
+            {
+              key: 'reports:raw-material:requisition',
+              label: withTooltip(<Link to="/reports/raw-material/requisition" style={getStyle('reports:raw-material:requisition')}>Material Requisition Report</Link>, 'Material Requisition Report')
+            },
+            {
+              key: 'reports:raw-material:issue',
+              label: withTooltip(<Link to="/reports/raw-material/issue-report" style={getStyle('reports:raw-material:issue')}>Material Issue Report</Link>, 'Material Issue Report')
+            }
+          ]
         },
         {
           key: 'reports:material-issue',
@@ -341,7 +352,7 @@ const Sidebar = ({ selected }) => {
           fontSize: '16px',
           fontWeight: 600
         }}>
-          Stock
+          Material Requisition
         </Title>
         <Text style={{
           color: '#8c8c8c',

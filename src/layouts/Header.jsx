@@ -77,9 +77,13 @@ const Header = ({ onMenuClick }) => {
     if (path.startsWith('/scrap-purchase/material-rate')) return 'Material Rate'
     if (path.startsWith('/scrap-transport/agency-registration')) return 'Agency Registration'
     if (path.startsWith('/profile')) return 'User Profile'
+    if (path.startsWith('/reports/raw-material/requisition')) return 'Material Requisition Report'
+    if (path.startsWith('/reports/raw-material/issue-report')) return 'Material Issue Report'
     if (path.startsWith('/reports')) return 'Report'
     if (path.startsWith('/customer-management')) return 'Customers'
     if (path.startsWith('/scrap-purchase/stock')) return 'Stock'
+    if (path.startsWith('/raw-material/requisition')) return 'Material Requisition'
+    if (path.startsWith('/raw-material/issue')) return 'Material Issue'
     return 'Stock'
   }
 

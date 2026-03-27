@@ -17,6 +17,7 @@ import MaterialManagement from './settings/MaterialManagement'
 import MeltingPlants from './settings/MeltingPlants'
 import SettingsDashboard from './settings/SettingsDashboard'
 import MaterialIssue from './materialManagement/MaterialIssue'
+import MaterialRequisition from './materialManagement/MaterialRequisition'
 import CsvExcelUploader from './scrapPurchase/CsvExcelUploader'
 import PurchaseRecords from './scrapPurchase/PurchaseRecords'
 import MaterialRate from './scrapPurchase/MaterialRate'
@@ -33,6 +34,8 @@ import CustomerAggregateReport from './reports/CustomerAggregateReport'
 import StockReport from './reports/StockReport'
 import StockCard from './reports/StockCard'
 import StockAggregatedReport from './reports/StockAggregatedReport'
+import MaterialRequisitionReport from './reports/MaterialRequisitionReport'
+import MaterialIssueReport from './reports/MaterialIssueReport'
 import StockManagement from './stockManagement/StockManagement'
 
 import { ConfigProvider } from 'antd'
@@ -66,7 +69,8 @@ root.render(
 
             <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
 
-            <Route path="/material-management/issue" element={<RequireAuth><MaterialIssue /></RequireAuth>} />
+            <Route path="/raw-material/requisition" element={<RequireAuth><MaterialRequisition /></RequireAuth>} />
+            <Route path="/raw-material/issue" element={<RequireAuth><MaterialIssue /></RequireAuth>} />
 
             <Route path="/settings" element={<RequireAuth><SettingsDashboard /></RequireAuth>} />
             <Route path="/settings/user-management" element={<RequireAuth><UserManagement /></RequireAuth>} />
@@ -122,10 +126,18 @@ root.render(
               path="/reports/customer-aggregate-report"
               element={<RequireAuth><CustomerAggregateReport /></RequireAuth>}
             />
-            <Route
-              path="/reports/stock-report"
-              element={<RequireAuth><StockReport /></RequireAuth>}
-            />
+             <Route
+               path="/reports/stock-report"
+               element={<RequireAuth><StockReport /></RequireAuth>}
+             />
+             <Route
+               path="/reports/raw-material/requisition"
+               element={<RequireAuth><MaterialRequisitionReport /></RequireAuth>}
+             />
+              <Route
+                path="/reports/raw-material/issue-report"
+                element={<RequireAuth><MaterialIssueReport /></RequireAuth>}
+              />
             <Route
               path="/reports/stock-card"
               element={<RequireAuth><StockCard /></RequireAuth>}

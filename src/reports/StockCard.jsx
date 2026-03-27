@@ -186,12 +186,12 @@ const StockCardReport = () => {
           <Card style={{ borderRadius: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: 'none', marginBottom: 24 }}>
             <Form form={form} layout="inline" onFinish={onFinish}>
               <Form.Item name="dateRange" label="Period">
-                <RangePicker style={{ borderRadius: 6 }} />
+                <RangePicker style={{ borderRadius: 6 }} size="large" />
               </Form.Item>
               <Form.Item>
                 <Space>
-                  <Button type="primary" htmlType="submit" icon={<SearchOutlined />} style={{ borderRadius: 6, backgroundColor: 'rgb(245, 34, 45)', borderColor: 'rgb(245, 34, 45)' }}>Search</Button>
-                  <Button onClick={handleReset} icon={<ClearOutlined />} style={{ borderRadius: 6 }}>Reset</Button>
+                  <Button type="primary" htmlType="submit" icon={<SearchOutlined />} style={{ borderRadius: 6, backgroundColor: 'rgb(245, 34, 45)', borderColor: 'rgb(245, 34, 45)' }} size="large">Search</Button>
+                  <Button onClick={handleReset} icon={<ClearOutlined />} style={{ borderRadius: 6 }} size="large">Reset</Button>
                 </Space>
               </Form.Item>
             </Form>

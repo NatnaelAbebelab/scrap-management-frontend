@@ -69,7 +69,7 @@ const CustomerAggregateReport = () => {
         { title: 'Total Paid Amount (Br.)', dataIndex: 'total_paid_amount' },
         { title: 'Total Remaining Amount (Br.)', dataIndex: 'total_remaining_amount' }
       ]
-      
+
       await exportCustomerAggregateReport({ tin: searchTin }, exportCols, reportData.summary)
       message.success('Report exported successfully!')
     } catch (err) {

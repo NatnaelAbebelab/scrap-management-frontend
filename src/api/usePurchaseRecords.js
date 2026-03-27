@@ -1,10 +1,14 @@
 import { useEffect, useState, useMemo } from 'react'
-import { API_BASE_URL } from './config'
+import { API_BASE_URL, GRN_RECORDS_URL } from './config'
 import { useAuth } from '../auth/AuthProvider'
 import { createFetchWithAuth } from './fetchWithAuth'
 
-// Fetch paginated GRN purchase records
-export const usePurchaseRecords = ({ page = 1, pageSize = 10 } = {}) => {
+// Fetch paginated GRN purchase records with optional filters
+export const usePurchaseRecords = ({
+  page = 1,
+  pageSize = 10,
+  filters = {}
+} = {}) => {
   const auth = useAuth()
   const authFetch = useMemo(() => createFetchWithAuth(auth), [auth])
 
@@ -23,9 +27,17 @@ export const usePurchaseRecords = ({ page = 1, pageSize = 10 } = {}) => {
       setLoading(true)
       setError(null)
       try {
-        const url = new URL(`${API_BASE_URL}/grn/grn/`)
+        const url = new URL(GRN_RECORDS_URL)
         url.searchParams.set('page', page)
         url.searchParams.set('page_size', pageSize)
+
+        // Add filter params if provided
+        if (filters.tin) url.searchParams.set('tin', filters.tin)
+        if (filters.material_type) url.searchParams.set('material_type', filters.material_type)
+        if (filters.status) url.searchParams.set('status', filters.status)
+        if (filters.plate_no) url.searchParams.set('plate_no', filters.plate_no)
+        if (filters.start_date) url.searchParams.set('start_date', filters.start_date)
+        if (filters.end_date) url.searchParams.set('end_date', filters.end_date)
 
         const res = await authFetch(url.toString(), {
           method: 'GET',
@@ -52,7 +64,7 @@ export const usePurchaseRecords = ({ page = 1, pageSize = 10 } = {}) => {
 
     fetchData()
     return () => controller.abort()
-  }, [page, pageSize, authFetch, refreshCount])
+  }, [page, pageSize, authFetch, refreshCount, filters.tin, filters.material_type, filters.status, filters.plate_no, filters.start_date, filters.end_date])
 
   return {
     records,

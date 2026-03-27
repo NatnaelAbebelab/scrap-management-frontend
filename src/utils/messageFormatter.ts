@@ -23,3 +23,40 @@ export const formatErrorMessage = (message: any) => {
 
   return message;
 };
+
+/**
+ * Extracts and formats errors from a structured API response.
+ * Handles cases where 'content' is an object of field errors (e.g., { issue_no: ['already exists'] }).
+ */
+export const extractApiError = (response: any) => {
+  if (!response) return 'An error occurred';
+  if (response.result === 'success') return null;
+
+  const { message: mainMessage, content } = response;
+
+  if (content && typeof content === 'object' && !Array.isArray(content) && Object.keys(content).length > 0) {
+    const errorDetails = Object.entries(content)
+      .map(([field, errors]) => {
+        const fieldName = field.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+        
+        let errorMsg = '';
+        if (Array.isArray(errors)) {
+          errorMsg = errors.join(', ');
+        } else if (typeof errors === 'object' && errors !== null) {
+          // Flatten nested objects e.g. { issue_date: { issue_date: "msg" } }
+          errorMsg = Object.values(errors)
+            .map(v => (typeof v === 'object' ? JSON.stringify(v) : String(v)))
+            .join(', ');
+        } else {
+          errorMsg = String(errors);
+        }
+
+        return `${fieldName}: ${errorMsg}`;
+      })
+      .join(' | ');
+
+    if (errorDetails) return errorDetails;
+  }
+
+  return mainMessage || 'An unexpected error occurred';
+};
