@@ -82,6 +82,8 @@ const Header = ({ onMenuClick }) => {
     if (path.startsWith('/reports')) return 'Report'
     if (path.startsWith('/customer-management')) return 'Customers'
     if (path.startsWith('/scrap-purchase/stock')) return 'Stock'
+    if (path.startsWith('/scrap-transport/internal-agencies')) return 'Internal Agencies'
+    if (path.startsWith('/scrap-transport/internal-agreements')) return 'Agencies Agreements'
     if (path.startsWith('/raw-material/requisition')) return 'Material Requisition'
     if (path.startsWith('/raw-material/issue')) return 'Material Issue'
     return 'Stock'

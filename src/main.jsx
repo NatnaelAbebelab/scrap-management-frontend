@@ -22,6 +22,8 @@ import CsvExcelUploader from './scrapPurchase/CsvExcelUploader'
 import PurchaseRecords from './scrapPurchase/PurchaseRecords'
 import MaterialRate from './scrapPurchase/MaterialRate'
 import AgencyRegistration from './scrapTransport/AgencyRegistration'
+import InternalAgencies from './scrapTransport/InternalAgencies'
+import InternalAgreements from './scrapTransport/InternalAgreements'
 import UserManagement from './settings/UserManagement'
 import Profile from './settings/Profile'
 import GrnSerialSettings from './settings/GrnSerialSettings'
@@ -105,8 +107,12 @@ root.render(
 
             {/* Scrap Transport */}
             <Route
-              path="/scrap-transport/agency-registration"
-              element={<RequireAuth><AgencyRegistration /></RequireAuth>}
+              path="/scrap-transport/internal-agencies"
+              element={<RequireAuth><InternalAgencies /></RequireAuth>}
+            />
+            <Route
+              path="/scrap-transport/internal-agreements"
+              element={<RequireAuth><InternalAgreements /></RequireAuth>}
             />
 
             {/* Reports */}
@@ -126,18 +132,18 @@ root.render(
               path="/reports/customer-aggregate-report"
               element={<RequireAuth><CustomerAggregateReport /></RequireAuth>}
             />
-             <Route
-               path="/reports/stock-report"
-               element={<RequireAuth><StockReport /></RequireAuth>}
-             />
-             <Route
-               path="/reports/raw-material/requisition"
-               element={<RequireAuth><MaterialRequisitionReport /></RequireAuth>}
-             />
-              <Route
-                path="/reports/raw-material/issue-report"
-                element={<RequireAuth><MaterialIssueReport /></RequireAuth>}
-              />
+            <Route
+              path="/reports/stock-report"
+              element={<RequireAuth><StockReport /></RequireAuth>}
+            />
+            <Route
+              path="/reports/raw-material/requisition"
+              element={<RequireAuth><MaterialRequisitionReport /></RequireAuth>}
+            />
+            <Route
+              path="/reports/raw-material/issue-report"
+              element={<RequireAuth><MaterialIssueReport /></RequireAuth>}
+            />
             <Route
               path="/reports/stock-card"
               element={<RequireAuth><StockCard /></RequireAuth>}

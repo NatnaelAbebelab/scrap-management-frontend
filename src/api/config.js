@@ -5,6 +5,7 @@ export const API_BASE_URL = 'http://127.0.0.1:7000/api/v1'
 
 // --- File Upload ---
 export const FILE_UPLOAD_URL = `${API_BASE_URL}/service/upload-file/`
+export const UPLOADED_FILE_URL = (filename) => `http://127.0.0.1:7000/media/uploaded-files/${filename}`
 
 // --- User Management ---
 export const USERS_GET_URL = `${API_BASE_URL}/user/get`
@@ -78,3 +79,17 @@ export const RAW_MATERIAL_ISSUE_DELETE_URL = (id) => `${API_BASE_URL}/material/d
 export const RAW_MATERIAL_ISSUE_DETAIL_URL = (id) => `${API_BASE_URL}/material/get-raw-material-issue/${id}/`
 export const RAW_MATERIAL_ISSUE_CHANGE_STATUS_URL = (id) => `${API_BASE_URL}/material/change-status-issue/${id}/`
 export const RAW_MATERIAL_ISSUE_GET_APPROVED_REQUISITIONS_URL = `${API_BASE_URL}/material/get-approved-material-requisitions/`
+
+// --- Internal / Transport Agencies ---
+export const INTERNAL_AGENCIES_GET_URL = `${API_BASE_URL}/internal/get-agencies/`
+export const INTERNAL_AGENCY_ADD_URL = `${API_BASE_URL}/internal/add-agency/`
+export const INTERNAL_AGENCY_UPDATE_URL = `${API_BASE_URL}/internal/update-agency/`
+export const INTERNAL_AGENCY_DELETE_URL = (id) => `${API_BASE_URL}/internal/delete-agency/${id}/`
+
+// --- Internal / Agency Agreements ---
+export const INTERNAL_AGREEMENTS_LIST_URL = `${API_BASE_URL}/internal/get-agreements/`
+export const INTERNAL_AGREEMENTS_GET_URL = (id) => `${API_BASE_URL}/internal/get-agreement/${id}/`
+export const INTERNAL_AGREEMENT_ADD_URL = `${API_BASE_URL}/internal/add-agreement/`
+export const INTERNAL_AGREEMENT_UPDATE_URL = `${API_BASE_URL}/internal/update-agreement/`
+export const INTERNAL_AGREEMENT_UPDATE_RANGE_URL = `${API_BASE_URL}/internal/update-agreement-range/`
+export const INTERNAL_AGREEMENT_DELETE_URL = (id) => `${API_BASE_URL}/internal/delete-agreement/${id}/`

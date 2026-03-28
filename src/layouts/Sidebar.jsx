@@ -31,40 +31,40 @@ const Sidebar = ({ selected }) => {
   const inferred =
     path === '/dashboard' ? 'dashboard'
       : path === '/scrap-purchase/csv-excel-uploader' ? 'scrap-purchase:csv-uploader'
-      : path === '/scrap-purchase/purchase-records' ? 'scrap-purchase:purchase-records'
-      : path === '/scrap-purchase/material-rate' ? 'scrap-purchase:material-rate'
-      : path.startsWith('/scrap-purchase/stock') ? 'stock-management'
-      : path.startsWith('/scrap-purchase') ? 'scrap-purchase'
-      : path.startsWith('/customer-management') ? 'customer-management'
-      : path.startsWith('/scrap-transport/agency-registration') ? 'scrap-transport:agency-registration'
-      : path === '/scrap-transport/internal-csv-upload' ? 'scrap-transport:internal-csv-upload'
-      : path === '/scrap-transport/scrap-movers-approval' ? 'scrap-transport:movers-approval'
-      : path === '/scrap-transport/scrap-movers-payment' ? 'scrap-transport:movers-payment'
-      : path === '/raw-material/requisition' ? 'raw-material:requisition'
-      : path === '/raw-material/issue' ? 'raw-material:issue'
-      : path === '/settings/user-management' ? 'settings:user-management'
-      : path === '/settings/melting-plants' ? 'settings:melting-plants'
-      : path === '/settings/grn-serial' ? 'settings:grn-serial'
-      : path === '/settings/stock-beginning-balance' ? 'settings:stock-beginning-balance'
-      : path === '/reports/plain-report' ? 'reports:purchase-grn:plain-report'
-      : path === '/reports/aggregate-report' ? 'reports:purchase-grn:aggregate-report'
-      : path === '/reports/customer-plain-report' ? 'reports:purchase-grn:customer-plain-report'
-      : path === '/reports/customer-aggregate-report' ? 'reports:purchase-grn:customer-aggregate-report'
-      : path.startsWith('/reports/aggregate-purchase') ? 'reports:aggregate-purchase'
-      : path.startsWith('/reports/daily-purchase-performance') ? 'reports:daily-purchase-performance'
-      : path.startsWith('/reports/daily-scrap-move-aggregate') ? 'reports:daily-scrap-move-aggregate'
-      : path.startsWith('/reports/agency-performance') ? 'reports:agency-performance'
-      : path === '/reports/stock-report' ? 'reports:stock-reports:stock-report'
-      : path === '/reports/stock-card' ? 'reports:stock-reports:stock-card'
-      : path === '/reports/stock-aggregated-report' ? 'reports:stock-reports:stock-aggregated-report'
-      : path.startsWith('/reports/stock') ? 'reports:stock-reports'
-      : path.startsWith('/reports/raw-material/requisition') ? 'reports:raw-material:requisition'
-      : path.startsWith('/reports/raw-material/issue-report') ? 'reports:raw-material:issue'
-      : path.startsWith('/reports/grn-receipt') ? 'reports:grn-receipt'
-      : path.startsWith('/reports/scrap-purchase-approval-receipt') ? 'reports:scrap-purchase-approval-receipt'
-      : path.startsWith('/reports') ? 'reports'
-      : path.startsWith('/settings') ? 'settings'
-      : 'dashboard'
+        : path === '/scrap-purchase/purchase-records' ? 'scrap-purchase:purchase-records'
+          : path === '/scrap-purchase/material-rate' ? 'scrap-purchase:material-rate'
+            : path.startsWith('/scrap-purchase/stock') ? 'stock-management'
+              : path.startsWith('/scrap-purchase') ? 'scrap-purchase'
+                : path.startsWith('/customer-management') ? 'customer-management'
+                  : path.startsWith('/scrap-transport/internal-agencies') ? 'scrap-transport:internal-agencies'
+                    : path.startsWith('/scrap-transport/internal-agreements') ? 'scrap-transport:internal-agreements'
+                      : path === '/scrap-transport/internal-csv-upload' ? 'scrap-transport:internal-csv-upload'
+                        : path === '/scrap-transport/scrap-movers-approval' ? 'scrap-transport:movers-approval'
+                          : path === '/scrap-transport/scrap-movers-payment' ? 'scrap-transport:movers-payment'
+                              : path === '/raw-material/issue' ? 'raw-material:issue'
+                                : path === '/settings/user-management' ? 'settings:user-management'
+                                  : path === '/settings/melting-plants' ? 'settings:melting-plants'
+                                    : path === '/settings/grn-serial' ? 'settings:grn-serial'
+                                      : path === '/settings/stock-beginning-balance' ? 'settings:stock-beginning-balance'
+                                        : path === '/reports/plain-report' ? 'reports:purchase-grn:plain-report'
+                                          : path === '/reports/aggregate-report' ? 'reports:purchase-grn:aggregate-report'
+                                            : path === '/reports/customer-plain-report' ? 'reports:purchase-grn:customer-plain-report'
+                                              : path === '/reports/customer-aggregate-report' ? 'reports:purchase-grn:customer-aggregate-report'
+                                                : path.startsWith('/reports/aggregate-purchase') ? 'reports:aggregate-purchase'
+                                                  : path.startsWith('/reports/daily-purchase-performance') ? 'reports:daily-purchase-performance'
+                                                    : path.startsWith('/reports/daily-scrap-move-aggregate') ? 'reports:daily-scrap-move-aggregate'
+                                                      : path.startsWith('/reports/agency-performance') ? 'reports:agency-performance'
+                                                        : path === '/reports/stock-report' ? 'reports:stock-reports:stock-report'
+                                                          : path === '/reports/stock-card' ? 'reports:stock-reports:stock-card'
+                                                            : path === '/reports/stock-aggregated-report' ? 'reports:stock-reports:stock-aggregated-report'
+                                                              : path.startsWith('/reports/stock') ? 'reports:stock-reports'
+                                                                : path.startsWith('/reports/raw-material/requisition') ? 'reports:raw-material:requisition'
+                                                                  : path.startsWith('/reports/raw-material/issue-report') ? 'reports:raw-material:issue'
+                                                                    : path.startsWith('/reports/grn-receipt') ? 'reports:grn-receipt'
+                                                                      : path.startsWith('/reports/scrap-purchase-approval-receipt') ? 'reports:scrap-purchase-approval-receipt'
+                                                                        : path.startsWith('/reports') ? 'reports'
+                                                                          : path.startsWith('/settings') ? 'settings'
+                                                                            : 'dashboard'
 
   const activeKey = selected || inferred
 
@@ -173,7 +173,15 @@ const Sidebar = ({ selected }) => {
         {
           key: 'scrap-transport:movers-payment',
           label: withTooltip(<Link to="/scrap-transport/scrap-movers-payment" style={getStyle('scrap-transport:movers-payment')}>Scrap Movers Payment</Link>, 'Scrap Movers Payment')
-        }
+        },
+        {
+          key: 'scrap-transport:internal-agencies',
+          label: withTooltip(<Link to="/scrap-transport/internal-agencies" style={getStyle('scrap-transport:internal-agencies')}>Internal Agencies</Link>, 'Internal Agencies')
+        },
+        {
+          key: 'scrap-transport:internal-agreements',
+          label: withTooltip(<Link to="/scrap-transport/internal-agreements" style={getStyle('scrap-transport:internal-agreements')}>Agencies Agreements</Link>, 'Agencies Agreements')
+        },
       ]
     },
     {
