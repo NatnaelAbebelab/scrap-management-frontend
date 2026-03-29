@@ -24,6 +24,8 @@ import MaterialRate from './scrapPurchase/MaterialRate'
 import AgencyRegistration from './scrapTransport/AgencyRegistration'
 import InternalAgencies from './scrapTransport/InternalAgencies'
 import InternalAgreements from './scrapTransport/InternalAgreements'
+import UploadTransportData from './scrapTransport/UploadTransportData'
+import DailyTransportAggregate from './scrapTransport/DailyTransportAggregate'
 import UserManagement from './settings/UserManagement'
 import Profile from './settings/Profile'
 import GrnSerialSettings from './settings/GrnSerialSettings'
@@ -38,6 +40,8 @@ import StockCard from './reports/StockCard'
 import StockAggregatedReport from './reports/StockAggregatedReport'
 import MaterialRequisitionReport from './reports/MaterialRequisitionReport'
 import MaterialIssueReport from './reports/MaterialIssueReport'
+import AgencyPerformanceReport from './reports/AgencyPerformanceReport'
+import RawScrapTransportReport from './reports/RawScrapTransportReport'
 import StockManagement from './stockManagement/StockManagement'
 
 import { ConfigProvider } from 'antd'
@@ -114,6 +118,14 @@ root.render(
               path="/scrap-transport/internal-agreements"
               element={<RequireAuth><InternalAgreements /></RequireAuth>}
             />
+            <Route
+              path="/scrap-transport/upload-transport-data"
+              element={<RequireAuth><UploadTransportData /></RequireAuth>}
+            />
+            <Route
+              path="/scrap-transport/daily-aggregate"
+              element={<RequireAuth><DailyTransportAggregate /></RequireAuth>}
+            />
 
             {/* Reports */}
             <Route
@@ -151,6 +163,14 @@ root.render(
             <Route
               path="/reports/stock-aggregated-report"
               element={<RequireAuth><StockAggregatedReport /></RequireAuth>}
+            />
+            <Route
+              path="/reports/scrap-transport/agency-performance"
+              element={<RequireAuth><AgencyPerformanceReport /></RequireAuth>}
+            />
+            <Route
+              path="/reports/scrap-transport/raw-scrap-report"
+              element={<RequireAuth><RawScrapTransportReport /></RequireAuth>}
             />
           </Routes>
         </BrowserRouter>

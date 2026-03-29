@@ -39,8 +39,10 @@ const Sidebar = ({ selected }) => {
                   : path.startsWith('/scrap-transport/internal-agencies') ? 'scrap-transport:internal-agencies'
                     : path.startsWith('/scrap-transport/internal-agreements') ? 'scrap-transport:internal-agreements'
                       : path === '/scrap-transport/internal-csv-upload' ? 'scrap-transport:internal-csv-upload'
-                        : path === '/scrap-transport/scrap-movers-approval' ? 'scrap-transport:movers-approval'
-                          : path === '/scrap-transport/scrap-movers-payment' ? 'scrap-transport:movers-payment'
+                        : path === '/scrap-transport/upload-transport-data' ? 'scrap-transport:upload-transport-data'
+                          : path === '/scrap-transport/daily-aggregate' ? 'scrap-transport:daily-aggregate'
+                            : path === '/scrap-transport/scrap-movers-approval' ? 'scrap-transport:movers-approval'
+                            : path === '/scrap-transport/scrap-movers-payment' ? 'scrap-transport:movers-payment'
                               : path === '/raw-material/issue' ? 'raw-material:issue'
                                 : path === '/settings/user-management' ? 'settings:user-management'
                                   : path === '/settings/melting-plants' ? 'settings:melting-plants'
@@ -52,7 +54,9 @@ const Sidebar = ({ selected }) => {
                                               : path === '/reports/customer-aggregate-report' ? 'reports:purchase-grn:customer-aggregate-report'
                                                 : path.startsWith('/reports/aggregate-purchase') ? 'reports:aggregate-purchase'
                                                   : path.startsWith('/reports/daily-purchase-performance') ? 'reports:daily-purchase-performance'
-                                                    : path.startsWith('/reports/daily-scrap-move-aggregate') ? 'reports:daily-scrap-move-aggregate'
+                                                      : path.startsWith('/reports/scrap-transport/agency-performance') ? 'reports:scrap-transport:agency-performance'
+                                                        : path.startsWith('/reports/scrap-transport/raw-scrap-report') ? 'reports:scrap-transport:raw-scrap-report'
+                                                          : path.startsWith('/reports/daily-scrap-move-aggregate') ? 'reports:daily-scrap-move-aggregate'
                                                       : path.startsWith('/reports/agency-performance') ? 'reports:agency-performance'
                                                         : path === '/reports/stock-report' ? 'reports:stock-reports:stock-report'
                                                           : path === '/reports/stock-card' ? 'reports:stock-reports:stock-card'
@@ -167,6 +171,14 @@ const Sidebar = ({ selected }) => {
           label: withTooltip(<Link to="/scrap-transport/internal-csv-upload" style={getStyle('scrap-transport:internal-csv-upload')}>Internal CSV upload</Link>, 'Internal CSV upload')
         },
         {
+          key: 'scrap-transport:upload-transport-data',
+          label: withTooltip(<Link to="/scrap-transport/upload-transport-data" style={getStyle('scrap-transport:upload-transport-data')}>Raw Scrap Transport Data</Link>, 'Raw Scrap Transport Data')
+        },
+        {
+          key: 'scrap-transport:daily-aggregate',
+          label: withTooltip(<Link to="/scrap-transport/daily-aggregate" style={getStyle('scrap-transport:daily-aggregate')}>Daily Transport Aggregate</Link>, 'Daily Transport Aggregate')
+        },
+        {
           key: 'scrap-transport:movers-approval',
           label: withTooltip(<Link to="/scrap-transport/scrap-movers-approval" style={getStyle('scrap-transport:movers-approval')}>Scrap Movers Approval</Link>, 'Scrap Movers Approval')
         },
@@ -229,6 +241,20 @@ const Sidebar = ({ selected }) => {
         {
           key: 'reports:daily-purchase-performance',
           label: withTooltip(<Link to="/reports/daily-purchase-performance" style={getStyle('reports:daily-purchase-performance')}>Daily Purchase Performance Report</Link>, 'Daily Purchase Performance Report')
+        },
+        {
+          key: 'reports:scrap-transport',
+          label: withTooltip(<span style={getStyle('reports:scrap-transport')}>Scrap Transport Report</span>, 'Scrap Transport Report'),
+          children: [
+            {
+              key: 'reports:scrap-transport:agency-performance',
+              label: withTooltip(<Link to="/reports/scrap-transport/agency-performance" style={getStyle('reports:scrap-transport:agency-performance')}>Agency Performance</Link>, 'Agency Performance')
+            },
+            {
+              key: 'reports:scrap-transport:raw-scrap-report',
+              label: withTooltip(<Link to="/reports/scrap-transport/raw-scrap-report" style={getStyle('reports:scrap-transport:raw-scrap-report')}>Raw Scrap Transport Report</Link>, 'Raw Scrap Transport Report')
+            }
+          ]
         },
         {
           key: 'reports:daily-scrap-move-aggregate',
@@ -427,7 +453,7 @@ const Sidebar = ({ selected }) => {
             color: '#8c8c8c',
             fontSize: '11px'
           }}>
-            © 2026 Stock
+            © 2026 Scrap Transport
           </Text>
         </div>
       </div>

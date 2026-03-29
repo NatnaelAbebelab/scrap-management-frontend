@@ -79,14 +79,17 @@ const Header = ({ onMenuClick }) => {
     if (path.startsWith('/profile')) return 'User Profile'
     if (path.startsWith('/reports/raw-material/requisition')) return 'Material Requisition Report'
     if (path.startsWith('/reports/raw-material/issue-report')) return 'Material Issue Report'
+    if (path.startsWith('/reports/scrap-transport/agency-performance')) return 'Agency Performance'
+    if (path.startsWith('/reports/scrap-transport/raw-scrap-report')) return 'Raw Scrap Transport Report'
     if (path.startsWith('/reports')) return 'Report'
     if (path.startsWith('/customer-management')) return 'Customers'
     if (path.startsWith('/scrap-purchase/stock')) return 'Stock'
     if (path.startsWith('/scrap-transport/internal-agencies')) return 'Internal Agencies'
     if (path.startsWith('/scrap-transport/internal-agreements')) return 'Agencies Agreements'
     if (path.startsWith('/raw-material/requisition')) return 'Material Requisition'
-    if (path.startsWith('/raw-material/issue')) return 'Material Issue'
-    return 'Stock'
+    if (path.startsWith('/scrap-transport/upload-transport-data')) return 'Scrap Transport Data'
+    if (path.startsWith('/scrap-transport/daily-aggregate')) return 'Daily Scrap Transport'
+    return 'Scrap Transport'
   }
 
   // User dropdown menu

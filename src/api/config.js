@@ -93,3 +93,11 @@ export const INTERNAL_AGREEMENT_ADD_URL = `${API_BASE_URL}/internal/add-agreemen
 export const INTERNAL_AGREEMENT_UPDATE_URL = `${API_BASE_URL}/internal/update-agreement/`
 export const INTERNAL_AGREEMENT_UPDATE_RANGE_URL = `${API_BASE_URL}/internal/update-agreement-range/`
 export const INTERNAL_AGREEMENT_DELETE_URL = (id) => `${API_BASE_URL}/internal/delete-agreement/${id}/`
+
+// --- Transport Data ---
+export const INTERNAL_UPLOAD_CSV_URL = `${API_BASE_URL}/internal/upload-csv-file/`
+export const INTERNAL_FACTORY_SCRAP_RECORDS_URL = `${API_BASE_URL}/internal/get-filtered-factory-scrap-records/`
+export const INTERNAL_DAILY_TRANSPORT_AGGREGATE_URL = `${API_BASE_URL}/internal/get-daily-scrap-move-aggregate/`
+export const INTERNAL_DAILY_TRANSPORT_APPROVE_URL = `${API_BASE_URL}/internal/approve-record-supervisor/`
+export const INTERNAL_DAILY_TRANSPORT_PAY_URL = `${API_BASE_URL}/internal/pay-agency-finance/`
+export const INTERNAL_AGENCY_PERFORMANCE_URL = `${API_BASE_URL}/internal/get-daily-performance-calculator/`
