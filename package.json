@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
+    "@react-pdf/renderer": "^4.3.2",
     "antd": "^6.2.1",
     "jspdf": "^4.1.0",
     "jspdf-autotable": "^5.0.7",

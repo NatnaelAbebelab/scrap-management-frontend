@@ -5,7 +5,6 @@ import { API_BASE_URL } from '../config';
 export const authService = {
   refreshToken: async (): Promise<string | null> => {
     const refreshToken = tokenService.getRefreshToken();
-    console.log("Refresh token", refreshToken)
     if (!refreshToken) {
       return null;
     }

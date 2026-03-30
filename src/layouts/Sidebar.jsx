@@ -42,33 +42,35 @@ const Sidebar = ({ selected }) => {
                         : path === '/scrap-transport/upload-transport-data' ? 'scrap-transport:upload-transport-data'
                           : path === '/scrap-transport/daily-aggregate' ? 'scrap-transport:daily-aggregate'
                             : path === '/scrap-transport/scrap-movers-approval' ? 'scrap-transport:movers-approval'
-                            : path === '/scrap-transport/scrap-movers-payment' ? 'scrap-transport:movers-payment'
-                              : path === '/raw-material/issue' ? 'raw-material:issue'
-                                : path === '/settings/user-management' ? 'settings:user-management'
-                                  : path === '/settings/melting-plants' ? 'settings:melting-plants'
-                                    : path === '/settings/grn-serial' ? 'settings:grn-serial'
-                                      : path === '/settings/stock-beginning-balance' ? 'settings:stock-beginning-balance'
-                                        : path === '/reports/plain-report' ? 'reports:purchase-grn:plain-report'
-                                          : path === '/reports/aggregate-report' ? 'reports:purchase-grn:aggregate-report'
-                                            : path === '/reports/customer-plain-report' ? 'reports:purchase-grn:customer-plain-report'
-                                              : path === '/reports/customer-aggregate-report' ? 'reports:purchase-grn:customer-aggregate-report'
-                                                : path.startsWith('/reports/aggregate-purchase') ? 'reports:aggregate-purchase'
-                                                  : path.startsWith('/reports/daily-purchase-performance') ? 'reports:daily-purchase-performance'
+                              : path === '/scrap-transport/scrap-movers-payment' ? 'scrap-transport:movers-payment'
+                                : path === '/raw-material/issue' ? 'raw-material:issue'
+                                  : path === '/settings/user-management' ? 'settings:user-management'
+                                    : path === '/settings/melting-plants' ? 'settings:melting-plants'
+                                      : path === '/settings/grn-serial' ? 'settings:grn-serial'
+                                        : path === '/settings/stock-beginning-balance' ? 'settings:stock-beginning-balance'
+                                          : path === '/reports/plain-report' ? 'reports:purchase-grn:plain-report'
+                                            : path === '/reports/aggregate-report' ? 'reports:purchase-grn:aggregate-report'
+                                              : path === '/reports/customer-plain-report' ? 'reports:purchase-grn:customer-plain-report'
+                                                : path === '/reports/customer-aggregate-report' ? 'reports:purchase-grn:customer-aggregate-report'
+                                                  : path.startsWith('/reports/aggregate-purchase') ? 'reports:aggregate-purchase'
+                                                    : path.startsWith('/reports/daily-purchase-performance') ? 'reports:daily-purchase-performance'
                                                       : path.startsWith('/reports/scrap-transport/agency-performance') ? 'reports:scrap-transport:agency-performance'
                                                         : path.startsWith('/reports/scrap-transport/raw-scrap-report') ? 'reports:scrap-transport:raw-scrap-report'
                                                           : path.startsWith('/reports/daily-scrap-move-aggregate') ? 'reports:daily-scrap-move-aggregate'
-                                                      : path.startsWith('/reports/agency-performance') ? 'reports:agency-performance'
-                                                        : path === '/reports/stock-report' ? 'reports:stock-reports:stock-report'
-                                                          : path === '/reports/stock-card' ? 'reports:stock-reports:stock-card'
-                                                            : path === '/reports/stock-aggregated-report' ? 'reports:stock-reports:stock-aggregated-report'
-                                                              : path.startsWith('/reports/stock') ? 'reports:stock-reports'
-                                                                : path.startsWith('/reports/raw-material/requisition') ? 'reports:raw-material:requisition'
-                                                                  : path.startsWith('/reports/raw-material/issue-report') ? 'reports:raw-material:issue'
-                                                                    : path.startsWith('/reports/grn-receipt') ? 'reports:grn-receipt'
-                                                                      : path.startsWith('/reports/scrap-purchase-approval-receipt') ? 'reports:scrap-purchase-approval-receipt'
-                                                                        : path.startsWith('/reports') ? 'reports'
-                                                                          : path.startsWith('/settings') ? 'settings'
-                                                                            : 'dashboard'
+                                                            : path.startsWith('/reports/agency-performance') ? 'reports:agency-performance'
+                                                              : path === '/reports/stock-report' ? 'reports:stock-reports:stock-report'
+                                                                : path === '/reports/stock-card' ? 'reports:stock-reports:stock-card'
+                                                                  : path === '/reports/stock-aggregated-report' ? 'reports:stock-reports:stock-aggregated-report'
+                                                                    : path.startsWith('/reports/stock') ? 'reports:stock-reports'
+                                                                      : path.startsWith('/reports/raw-material/requisition') ? 'reports:raw-material:requisition'
+                                                                        : path.startsWith('/reports/raw-material/issue-report') ? 'reports:raw-material:issue'
+                                                                          : path.startsWith('/reports/grn-note-report') ? 'reports:purchase-grn:grn-note-report'
+                                                                            : path.startsWith('/reports/approval-note-report') ? 'reports:purchase-grn:approval-note-report'
+                                                                              : path.startsWith('/reports/grn-receipt') ? 'reports:grn-receipt'
+                                                                                : path.startsWith('/reports/scrap-purchase-approval-receipt') ? 'reports:scrap-purchase-approval-receipt'
+                                                                                  : path.startsWith('/reports') ? 'reports'
+                                                                                    : path.startsWith('/settings') ? 'settings'
+                                                                                      : 'dashboard'
 
   const activeKey = selected || inferred
 
@@ -235,6 +237,14 @@ const Sidebar = ({ selected }) => {
             {
               key: 'reports:purchase-grn:customer-aggregate-report',
               label: withTooltip(<Link to="/reports/customer-aggregate-report" style={getStyle('reports:purchase-grn:customer-aggregate-report')}>Customer Aggregated Report</Link>, 'Customer Aggregated Report')
+            },
+            {
+              key: 'reports:purchase-grn:grn-note-report',
+              label: withTooltip(<Link to="/reports/grn-note-report" style={getStyle('reports:purchase-grn:grn-note-report')}>GRN Note Report</Link>, 'GRN Note Report')
+            },
+            {
+              key: 'reports:purchase-grn:approval-note-report',
+              label: withTooltip(<Link to="/reports/approval-note-report" style={getStyle('reports:purchase-grn:approval-note-report')}>Approval Note Report</Link>, 'Approval Note Report')
             }
           ]
         },

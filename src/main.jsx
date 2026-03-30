@@ -42,6 +42,8 @@ import MaterialRequisitionReport from './reports/MaterialRequisitionReport'
 import MaterialIssueReport from './reports/MaterialIssueReport'
 import AgencyPerformanceReport from './reports/AgencyPerformanceReport'
 import RawScrapTransportReport from './reports/RawScrapTransportReport'
+import GrnNoteReport from './reports/GrnNoteReport'
+import ApprovalNoteReport from './reports/ApprovalNoteReport'
 import StockManagement from './stockManagement/StockManagement'
 
 import { ConfigProvider } from 'antd'
@@ -171,6 +173,14 @@ root.render(
             <Route
               path="/reports/scrap-transport/raw-scrap-report"
               element={<RequireAuth><RawScrapTransportReport /></RequireAuth>}
+            />
+            <Route
+              path="/reports/grn-note-report"
+              element={<RequireAuth><GrnNoteReport /></RequireAuth>}
+            />
+            <Route
+              path="/reports/approval-note-report"
+              element={<RequireAuth><ApprovalNoteReport /></RequireAuth>}
             />
           </Routes>
         </BrowserRouter>

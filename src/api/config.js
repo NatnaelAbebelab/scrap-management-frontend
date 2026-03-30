@@ -49,6 +49,7 @@ export const RATE_ARCHIVE_URL = `${API_BASE_URL}/rate/archive/`
 export const MATERIAL_TYPES_GET_URL = `${API_BASE_URL}/grn/get-material-types/`
 export const GRN_PLAIN_REPORT_URL = `${API_BASE_URL}/report/plain-report/`
 export const GRN_AGGREGATE_REPORT_URL = `${API_BASE_URL}/report/aggregate-report/`
+export const GRN_RECEIPT_GET_URL = (record_no) => `${API_BASE_URL}/grn/get-scrap-receipt/${record_no}/`
 
 // --- Customer Management ---
 export const CUSTOMERS_GET_URL = `${API_BASE_URL}/customer/get-customers/`
