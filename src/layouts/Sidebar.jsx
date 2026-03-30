@@ -62,15 +62,17 @@ const Sidebar = ({ selected }) => {
                                                                 : path === '/reports/stock-card' ? 'reports:stock-reports:stock-card'
                                                                   : path === '/reports/stock-aggregated-report' ? 'reports:stock-reports:stock-aggregated-report'
                                                                     : path.startsWith('/reports/stock') ? 'reports:stock-reports'
-                                                                      : path.startsWith('/reports/raw-material/requisition') ? 'reports:raw-material:requisition'
-                                                                        : path.startsWith('/reports/raw-material/issue-report') ? 'reports:raw-material:issue'
-                                                                          : path.startsWith('/reports/grn-note-report') ? 'reports:purchase-grn:grn-note-report'
-                                                                            : path.startsWith('/reports/approval-note-report') ? 'reports:purchase-grn:approval-note-report'
-                                                                              : path.startsWith('/reports/grn-receipt') ? 'reports:grn-receipt'
-                                                                                : path.startsWith('/reports/scrap-purchase-approval-receipt') ? 'reports:scrap-purchase-approval-receipt'
-                                                                                  : path.startsWith('/reports') ? 'reports'
-                                                                                    : path.startsWith('/settings') ? 'settings'
-                                                                                      : 'dashboard'
+                                                                      : path === '/reports/raw-material/requisition-receipt' ? 'reports:raw-material:requisition-receipt'
+                                                                        : path === '/reports/raw-material/issue-receipt' ? 'reports:raw-material:issue-receipt'
+                                                                          : path.startsWith('/reports/raw-material/requisition') ? 'reports:raw-material:requisition'
+                                                                          : path.startsWith('/reports/raw-material/issue-report') ? 'reports:raw-material:issue'
+                                                                            : path.startsWith('/reports/grn-note-report') ? 'reports:purchase-grn:grn-note-report'
+                                                                              : path.startsWith('/reports/approval-note-report') ? 'reports:purchase-grn:approval-note-report'
+                                                                                : path.startsWith('/reports/grn-receipt') ? 'reports:grn-receipt'
+                                                                                  : path.startsWith('/reports/scrap-purchase-approval-receipt') ? 'reports:scrap-purchase-approval-receipt'
+                                                                                    : path.startsWith('/reports') ? 'reports'
+                                                                                      : path.startsWith('/settings') ? 'settings'
+                                                                                        : 'dashboard'
 
   const activeKey = selected || inferred
 
@@ -112,11 +114,14 @@ const Sidebar = ({ selected }) => {
   }
 
   const primaryColor = 'rgb(245, 34, 45)'
-  const getStyle = (key) => ({
-    color: activeKey.startsWith(key) ? primaryColor : 'inherit',
-    fontWeight: activeKey.startsWith(key) ? 600 : 400,
-    textDecoration: 'none'
-  })
+  const getStyle = (key) => {
+    const isActive = activeKey === key || activeKey.startsWith(key + ':')
+    return {
+      color: isActive ? primaryColor : 'inherit',
+      fontWeight: isActive ? 600 : 400,
+      textDecoration: 'none'
+    }
+  }
 
   const withTooltip = (label, title) => (
     <Tooltip title={title} placement="right">
@@ -299,6 +304,14 @@ const Sidebar = ({ selected }) => {
             {
               key: 'reports:raw-material:requisition',
               label: withTooltip(<Link to="/reports/raw-material/requisition" style={getStyle('reports:raw-material:requisition')}>Material Requisition Report</Link>, 'Material Requisition Report')
+            },
+            {
+              key: 'reports:raw-material:requisition-receipt',
+              label: withTooltip(<Link to="/reports/raw-material/requisition-receipt" style={getStyle('reports:raw-material:requisition-receipt')}>Material Requisition Receipt</Link>, 'Material Requisition Receipt')
+            },
+            {
+              key: 'reports:raw-material:issue-receipt',
+              label: withTooltip(<Link to="/reports/raw-material/issue-receipt" style={getStyle('reports:raw-material:issue-receipt')}>Material Issue Receipt</Link>, 'Material Issue Receipt')
             },
             {
               key: 'reports:raw-material:issue',

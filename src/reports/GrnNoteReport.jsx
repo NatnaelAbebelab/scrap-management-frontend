@@ -155,7 +155,7 @@ const GrnNoteReport = () => {
         <Header />
         <div className="page-wrapper" style={{ padding: 20 }}>
           <div style={{ marginBottom: 24 }}>
-            <Title level={3}>GRN Note Report</Title>
+            <Title level={3}>GRN Note</Title>
             <Text type="secondary">Retrieve and generate Raw Material Goods Received Notes by record number.</Text>
           </div>
 
