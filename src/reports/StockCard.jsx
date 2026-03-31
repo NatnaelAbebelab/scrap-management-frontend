@@ -28,9 +28,25 @@ const StockCardReport = () => {
   const handleFetchReport = async (currentFilters) => {
     try {
       const data = await fetchStockCard(currentFilters)
+      const records = data.stock_card || []
+      const totals = data.totals || {}
+
+      // Prepend Beginning Balance row
+      const beginningRow = {
+        _id: 'beginning_balance',
+        weight_date: null,
+        transaction_type: 'BEGINNING',
+        grn_no: '-',
+        issue_no: '-',
+        purchased_qty: 0,
+        issued_qty: 0,
+        remaining_qty: totals.beginning_qty || 0,
+        isBeginning: true
+      }
+
       setReportData({
-        records: data.stock_card || [],
-        totals: data.totals || {}
+        records: [beginningRow, ...records],
+        totals: totals
       })
     } catch (err) {
       console.error('Failed to fetch stock card:', err)
@@ -77,11 +93,11 @@ const StockCardReport = () => {
   const handleExport = () => {
     // 1. Prepare data rows (AOA style)
     const dataRows = reportData.records.map(record => [
-      record.weight_date ? formatDate(record.weight_date) : '-',
-      record.grn_no || '-',
-      record.issue_no || '-',
-      record.purchased_qty || 0,
-      record.issued_qty || 0,
+      record.isBeginning ? 'Beginning Balance' : (record.weight_date ? formatDate(record.weight_date) : '-'),
+      record.isBeginning ? '-' : (record.grn_no || '-'),
+      record.isBeginning ? '-' : (record.issue_no || '-'),
+      record.isBeginning ? '-' : (record.purchased_qty || 0),
+      record.isBeginning ? '-' : (record.issued_qty || 0),
       record.remaining_qty || 0,
       '' // Remark
     ])
@@ -145,7 +161,8 @@ const StockCardReport = () => {
       title: 'Trans. Type',
       dataIndex: 'transaction_type',
       key: 'transaction_type',
-      render: (type) => (
+      render: (type, record) => (
+        record.isBeginning ? <Text strong>BEGINNING</Text> :
         <Tag color={type === 'purchase' ? 'green' : 'orange'} style={{ textTransform: 'uppercase', fontWeight: 600 }}>
           {type}
         </Tag>
@@ -155,25 +172,25 @@ const StockCardReport = () => {
       title: 'GRN No',
       dataIndex: 'grn_no',
       key: 'grn_no',
-      render: (v) => <Text style={{ fontWeight: 600 }}>{v || '-'}</Text>
+      render: (v, record) => record.isBeginning ? '-' : <Text style={{ fontWeight: 600 }}>{v || '-'}</Text>
     },
     {
       title: 'Issue No',
       dataIndex: 'issue_no',
       key: 'issue_no',
-      render: (v) => v || '-'
+      render: (v, record) => record.isBeginning ? '-' : (v || '-')
     },
     {
       title: 'Purchased Qty (Kg)',
       dataIndex: 'purchased_qty',
       key: 'purchased_qty',
-      render: (v) => v > 0 ? <Text strong style={{ color: '#52c41a' }}>+{v.toLocaleString()}</Text> : '-'
+      render: (v, record) => record.isBeginning ? '-' : (v > 0 ? <Text strong style={{ color: '#52c41a' }}>+{v.toLocaleString()}</Text> : '-')
     },
     {
       title: 'Issued Qty (Kg)',
       dataIndex: 'issued_qty',
       key: 'issued_qty',
-      render: (v) => v > 0 ? <Text strong style={{ color: '#faad14' }}>-{v.toLocaleString()}</Text> : '-'
+      render: (v, record) => record.isBeginning ? '-' : (v > 0 ? <Text strong style={{ color: '#faad14' }}>-{v.toLocaleString()}</Text> : '-')
     },
     {
       title: 'Remaining Qty (Kg)',
@@ -261,7 +278,20 @@ const StockCardReport = () => {
               loading={loading}
               pagination={false}
               size="middle"
+              rowClassName={(record) => record.isBeginning ? 'beginning-balance-row' : ''}
             />
+            <style>
+              {`
+                .beginning-balance-row {
+                  background-color: #fafafa;
+                  box-shadow: inset 0 -2px 5px rgba(0,0,0,0.05);
+                }
+                .beginning-balance-row td {
+                  border-bottom: 2px solid #1890ff !important;
+                  font-weight: 600;
+                }
+              `}
+            </style>
           </Card>
         </div>
       </div>

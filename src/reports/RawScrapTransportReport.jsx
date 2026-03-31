@@ -6,7 +6,7 @@ import Sidebar from '../layouts/Sidebar'
 import DataTableWithPagination from '../components/DataTableWithPagination'
 import { useTransportData } from '../api/useTransportData'
 import { formatDate } from '../utils/dateFormatter'
-import * as XLSX from 'xlsx'
+import XLSX from 'xlsx-js-style'
 
 const { Title, Text } = Typography
 const { RangePicker } = DatePicker

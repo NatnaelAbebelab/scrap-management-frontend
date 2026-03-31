@@ -24,9 +24,29 @@ const StockReport = () => {
   const handleFetchReport = async (currentFilters) => {
     try {
       const data = await fetchStockCard(currentFilters)
+      const records = data.stock_card || []
+      const totals = data.totals || {}
+
+      // Prepend Beginning Balance row
+      const beginningRow = {
+        _id: 'beginning_balance',
+        weight_date: null,
+        transaction_type: 'BEGINNING',
+        grn_no: '-',
+        issue_no: '-',
+        purchased_qty: 0,
+        issued_qty: 0,
+        average_rate: 0,
+        purchased_value: 0,
+        issue_value: 0,
+        remaining_qty: totals.beginning_qty || 0,
+        remaining_value: totals.beginning_value || 0,
+        isBeginning: true
+      }
+
       setReportData({
-        records: data.stock_card || [],
-        totals: data.totals || {}
+        records: [beginningRow, ...records],
+        totals: totals
       })
     } catch (err) {
       console.error('Failed to fetch stock report:', err)
@@ -53,17 +73,17 @@ const StockReport = () => {
       filename: 'Stock_Report',
       sheetName: 'Stock Card',
       columns: [
-        { title: 'Date', dataIndex: 'weight_date', exportValue: (v) => v ? formatDate(v) : '-' },
-        { title: 'GRN No', dataIndex: 'grn_no' },
-        { title: 'Issue No', dataIndex: 'issue_no' },
-        { title: 'Purchased Qty (Kg)', dataIndex: 'purchased_qty' },
-        { title: 'Issued Qty (Kg)', dataIndex: 'issued_qty' },
-        { title: 'Avg. Rate', dataIndex: 'average_rate' },
-        { title: 'Purchased Value (Br.)', dataIndex: 'purchased_value' },
-        { title: 'Issue Value (Br.)', dataIndex: 'issue_value' },
+        { title: 'Date', dataIndex: 'weight_date', exportValue: (v, record) => record.isBeginning ? 'Beginning Balance' : (v ? formatDate(v) : '-') },
+        { title: 'GRN No', dataIndex: 'grn_no', exportValue: (v, record) => record.isBeginning ? '-' : v },
+        { title: 'Issue No', dataIndex: 'issue_no', exportValue: (v, record) => record.isBeginning ? '-' : v },
+        { title: 'Purchased Qty (Kg)', dataIndex: 'purchased_qty', exportValue: (v, record) => record.isBeginning ? '-' : v },
+        { title: 'Issued Qty (Kg)', dataIndex: 'issued_qty', exportValue: (v, record) => record.isBeginning ? '-' : v },
+        { title: 'Avg. Rate', dataIndex: 'average_rate', exportValue: (v, record) => record.isBeginning ? '-' : v },
+        { title: 'Purchased Value (Br.)', dataIndex: 'purchased_value', exportValue: (v, record) => record.isBeginning ? '-' : v },
+        { title: 'Issue Value (Br.)', dataIndex: 'issue_value', exportValue: (v, record) => record.isBeginning ? '-' : v },
         { title: 'Remaining Qty (Kg)', dataIndex: 'remaining_qty' },
         { title: 'Remaining Value (Br.)', dataIndex: 'remaining_value' },
-        { title: 'Plant', dataIndex: 'melting_plant' }
+        { title: 'Plant', dataIndex: 'melting_plant', exportValue: (v, record) => record.isBeginning ? '-' : v }
       ],
       data: reportData.records,
       totals: reportData.totals
@@ -75,13 +95,14 @@ const StockReport = () => {
       title: 'Weight Date',
       dataIndex: 'weight_date',
       key: 'weight_date',
-      render: (v) => <Text style={{ fontFamily: "'CircularStd', sans-serif" }}>{v ? formatDate(v) : '-'}</Text>
+      render: (v, record) => <Text style={{ fontFamily: "'CircularStd', sans-serif" }}>{record.isBeginning ? '-' : (v ? formatDate(v) : '-')}</Text>
     },
     {
       title: 'Trans. Type',
       dataIndex: 'transaction_type',
       key: 'transaction_type',
-      render: (type) => (
+      render: (type, record) => (
+        record.isBeginning ? <Text strong>BEGINNING</Text> :
         <Tag color={type === 'purchase' ? 'green' : 'orange'} style={{ textTransform: 'uppercase', fontWeight: 600 }}>
           {type}
         </Tag>
@@ -90,7 +111,7 @@ const StockReport = () => {
     {
       title: 'GRN / Record No',
       key: 'grn_record',
-      render: (_, record) => (
+      render: (_, record) => record.isBeginning ? '-' : (
         <Space direction="vertical" size={0}>
           {record.grn_no && <Text style={{ fontSize: 13, fontFamily: "'CircularStd', sans-serif" }}>GRN: {record.grn_no}</Text>}
           {record.record_no && (
@@ -105,37 +126,37 @@ const StockReport = () => {
       title: 'Issue No',
       dataIndex: 'issue_no',
       key: 'issue_no',
-      render: (v) => v || '-'
+      render: (v, record) => record.isBeginning ? '-' : (v || '-')
     },
     {
       title: 'Purchased Qty (Kg)',
       dataIndex: 'purchased_qty',
       key: 'purchased_qty',
-      render: (v) => v > 0 ? <Text strong style={{ color: '#52c41a' }}>+{v.toLocaleString()}</Text> : '-'
+      render: (v, record) => record.isBeginning ? '-' : (v > 0 ? <Text strong style={{ color: '#52c41a' }}>+{v.toLocaleString()}</Text> : '-')
     },
     {
       title: 'Avg. Rate',
       dataIndex: 'average_rate',
       key: 'average_rate',
-      render: (v) => <Text style={{ fontFamily: "'CircularStd', sans-serif" }}>Br. {Number(v || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</Text>
+      render: (v, record) => record.isBeginning ? '-' : <Text style={{ fontFamily: "'CircularStd', sans-serif" }}>Br. {Number(v || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</Text>
     },
     {
       title: 'Purchased Value (Br.)',
       dataIndex: 'purchased_value',
       key: 'purchased_value',
-      render: (v) => v > 0 ? <Text style={{ fontSize: 13, fontFamily: "'CircularStd', sans-serif" }}>{v.toLocaleString()}</Text> : '-'
+      render: (v, record) => record.isBeginning ? '-' : (v > 0 ? <Text style={{ fontSize: 13, fontFamily: "'CircularStd', sans-serif" }}>{v.toLocaleString()}</Text> : '-')
     },
     {
       title: 'Issued Qty (Kg)',
       dataIndex: 'issued_qty',
       key: 'issued_qty',
-      render: (v) => v > 0 ? <Text strong style={{ color: '#faad14' }}>-{v.toLocaleString()}</Text> : '-'
+      render: (v, record) => record.isBeginning ? '-' : (v > 0 ? <Text strong style={{ color: '#faad14' }}>-{v.toLocaleString()}</Text> : '-')
     },
     {
       title: 'Issued Value (Br.)',
       dataIndex: 'issue_value',
       key: 'issue_value',
-      render: (v) => v > 0 ? <Text style={{ fontSize: 13, fontFamily: "'CircularStd', sans-serif" }}>{v.toLocaleString()}</Text> : '-'
+      render: (v, record) => record.isBeginning ? '-' : (v > 0 ? <Text style={{ fontSize: 13, fontFamily: "'CircularStd', sans-serif" }}>{v.toLocaleString()}</Text> : '-')
     },
     {
       title: 'Remaining Qty (Kg)',
@@ -165,7 +186,7 @@ const StockReport = () => {
             <Space>
               <Button 
                 type="primary" 
-                style={{ backgroundColor: '#1890ff', borderColor: '#1890ff' }} 
+                style={{ backgroundColor: '#1890ff', borderColor: '#1890ff', borderRadius: 6 }} 
                 icon={<DownloadOutlined />}
                 onClick={handleExport}
                 loading={loading}
@@ -222,7 +243,19 @@ const StockReport = () => {
               loading={loading}
               pagination={false}
               size="middle"
+              rowClassName={(record) => record.isBeginning ? 'beginning-balance-row' : ''}
             />
+            <style>
+              {`
+                .beginning-balance-row {
+                  background-color: #fafafa;
+                }
+                .beginning-balance-row td {
+                  border-bottom: 2px solid #1890ff !important;
+                  font-weight: 600;
+                }
+              `}
+            </style>
           </Card>
         </div>
       </div>
@@ -231,3 +264,4 @@ const StockReport = () => {
 }
 
 export default StockReport
+

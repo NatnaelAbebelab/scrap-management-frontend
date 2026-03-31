@@ -4,7 +4,7 @@ import { SearchOutlined, ClearOutlined, FileExcelOutlined } from '@ant-design/ic
 import Header from '../layouts/Header'
 import Sidebar from '../layouts/Sidebar'
 import { useAgencyPerformance } from '../api/useAgencyPerformance'
-import * as XLSX from 'xlsx'
+import XLSX from 'xlsx-js-style'
 
 const { Title, Text } = Typography
 const { RangePicker } = DatePicker

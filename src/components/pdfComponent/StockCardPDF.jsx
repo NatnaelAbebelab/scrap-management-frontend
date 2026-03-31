@@ -98,25 +98,53 @@ const StockCardPDF = ({ records, totals }) => {
           />
 
           <View style={styles.table}>
+            {/* Hierarchical Header - Row 1 */}
             <View style={[styles.tableRow, styles.tableHeader]}>
               <View style={[styles.tableCol, styles.colDate]}><Text style={styles.textCenter}>Weight Date</Text></View>
-              <View style={[styles.tableCol, styles.colGrn]}><Text style={styles.textCenter}>Receiving Note No</Text></View>
+              <View style={[styles.tableCol, styles.colGrn]}><Text style={styles.textCenter}>Receiving Report No</Text></View>
               <View style={[styles.tableCol, styles.colIssue]}><Text style={styles.textCenter}>Issue No</Text></View>
-              <View style={[styles.tableCol, styles.colQty]}><Text style={styles.textCenter}>Recv. Qty</Text></View>
-              <View style={[styles.tableCol, styles.colQty]}><Text style={styles.textCenter}>Issued Qty</Text></View>
-              <View style={[styles.tableCol, styles.colNet]}><Text style={styles.textCenter}>Net Balance</Text></View>
+              <View style={[styles.tableCol, { width: '36%', borderRightWidth: 1 }]}><Text style={styles.textCenter}>Quantity</Text></View>
               <View style={[styles.tableCol, styles.colPlant]}><Text style={styles.textCenter}>Melting Plant</Text></View>
             </View>
 
+            {/* Hierarchical Header - Row 2 */}
+            <View style={[styles.tableRow, styles.tableHeader]}>
+              <View style={[styles.tableCol, styles.colDate]}><Text></Text></View>
+              <View style={[styles.tableCol, styles.colGrn]}><Text></Text></View>
+              <View style={[styles.tableCol, styles.colIssue]}><Text></Text></View>
+              <View style={[styles.tableCol, styles.colQty]}><Text style={styles.textCenter}>Received</Text></View>
+              <View style={[styles.tableCol, styles.colQty]}><Text style={styles.textCenter}>Issued</Text></View>
+              <View style={[styles.tableCol, styles.colNet]}><Text style={styles.textCenter}>Net Balance</Text></View>
+              <View style={[styles.tableCol, styles.colPlant]}><Text></Text></View>
+            </View>
+
             {pageData.map((record, index) => (
-              <View key={index} style={styles.tableRow}>
-                <View style={[styles.tableCol, styles.colDate]}><Text style={styles.textCenter}>{record.weight_date ? formatDate(record.weight_date) : '-'}</Text></View>
-                <View style={[styles.tableCol, styles.colGrn]}><Text style={styles.textCenter}>{record.grn_no || '-'}</Text></View>
-                <View style={[styles.tableCol, styles.colIssue]}><Text style={styles.textCenter}>{record.issue_no || '-'}</Text></View>
-                <View style={[styles.tableCol, styles.colQty]}><Text style={styles.textRight}>{record.purchased_qty?.toLocaleString() || '0'}</Text></View>
-                <View style={[styles.tableCol, styles.colQty]}><Text style={styles.textRight}>{record.issued_qty?.toLocaleString() || '0'}</Text></View>
-                <View style={[styles.tableCol, styles.colNet]}><Text style={styles.textRight}>{record.remaining_qty?.toLocaleString() || '0'}</Text></View>
-                <View style={[styles.tableCol, styles.colPlant]}><Text>{record.melting_plant || '-'}</Text></View>
+              <View key={index} style={[styles.tableRow, record.isBeginning && { backgroundColor: '#f0faff' }]}>
+                <View style={[styles.tableCol, styles.colDate]}>
+                  <Text style={styles.textCenter}>
+                    {record.isBeginning ? 'Beginning Balance' : (record.weight_date ? formatDate(record.weight_date) : '-')}
+                  </Text>
+                </View>
+                <View style={[styles.tableCol, styles.colGrn]}>
+                  <Text style={styles.textCenter}>{record.isBeginning ? '-' : (record.grn_no || '-')}</Text>
+                </View>
+                <View style={[styles.tableCol, styles.colIssue]}>
+                  <Text style={styles.textCenter}>{record.isBeginning ? '-' : (record.issue_no || '-')}</Text>
+                </View>
+                <View style={[styles.tableCol, styles.colQty]}>
+                  <Text style={styles.textRight}>{record.isBeginning ? '-' : (record.purchased_qty?.toLocaleString() || '0')}</Text>
+                </View>
+                <View style={[styles.tableCol, styles.colQty]}>
+                  <Text style={styles.textRight}>{record.isBeginning ? '-' : (record.issued_qty?.toLocaleString() || '0')}</Text>
+                </View>
+                <View style={[styles.tableCol, styles.colNet]}>
+                  <Text style={[styles.textRight, record.isBeginning && { fontWeight: 'bold' }]}>
+                    {record.remaining_qty?.toLocaleString() || '0'}
+                  </Text>
+                </View>
+                <View style={[styles.tableCol, styles.colPlant]}>
+                  <Text>{record.isBeginning ? '-' : (record.melting_plant || '-')}</Text>
+                </View>
               </View>
             ))}
 
