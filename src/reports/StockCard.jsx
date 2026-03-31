@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { Card, Typography, Space, Form, DatePicker, Button, Row, Col, Table, Tag, Statistic, message } from 'antd'
-import { SearchOutlined, ClearOutlined, DownloadOutlined } from '@ant-design/icons'
+import { SearchOutlined, ClearOutlined, DownloadOutlined, FilePdfOutlined } from '@ant-design/icons'
 import Sidebar from '../layouts/Sidebar'
 import Header from '../layouts/Header'
 import { useStockManagement } from '../api/useStockManagement'
 import { formatDate } from '../utils/dateFormatter'
 import { exportToExcel } from '../utils/exportToExcel'
+import { pdf } from '@react-pdf/renderer'
+import StockCardPDF from '../components/pdfComponent/StockCardPDF'
 
 import * as XLSX from 'xlsx'
 
@@ -48,6 +50,28 @@ const StockCardReport = () => {
   const handleReset = () => {
     form.resetFields()
     setFilters({})
+  }
+
+  const handlePDFExport = async () => {
+    if (reportData.records.length === 0) {
+      message.warning('No data to export')
+      return
+    }
+
+    message.loading({ content: 'Generating PDF...', key: 'pdf_loading' })
+    try {
+      const blob = await pdf(<StockCardPDF records={reportData.records} totals={reportData.totals} />).toBlob()
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `Stock_Card_${new Date().toISOString().slice(0, 10)}.pdf`
+      link.click()
+      URL.revokeObjectURL(url)
+      message.success({ content: 'PDF generated successfully!', key: 'pdf_loading', duration: 2 })
+    } catch (error) {
+      console.error('PDF generation error:', error)
+      message.error({ content: 'Failed to generate PDF', key: 'pdf_loading' })
+    }
   }
 
   const handleExport = () => {
@@ -173,12 +197,21 @@ const StockCardReport = () => {
             <Space>
               <Button
                 type="primary"
-                style={{ backgroundColor: '#1890ff', borderColor: '#1890ff' }}
+                style={{ backgroundColor: '#1890ff', borderColor: '#1890ff', borderRadius: 6 }}
                 icon={<DownloadOutlined />}
                 onClick={handleExport}
                 loading={loading}
               >
                 Excel Export
+              </Button>
+              <Button
+                type="primary"
+                style={{ backgroundColor: '#f22f46', borderColor: '#f22f46', borderRadius: 6 }}
+                icon={<FilePdfOutlined />}
+                onClick={handlePDFExport}
+                loading={loading}
+              >
+                Export PDF
               </Button>
             </Space>
           </div>
@@ -190,8 +223,8 @@ const StockCardReport = () => {
               </Form.Item>
               <Form.Item>
                 <Space>
-                  <Button type="primary" htmlType="submit" icon={<SearchOutlined />} style={{ borderRadius: 6, backgroundColor: 'rgb(245, 34, 45)', borderColor: 'rgb(245, 34, 45)' }} size="large">Search</Button>
-                  <Button onClick={handleReset} icon={<ClearOutlined />} style={{ borderRadius: 6 }} size="large">Reset</Button>
+                  <Button type="primary" htmlType="submit" icon={<SearchOutlined />} style={{ borderRadius: 6, backgroundColor: 'rgb(245, 34, 45)', borderColor: 'rgb(245, 34, 45)' }}>Search</Button>
+                  <Button onClick={handleReset} icon={<ClearOutlined />} style={{ borderRadius: 6 }}>Reset</Button>
                 </Space>
               </Form.Item>
             </Form>
@@ -237,3 +270,4 @@ const StockCardReport = () => {
 }
 
 export default StockCardReport
+
