@@ -257,7 +257,7 @@ const Profile = () => {
   return (
     <div style={{ display: 'flex' }}>
       {/* Assuming we keep them on whichever sidebar they navigated from, or fallback to settings */}
-      <Sidebar selected="settings" />
+      <Sidebar />
       <div style={{ flex: 1, marginLeft: 220 }}>
         <Header />
         <div className="page-wrapper" style={{ padding: 20 }}>

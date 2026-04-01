@@ -5,22 +5,18 @@ import { Link, useNavigate } from 'react-router-dom'
 import {
   BellOutlined,
   ExpandOutlined,
-  MenuOutlined,
-  SearchOutlined,
   LogoutOutlined,
   UserOutlined,
   SettingOutlined,
-  DownOutlined
+  DownOutlined,
 } from '@ant-design/icons'
 import {
   Input,
   Badge,
   Avatar,
   Dropdown,
-  Space,
   Typography,
   Button,
-  Breadcrumb,
   Divider
 } from 'antd'
 import { useAuth } from '../auth/AuthProvider'
@@ -101,14 +97,12 @@ const Header = ({ onMenuClick }) => {
     {
       key: 'profile',
       icon: <UserOutlined />,
-      label: 'Profile',
-      onClick: () => navigate('/profile')
+      label: <Link to="/profile">Profile</Link>,
     },
     {
       key: 'settings',
       icon: <SettingOutlined />,
-      label: 'Settings',
-      onClick: () => navigate('/settings')
+      label: <Link to="/settings">Settings</Link>,
     },
     {
       type: 'divider'
@@ -216,18 +210,20 @@ const Header = ({ onMenuClick }) => {
               trigger={['click']}
               placement="bottomRight"
             >
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '8px 12px',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'background-color 0.2s',
-                ':hover': {
-                  backgroundColor: '#f5f5f5'
-                }
-              }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1)',
+                  backgroundColor: 'transparent',
+                }}
+                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
+                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+              >
                 <Avatar
                   size={32}
                   style={{

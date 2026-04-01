@@ -6,6 +6,8 @@ import Sidebar from '../layouts/Sidebar'
 import DataTableWithPagination from '../components/DataTableWithPagination'
 import { useDailyTransportAggregate } from '../api/useDailyTransportAggregate'
 import { formatDate } from '../utils/dateFormatter'
+import RoleBasedComponentAccess from '../components/accessControl/RoleBasedComponentAccess'
+import useRoleAccess from '../components/accessControl/useRoleAccess'
 
 const { Title, Text } = Typography
 const { RangePicker } = DatePicker
@@ -17,6 +19,7 @@ const DailyTransportAggregate = () => {
   const [filters, setFilters] = useState({})
   const [filterForm] = Form.useForm()
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const { filterByRole } = useRoleAccess()
 
   const {
     records,
@@ -102,22 +105,27 @@ const DailyTransportAggregate = () => {
     })
   }
 
-  const getActionItems = (record) => [
-    {
-      key: 'approve',
-      label: 'Approve',
-      icon: <CheckCircleOutlined />,
-      disabled: record.status !== 'new',
-      onClick: () => handleApproveAction([record._id])
-    },
-    {
-      key: 'pay',
-      label: 'Pay',
-      icon: <DollarOutlined />,
-      disabled: record.status !== 'approved',
-      onClick: () => handlePayAction([record._id])
-    }
-  ]
+  const getActionItems = (record) => {
+    const items = [
+      {
+        key: 'approve',
+        label: 'Approve',
+        icon: <CheckCircleOutlined />,
+        disabled: record.status !== 'new',
+        onClick: () => handleApproveAction([record._id]),
+        allowedRoles: ['super_admin', 'supervisor']
+      },
+      {
+        key: 'pay',
+        label: 'Pay',
+        icon: <DollarOutlined />,
+        disabled: record.status !== 'approved',
+        onClick: () => handlePayAction([record._id]),
+        allowedRoles: ['super_admin', 'finance']
+      }
+    ]
+    return filterByRole(items)
+  }
 
   const columns = [
     {
@@ -177,7 +185,7 @@ const DailyTransportAggregate = () => {
         let color = 'gold'
         if (['approved', 'paid', 'verified'].includes(status)) color = 'success'
         if (['new', 'pending'].includes(status)) color = 'processing'
-        
+
         return (
           <Tag color={color} style={{ fontWeight: 600 }}>
             {v.toUpperCase()}
@@ -221,11 +229,11 @@ const DailyTransportAggregate = () => {
             </div>
           </div>
 
-          <Card style={{ 
-            borderRadius: 12, 
-            boxShadow: '0 4px 12px rgba(0,0,0,0.05)', 
-            border: 'none', 
-            marginBottom: 24 
+          <Card style={{
+            borderRadius: 12,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+            border: 'none',
+            marginBottom: 24
           }}>
             <Form form={filterForm} layout="vertical" onFinish={handleFilterApply}>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'flex-end' }}>
@@ -233,10 +241,10 @@ const DailyTransportAggregate = () => {
                   <Input placeholder="Search TIN" size="large" style={{ borderRadius: 6, width: 250 }} />
                 </Form.Item>
                 <Form.Item name="material_type" label="Material Type" style={{ marginBottom: 16 }}>
-                  <Select 
-                    placeholder="Select Material" 
-                    size="large" 
-                    style={{ borderRadius: 6, width: 250 }} 
+                  <Select
+                    placeholder="Select Material"
+                    size="large"
+                    style={{ borderRadius: 6, width: 250 }}
                     allowClear
                     options={materialOptions}
                   />
@@ -253,17 +261,17 @@ const DailyTransportAggregate = () => {
                 </Form.Item>
                 <div style={{ marginBottom: 16 }}>
                   <Space>
-                    <Button 
-                      type="primary" 
-                      htmlType="submit" 
-                      icon={<SearchOutlined />} 
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      icon={<SearchOutlined />}
                       style={{ borderRadius: 6, background: 'rgb(245, 34, 45)' }}
                     >
                       Search
                     </Button>
-                    <Button 
-                      onClick={handleFilterReset} 
-                      icon={<ClearOutlined />} 
+                    <Button
+                      onClick={handleFilterReset}
+                      icon={<ClearOutlined />}
                       style={{ borderRadius: 6 }}
                     >
                       Reset
@@ -278,24 +286,28 @@ const DailyTransportAggregate = () => {
             <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'flex-end' }}>
               <Space>
                 {showBulkApprove && (
-                  <Button
-                    type="primary"
-                    icon={<CheckCircleOutlined />}
-                    onClick={() => handleApproveAction(selectedRowKeys)}
-                    style={{ borderRadius: 6, background: '#13c2c2', borderColor: '#13c2c2' }}
-                  >
-                    Bulk Approve ({selectedRowKeys.length})
-                  </Button>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+                    <Button
+                      type="primary"
+                      icon={<CheckCircleOutlined />}
+                      onClick={() => handleApproveAction(selectedRowKeys)}
+                      style={{ borderRadius: 6, background: '#13c2c2', borderColor: '#13c2c2' }}
+                    >
+                      Bulk Approve ({selectedRowKeys.length})
+                    </Button>
+                  </RoleBasedComponentAccess>
                 )}
                 {showBulkPay && (
-                  <Button
-                    type="primary"
-                    icon={<DollarOutlined />}
-                    onClick={() => handlePayAction(selectedRowKeys)}
-                    style={{ borderRadius: 6, background: '#52c41a', borderColor: '#52c41a' }}
-                  >
-                    Bulk Pay ({selectedRowKeys.length})
-                  </Button>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'finance']}>
+                    <Button
+                      type="primary"
+                      icon={<DollarOutlined />}
+                      onClick={() => handlePayAction(selectedRowKeys)}
+                      style={{ borderRadius: 6, background: '#52c41a', borderColor: '#52c41a' }}
+                    >
+                      Bulk Pay ({selectedRowKeys.length})
+                    </Button>
+                  </RoleBasedComponentAccess>
                 )}
               </Space>
             </div>

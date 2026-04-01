@@ -41,6 +41,8 @@ import Header from '../layouts/Header'
 import Sidebar from '../layouts/Sidebar'
 import { useInternalAgencies } from '../api/useInternalAgencies'
 import { UPLOADED_FILE_URL } from '../api/config'
+import { useAuth } from '../auth/AuthProvider'
+import RoleBasedComponentAccess from '../components/accessControl/RoleBasedComponentAccess'
 
 const { Title, Text } = Typography
 const { Option } = Select
@@ -65,6 +67,8 @@ const fmtDate = (v) => {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 const InternalAgencies = () => {
+  const { user } = useAuth()
+  const userRole = user?.role || user?.email?.role
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
 
@@ -410,18 +414,21 @@ const InternalAgencies = () => {
                     label: 'Edit Agreement',
                     icon: <FileTextOutlined />,
                     onClick: () => fetchAndOpenEditAgreement(record),
+                    allowedRoles: ['super_admin', 'supervisor']
                   }
                   : {
                     key: 'agreement',
                     label: 'Add Agreement',
                     icon: <FileTextOutlined />,
                     onClick: () => openAddAgreement(record),
+                    allowedRoles: ['super_admin', 'supervisor']
                   },
                 {
                   key: 'edit',
                   label: 'Edit',
                   icon: <EditOutlined />,
                   onClick: () => openEdit(record),
+                  allowedRoles: ['super_admin', 'supervisor']
                 },
                 { type: 'divider' },
                 {
@@ -430,8 +437,9 @@ const InternalAgencies = () => {
                   icon: <DeleteOutlined />,
                   danger: true,
                   onClick: () => handleDelete(record),
+                  allowedRoles: ['super_admin', 'supervisor']
                 },
-              ],
+              ].filter(item => !item.allowedRoles || item.allowedRoles.includes(userRole)),
             }}
             trigger={['click']}
             placement="bottomRight"
@@ -497,13 +505,15 @@ const InternalAgencies = () => {
                   <span>Agencies</span>
                   <Tag color="red">{total}</Tag>
                 </Space>
-                <Button
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  onClick={() => { setFormError(''); setAddModalOpen(true) }}
-                >
-                  Add Agency
-                </Button>
+                <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+                  <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => { setFormError(''); setAddModalOpen(true) }}
+                  >
+                    Add Agency
+                  </Button>
+                </RoleBasedComponentAccess>
               </div>
             }
           >

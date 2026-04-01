@@ -21,8 +21,11 @@ const { Text, Title } = Typography
 const Sidebar = ({ selected }) => {
   const location = useLocation()
   const path = location.pathname || ''
-  const { token, logout } = useAuth()
+  const { token, logout, user } = useAuth()
   const navigate = useNavigate()
+
+  // Use the same role extraction logic as in RoleBasedComponentAccess
+  const userRole = user?.role || user?.email?.role
 
   const isPublicRoute = path === '/interactions/complaint' || path === '/interactions/performa'
 
@@ -38,33 +41,32 @@ const Sidebar = ({ selected }) => {
                 : path.startsWith('/customer-management') ? 'customer-management'
                   : path.startsWith('/scrap-transport/internal-agencies') ? 'scrap-transport:internal-agencies'
                     : path.startsWith('/scrap-transport/internal-agreements') ? 'scrap-transport:internal-agreements'
-                      : path === '/scrap-transport/internal-csv-upload' ? 'scrap-transport:internal-csv-upload'
-                        : path === '/scrap-transport/upload-transport-data' ? 'scrap-transport:upload-transport-data'
-                          : path === '/scrap-transport/daily-aggregate' ? 'scrap-transport:daily-aggregate'
-                            : path === '/scrap-transport/scrap-movers-approval' ? 'scrap-transport:movers-approval'
-                              : path === '/scrap-transport/scrap-movers-payment' ? 'scrap-transport:movers-payment'
-                                : path === '/raw-material/issue' ? 'raw-material:issue'
-                                  : path === '/settings/user-management' ? 'settings:user-management'
-                                    : path === '/settings/melting-plants' ? 'settings:melting-plants'
-                                      : path === '/settings/grn-serial' ? 'settings:grn-serial'
-                                        : path === '/settings/stock-beginning-balance' ? 'settings:stock-beginning-balance'
-                                          : path === '/reports/plain-report' ? 'reports:purchase-grn:plain-report'
-                                            : path === '/reports/aggregate-report' ? 'reports:purchase-grn:aggregate-report'
-                                              : path === '/reports/customer-plain-report' ? 'reports:purchase-grn:customer-plain-report'
-                                                : path === '/reports/customer-aggregate-report' ? 'reports:purchase-grn:customer-aggregate-report'
-                                                  : path.startsWith('/reports/aggregate-purchase') ? 'reports:aggregate-purchase'
-                                                    : path.startsWith('/reports/daily-purchase-performance') ? 'reports:daily-purchase-performance'
-                                                      : path.startsWith('/reports/scrap-transport/agency-performance') ? 'reports:scrap-transport:agency-performance'
-                                                        : path.startsWith('/reports/scrap-transport/raw-scrap-report') ? 'reports:scrap-transport:raw-scrap-report'
-                                                          : path.startsWith('/reports/daily-scrap-move-aggregate') ? 'reports:daily-scrap-move-aggregate'
-                                                            : path.startsWith('/reports/agency-performance') ? 'reports:agency-performance'
-                                                              : path === '/reports/stock-report' ? 'reports:stock-reports:stock-report'
-                                                                : path === '/reports/stock-card' ? 'reports:stock-reports:stock-card'
-                                                                  : path === '/reports/stock-aggregated-report' ? 'reports:stock-reports:stock-aggregated-report'
-                                                                    : path.startsWith('/reports/stock') ? 'reports:stock-reports'
-                                                                      : path === '/reports/raw-material/requisition-receipt' ? 'reports:raw-material:requisition-receipt'
-                                                                        : path === '/reports/raw-material/issue-receipt' ? 'reports:raw-material:issue-receipt'
-                                                                          : path.startsWith('/reports/raw-material/requisition') ? 'reports:raw-material:requisition'
+                      : path === '/scrap-transport/upload-transport-data' ? 'scrap-transport:upload-transport-data'
+                        : path === '/scrap-transport/daily-aggregate' ? 'scrap-transport:daily-aggregate'
+                          : path === '/raw-material/issue' ? 'raw-material:issue'
+                            : path === '/settings/user-management' ? 'user-management'
+                              : path === '/settings/materials' ? 'settings:materials'
+                                : path === '/settings/melting-plants' ? 'settings:melting-plants'
+                                  : path === '/settings/grn-serial' ? 'settings:grn-serial'
+                                    : path === '/settings/stock-beginning-balance' ? 'settings:stock-beginning-balance'
+                                      : path === '/profile' ? 'settings:profile'
+                                        : path === '/reports/plain-report' ? 'reports:purchase-grn:plain-report'
+                                          : path === '/reports/aggregate-report' ? 'reports:purchase-grn:aggregate-report'
+                                            : path === '/reports/customer-plain-report' ? 'reports:purchase-grn:customer-plain-report'
+                                              : path === '/reports/customer-aggregate-report' ? 'reports:purchase-grn:customer-aggregate-report'
+                                                : path.startsWith('/reports/aggregate-purchase') ? 'reports:aggregate-purchase'
+                                                  : path.startsWith('/reports/daily-purchase-performance') ? 'reports:daily-purchase-performance'
+                                                    : path.startsWith('/reports/scrap-transport/agency-performance') ? 'reports:scrap-transport:agency-performance'
+                                                      : path.startsWith('/reports/scrap-transport/raw-scrap-report') ? 'reports:scrap-transport:raw-scrap-report'
+                                                        : path.startsWith('/reports/daily-scrap-move-aggregate') ? 'reports:daily-scrap-move-aggregate'
+                                                          : path.startsWith('/reports/agency-performance') ? 'reports:agency-performance'
+                                                            : path === '/reports/stock-report' ? 'reports:stock-reports:stock-report'
+                                                              : path === '/reports/stock-card' ? 'reports:stock-reports:stock-card'
+                                                                : path === '/reports/stock-aggregated-report' ? 'reports:stock-reports:stock-aggregated-report'
+                                                                  : path.startsWith('/reports/stock') ? 'reports:stock-reports'
+                                                                    : path === '/reports/raw-material/requisition-receipt' ? 'reports:raw-material:requisition-receipt'
+                                                                      : path === '/reports/raw-material/issue-receipt' ? 'reports:raw-material:issue-receipt'
+                                                                        : path.startsWith('/reports/raw-material/requisition') ? 'reports:raw-material:requisition'
                                                                           : path.startsWith('/reports/raw-material/issue-report') ? 'reports:raw-material:issue'
                                                                             : path.startsWith('/reports/grn-note-report') ? 'reports:purchase-grn:grn-note-report'
                                                                               : path.startsWith('/reports/approval-note-report') ? 'reports:purchase-grn:approval-note-report'
@@ -142,15 +144,18 @@ const Sidebar = ({ selected }) => {
       children: [
         {
           key: 'scrap-purchase:csv-uploader',
-          label: withTooltip(<Link to="/scrap-purchase/csv-excel-uploader" style={getStyle('scrap-purchase:csv-uploader')}>CSV/Excel Uploader</Link>, 'CSV/Excel Uploader')
+          label: withTooltip(<Link to="/scrap-purchase/csv-excel-uploader" style={getStyle('scrap-purchase:csv-uploader')}>CSV/Excel Uploader</Link>, 'CSV/Excel Uploader'),
+          allowedRoles: ['super_admin', 'weight_man'],
         },
         {
           key: 'scrap-purchase:purchase-records',
-          label: withTooltip(<Link to="/scrap-purchase/purchase-records" style={getStyle('scrap-purchase:purchase-records')}>Purchase Records</Link>, 'Purchase Records')
+          label: withTooltip(<Link to="/scrap-purchase/purchase-records" style={getStyle('scrap-purchase:purchase-records')}>Purchase Records</Link>, 'Purchase Records'),
+          allowedRoles: ['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager']
         },
         {
           key: 'scrap-purchase:material-rate',
-          label: withTooltip(<Link to="/scrap-purchase/material-rate" style={getStyle('scrap-purchase:material-rate')}>Material Rate</Link>, 'Material Rate')
+          label: withTooltip(<Link to="/scrap-purchase/material-rate" style={getStyle('scrap-purchase:material-rate')}>Material Rate</Link>, 'Material Rate'),
+          allowedRoles: ['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager'],
         }
       ]
     },
@@ -162,7 +167,8 @@ const Sidebar = ({ selected }) => {
     {
       key: 'customer-management',
       icon: <TeamOutlined style={getStyle('customer-management')} />,
-      label: withTooltip(<Link to="/customer-management" style={getStyle('customer-management')}>Customer Management</Link>, 'Customer Management')
+      label: withTooltip(<Link to="/customer-management" style={getStyle('customer-management')}>Customer Management</Link>, 'Customer Management'),
+      allowedRoles: ['super_admin', 'purchase_head', 'supervisor', 'finance']
     },
     {
       key: 'scrap-transport',
@@ -170,12 +176,14 @@ const Sidebar = ({ selected }) => {
       label: withTooltip(<span style={getStyle('scrap-transport')}>Scrap Transport</span>, 'Scrap Transport'),
       children: [
         {
-          key: 'scrap-transport:agency-registration',
-          label: withTooltip(<Link to="/scrap-transport/agency-registration" style={getStyle('scrap-transport:agency-registration')}>Agency Registration</Link>, 'Agency Registration')
+          key: 'scrap-transport:internal-agencies',
+          label: withTooltip(<Link to="/scrap-transport/internal-agencies" style={getStyle('scrap-transport:internal-agencies')}>Internal Agencies</Link>, 'Internal Agencies'),
+          allowedRoles: ['super_admin', 'supervisor', 'finance', 'manager']
         },
         {
-          key: 'scrap-transport:internal-csv-upload',
-          label: withTooltip(<Link to="/scrap-transport/internal-csv-upload" style={getStyle('scrap-transport:internal-csv-upload')}>Internal CSV upload</Link>, 'Internal CSV upload')
+          key: 'scrap-transport:internal-agreements',
+          label: withTooltip(<Link to="/scrap-transport/internal-agreements" style={getStyle('scrap-transport:internal-agreements')}>Agencies Agreements</Link>, 'Agencies Agreements'),
+          allowedRoles: ['super_admin', 'supervisor', 'finance', 'manager']
         },
         {
           key: 'scrap-transport:upload-transport-data',
@@ -184,22 +192,6 @@ const Sidebar = ({ selected }) => {
         {
           key: 'scrap-transport:daily-aggregate',
           label: withTooltip(<Link to="/scrap-transport/daily-aggregate" style={getStyle('scrap-transport:daily-aggregate')}>Daily Transport Aggregate</Link>, 'Daily Transport Aggregate')
-        },
-        {
-          key: 'scrap-transport:movers-approval',
-          label: withTooltip(<Link to="/scrap-transport/scrap-movers-approval" style={getStyle('scrap-transport:movers-approval')}>Scrap Movers Approval</Link>, 'Scrap Movers Approval')
-        },
-        {
-          key: 'scrap-transport:movers-payment',
-          label: withTooltip(<Link to="/scrap-transport/scrap-movers-payment" style={getStyle('scrap-transport:movers-payment')}>Scrap Movers Payment</Link>, 'Scrap Movers Payment')
-        },
-        {
-          key: 'scrap-transport:internal-agencies',
-          label: withTooltip(<Link to="/scrap-transport/internal-agencies" style={getStyle('scrap-transport:internal-agencies')}>Internal Agencies</Link>, 'Internal Agencies')
-        },
-        {
-          key: 'scrap-transport:internal-agreements',
-          label: withTooltip(<Link to="/scrap-transport/internal-agreements" style={getStyle('scrap-transport:internal-agreements')}>Agencies Agreements</Link>, 'Agencies Agreements')
         },
       ]
     },
@@ -334,30 +326,62 @@ const Sidebar = ({ selected }) => {
       ]
     },
     {
-      key: 'settings:user-management',
-      icon: <UserOutlined style={getStyle('settings:user-management')} />,
-      label: withTooltip(<Link to="/settings/user-management" style={getStyle('settings:user-management')}>User Management</Link>, 'User Management')
+      key: 'user-management',
+      icon: <UserOutlined style={getStyle('user-management')} />,
+      label: withTooltip(<Link to="/settings/user-management" style={getStyle('user-management')}>User Management</Link>, 'User Management'),
+      allowedRoles: ['super_admin', 'supervisor']
     },
     {
       key: 'settings',
       icon: <SettingOutlined style={getStyle('settings')} />,
       label: withTooltip(<span style={getStyle('settings')}>Settings</span>, 'Settings'),
+      allowedRoles: ['super_admin', 'supervisor'],
       children: [
+        // {
+        //   key: 'settings:materials',
+        //   label: withTooltip(<Link to="/settings/materials" style={getStyle('settings:materials')}>Material Management</Link>, 'Material Management'),
+        //   allowedRoles: ['super_admin', 'supervisor']
+        // },
         {
           key: 'settings:melting-plants',
-          label: withTooltip(<Link to="/settings/melting-plants" style={getStyle('settings:melting-plants')}>Melting Plant</Link>, 'Melting Plant')
+          label: withTooltip(<Link to="/settings/melting-plants" style={getStyle('settings:melting-plants')}>Melting Plant</Link>, 'Melting Plant'),
+          allowedRoles: ['super_admin', 'supervisor']
         },
         {
           key: 'settings:grn-serial',
-          label: withTooltip(<Link to="/settings/grn-serial" style={getStyle('settings:grn-serial')}>GRN Serial Number</Link>, 'GRN Serial Number')
+          label: withTooltip(<Link to="/settings/grn-serial" style={getStyle('settings:grn-serial')}>GRN Serial Number</Link>, 'GRN Serial Number'),
+          allowedRoles: ['super_admin']
         },
         {
           key: 'settings:stock-beginning-balance',
-          label: withTooltip(<Link to="/settings/stock-beginning-balance" style={getStyle('settings:stock-beginning-balance')}>Stock Beginning Balance</Link>, 'Stock Beginning Balance')
+          label: withTooltip(<Link to="/settings/stock-beginning-balance" style={getStyle('settings:stock-beginning-balance')}>Stock Beginning Balance</Link>, 'Stock Beginning Balance'),
+          allowedRoles: ['super_admin']
+        },
+        {
+          key: 'settings:profile',
+          label: withTooltip(<Link to="/profile" style={getStyle('settings:profile')}>My Profile</Link>, 'My Profile'),
+          allowedRoles: ['super_admin', 'supervisor', 'finance', 'manager', 'purchaser', 'inspector', 'purchase_head', 'weight_man']
         }
       ]
     }
   ]
+
+  // Filter menu items based on user role
+  const checkAccess = (roles) => {
+    if (!roles) return true
+    return roles.includes(userRole)
+  }
+
+  const filteredMenuItems = menuItems.filter(item => {
+    if (!checkAccess(item.allowedRoles)) return false
+
+    if (item.children) {
+      item.children = item.children.filter(child => checkAccess(child.allowedRoles))
+      return item.children.length > 0
+    }
+
+    return true
+  })
 
   return (
     <div style={{
@@ -428,7 +452,7 @@ const Sidebar = ({ selected }) => {
           selectedKeys={[activeKey]}
           openKeys={openKeys}
           onOpenChange={onOpenChange}
-          items={menuItems}
+          items={filteredMenuItems}
           style={{
             borderRight: 0,
             background: 'transparent',

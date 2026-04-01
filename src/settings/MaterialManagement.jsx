@@ -108,7 +108,7 @@ const MaterialManagement = () => {
 
   return (
     <div style={{ display: 'flex' }}>
-      <Sidebar selected="settings" />
+      <Sidebar />
       <div style={{ flex: 1, marginLeft: 220 }}>
         <Header />
         <div className="page-wrapper" style={{ padding: 20 }}>

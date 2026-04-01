@@ -11,6 +11,8 @@ import MultiSelectInput from '../components/MultiSelectInput'
 import FileUploadInput from '../components/FileUploadInput'
 import SelectInput from '../components/SelectInput'
 import { useMaterialRate } from '../api/useMaterialRate'
+import { useAuth } from '../auth/AuthProvider'
+import RoleBasedComponentAccess from '../components/accessControl/RoleBasedComponentAccess'
 
 const { Title, Text } = Typography
 const { RangePicker } = DatePicker
@@ -22,6 +24,8 @@ const PurchaseRecords = () => {
   const [viewRecord, setViewRecord] = useState(null)
   const [viewModalOpen, setViewModalOpen] = useState(false)
   const [showId, setShowId] = useState(false)
+  const { user } = useAuth()
+  const userRole = user?.role || user?.email?.role
 
   // Filters State
   const [filters, setFilters] = useState({
@@ -264,45 +268,54 @@ const PurchaseRecords = () => {
     })
   }
 
-  const getActionItems = (record) => [
-    {
-      key: 'view',
-      label: 'View Details',
-      icon: <EyeOutlined />,
-      onClick: () => handleView(record)
-    },
-    {
-      key: 'waste',
-      label: 'Add Waste Deduction',
-      icon: <EditOutlined />,
-      onClick: () => handleAddWaste(record)
-    },
-    {
-      key: 'edit',
-      label: 'Change Status',
-      icon: <EditOutlined />,
-      onClick: () => handleOpenStatusModal(record)
-    },
-    {
-      key: 'rollback',
-      label: 'Roll Back Status',
-      icon: <RollbackOutlined />,
-      onClick: () => handleRollback(record.record_no)
-    },
-    {
-      key: 'pay',
-      label: 'Pay Customer',
-      icon: <DollarOutlined />,
-      onClick: () => handleOpenPayModal(record)
-    },
-    {
-      key: 'delete',
-      label: 'Delete Record',
-      icon: <DeleteOutlined />,
-      danger: true,
-      onClick: () => handleDelete(record)
-    },
-  ]
+  const getActionItems = (record) => {
+    const items = [
+      {
+        key: 'view',
+        label: 'View Details',
+        icon: <EyeOutlined />,
+        onClick: () => handleView(record)
+      },
+      {
+        key: 'waste',
+        label: 'Add Waste Deduction',
+        icon: <EditOutlined />,
+        onClick: () => handleAddWaste(record),
+        allowedRoles: ['super_admin', 'purchaser', 'inspector']
+      },
+      {
+        key: 'edit',
+        label: 'Change Status',
+        icon: <EditOutlined />,
+        onClick: () => handleOpenStatusModal(record),
+        allowedRoles: ['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor']
+      },
+      {
+        key: 'rollback',
+        label: 'Roll Back Status',
+        icon: <RollbackOutlined />,
+        onClick: () => handleRollback(record.record_no),
+        allowedRoles: ['super_admin', 'purchaser', 'inspector', 'purchase_head']
+      },
+      {
+        key: 'pay',
+        label: 'Pay Customer',
+        icon: <DollarOutlined />,
+        onClick: () => handleOpenPayModal(record),
+        allowedRoles: ['super_admin', 'finance']
+      },
+      {
+        key: 'delete',
+        label: 'Delete Record',
+        icon: <DeleteOutlined />,
+        danger: true,
+        onClick: () => handleDelete(record),
+        allowedRoles: ['super_admin', 'supervisor']
+      },
+    ]
+
+    return items.filter(item => !item.allowedRoles || item.allowedRoles.includes(userRole))
+  }
 
   const columns = [
     {
@@ -437,45 +450,52 @@ const PurchaseRecords = () => {
             </div>
 
             <Space>
-              {selectedRowKeys.length > 0 && (
+              <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'purchase_head']}>
+                {selectedRowKeys.length > 0 && (
+                  <Button
+                    danger
+                    icon={<RollbackOutlined />}
+                    onClick={() => {
+                      const selectedNos = records
+                        .filter(r => selectedRowKeys.includes(r._id))
+                        .map(r => r.record_no)
+                      handleRollback(selectedNos)
+                    }}
+                    style={{ borderRadius: 6 }}
+                  >
+                    Rollback Status
+                  </Button>
+                )}
+              </RoleBasedComponentAccess>
+              <RoleBasedComponentAccess allowedRoles={['super_admin', 'finance']}>
                 <Button
-                  danger
-                  icon={<RollbackOutlined />}
-                  onClick={() => {
-                    const selectedNos = records
-                      .filter(r => selectedRowKeys.includes(r._id))
-                      .map(r => r.record_no)
-                    handleRollback(selectedNos)
-                  }}
-                  style={{ borderRadius: 6 }}
+                  type="primary"
+                  icon={<DollarOutlined />}
+                  onClick={() => handleOpenPayModal()}
+                  style={{ borderRadius: 6, background: '#52c41a', borderColor: '#52c41a' }}
                 >
-                  Rollback Status
+                  Pay Customers
                 </Button>
-              )}
-              <Button
-                type="primary"
-                icon={<DollarOutlined />}
-                onClick={() => handleOpenPayModal()}
-                style={{ borderRadius: 6, background: '#52c41a', borderColor: '#52c41a' }}
-              >
-                Pay Customers
-              </Button>
-              <Button
-                type="primary"
-                icon={<EditOutlined />}
-                onClick={() => handleOpenStatusModal()}
-                style={{ borderRadius: 6, background: 'rgb(245, 34, 45)' }}
-              >
-                Change Status
-              </Button>
+              </RoleBasedComponentAccess>
+
+              <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor']}>
+                <Button
+                  type="primary"
+                  icon={<EditOutlined />}
+                  onClick={() => handleOpenStatusModal()}
+                  style={{ borderRadius: 6, background: 'rgb(245, 34, 45)' }}
+                >
+                  Change Status
+                </Button>
+              </RoleBasedComponentAccess>
             </Space>
           </div>
 
-          <Card style={{ 
-            borderRadius: 12, 
-            boxShadow: '0 4px 12px rgba(0,0,0,0.05)', 
-            border: 'none', 
-            marginBottom: 24 
+          <Card style={{
+            borderRadius: 12,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+            border: 'none',
+            marginBottom: 24
           }}>
             <Form form={filterForm} layout="vertical" onFinish={handleFilterApply}>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px' }}>
@@ -486,10 +506,10 @@ const PurchaseRecords = () => {
                   <Input placeholder="Plate No" size="large" style={{ borderRadius: 6, width: 180 }} />
                 </Form.Item>
                 <Form.Item name="material_type" label="Material Type" style={{ marginBottom: 16 }}>
-                  <Select 
-                    placeholder="Material" 
-                    size="large" 
-                    style={{ borderRadius: 6, width: 220 }} 
+                  <Select
+                    placeholder="Material"
+                    size="large"
+                    style={{ borderRadius: 6, width: 220 }}
                     allowClear
                     options={materialOptions}
                   />
@@ -512,19 +532,19 @@ const PurchaseRecords = () => {
               <div style={{ marginTop: 8 }}>
                 <Form.Item style={{ marginBottom: 0 }}>
                   <Space>
-                    <Button 
-                      type="primary" 
-                      htmlType="submit" 
-                      icon={<SearchOutlined />} 
-                      size="large" 
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      icon={<SearchOutlined />}
+                      size="large"
                       style={{ borderRadius: 6, background: 'rgb(245, 34, 45)' }}
                     >
                       Search Records
                     </Button>
-                    <Button 
-                      onClick={handleFilterReset} 
-                      icon={<ClearOutlined />} 
-                      size="large" 
+                    <Button
+                      onClick={handleFilterReset}
+                      icon={<ClearOutlined />}
+                      size="large"
                       style={{ borderRadius: 6 }}
                     >
                       Reset Filters
@@ -759,7 +779,6 @@ const PurchaseRecords = () => {
       <Modal
         title={
           <Space>
-            <EditOutlined style={{ color: 'rgb(245, 34, 45)' }} />
             <span style={{ fontWeight: 700 }}>Change GRN Status</span>
           </Space>
         }
@@ -816,21 +835,26 @@ const PurchaseRecords = () => {
           </Text>
 
           <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item name="scale_img" label="Scale Image">
-                <FileUploadInput placeholder="Upload scale proof" />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item name="grn_img" label="GRN Image">
-                <FileUploadInput placeholder="Upload GRN copy" />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item name="approve_img" label="Approve Image">
-                <FileUploadInput placeholder="Upload approval" />
-              </Form.Item>
-            </Col>
+            <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchaser']}>
+              <Col span={8}>
+                <Form.Item name="scale_img" label="Scale Image">
+                  <FileUploadInput placeholder="Upload scale proof" />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="grn_img" label="GRN Image">
+                  <FileUploadInput placeholder="Upload GRN copy" />
+                </Form.Item>
+              </Col>
+            </RoleBasedComponentAccess>
+
+            <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchase_head']}>
+              <Col span={8}>
+                <Form.Item name="approve_img" label="Approve Image">
+                  <FileUploadInput placeholder="Upload approval" />
+                </Form.Item>
+              </Col>
+            </RoleBasedComponentAccess>
           </Row>
         </Form>
       </Modal>

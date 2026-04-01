@@ -15,7 +15,7 @@ const RoleBasedComponentAccess = ({ allowedRoles = [], children, unauthorizedCom
 
   // Check if user exists and has a role that is included in allowedRoles
   // Supports both user.role (string) and user.roles (array) if available
-  const userRole = user?.role
+  const userRole = user?.email?.role
 
   const hasAccess = allowedRoles.includes(userRole)
 

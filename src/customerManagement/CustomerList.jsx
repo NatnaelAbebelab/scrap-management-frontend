@@ -5,6 +5,8 @@ import Sidebar from '../layouts/Sidebar'
 import Header from '../layouts/Header'
 import { useCustomerManagement } from '../api/useCustomerManagement'
 import { formatDate } from '../utils/dateFormatter'
+import { useAuth } from '../auth/AuthProvider'
+import RoleBasedComponentAccess from '../components/accessControl/RoleBasedComponentAccess'
 
 const { Title, Text } = Typography
 
@@ -13,6 +15,8 @@ const capitalize = (s) => typeof s === 'string' && s ? s.charAt(0).toUpperCase()
 const CustomerList = () => {
   const [form] = Form.useForm()
   const [payForm] = Form.useForm()
+  const { user } = useAuth()
+  const userRole = user?.role || user?.email?.role
   const { fetchCustomers, addCustomer, editCustomer, deleteCustomer, fetchCustomerGrns, payCustomer, loading } = useCustomerManagement()
 
   const [isPayModalVisible, setIsPayModalVisible] = useState(false)
@@ -178,7 +182,8 @@ const CustomerList = () => {
             key: 'edit',
             icon: <EditOutlined />,
             label: 'Edit Customer',
-            onClick: () => handleOpenModal(record)
+            onClick: () => handleOpenModal(record),
+            allowedRoles: ['super_admin', 'supervisor', 'finance']
           },
           {
             key: 'delete',
@@ -193,9 +198,10 @@ const CustomerList = () => {
               >
                 <span style={{ color: '#ff4d4f' }}>Delete Customer</span>
               </Popconfirm>
-            )
+            ),
+            allowedRoles: ['super_admin', 'supervisor']
           }
-        ]
+        ].filter(item => !item.allowedRoles || item.allowedRoles.includes(userRole))
 
         return (
           <Dropdown menu={{ items }} trigger={['click']}>
@@ -247,20 +253,25 @@ const CustomerList = () => {
               <Text type="secondary">Manage scrap sellers, their details, and review associated balances.</Text>
             </div>
             <Space>
-              <Button
-                icon={<DollarOutlined />}
-                onClick={() => setIsPayModalVisible(true)}
-              >
-                Pay Customer
-              </Button>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => handleOpenModal()}
-                style={{ background: 'rgb(245, 34, 45)' }}
-              >
-                Add Customer
-              </Button>
+              <RoleBasedComponentAccess allowedRoles={['super_admin', 'finance']}>
+                <Button
+                  icon={<DollarOutlined />}
+                  onClick={() => setIsPayModalVisible(true)}
+                >
+                  Pay Customer
+                </Button>
+              </RoleBasedComponentAccess>
+
+              <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'finance']}>
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={() => handleOpenModal()}
+                  style={{ background: 'rgb(245, 34, 45)' }}
+                >
+                  Add Customer
+                </Button>
+              </RoleBasedComponentAccess>
             </Space>
           </div>
 

@@ -26,6 +26,8 @@ import Header from '../layouts/Header'
 import Sidebar from '../layouts/Sidebar'
 import { useUsers } from '../api/useUsers'
 import DataTableWithPagination from '../components/DataTableWithPagination'
+import RoleBasedComponentAccess from '../components/accessControl/RoleBasedComponentAccess'
+import useRoleAccess from '../components/accessControl/useRoleAccess'
 
 const { Title, Text } = Typography
 const { Option } = Select
@@ -33,6 +35,7 @@ const { Option } = Select
 const UserManagement = () => {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const { hasAccess } = useRoleAccess()
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
@@ -162,7 +165,7 @@ const UserManagement = () => {
         // Fallback or find matching label
         const matchedRole = roles.find(r => r.value === role)
         const labelText = matchedRole ? matchedRole.label : String(role || '').replace('_', ' ').toUpperCase()
-        
+
         let color = 'default'
         switch (role) {
           case 'admin': color = 'blue'; break;
@@ -199,7 +202,7 @@ const UserManagement = () => {
         </Space>
       ),
     },
-  ]
+  ].filter(col => col.key !== 'action' || hasAccess(['super_admin']))
 
   const props = {
     onRemove: (file) => {
@@ -289,7 +292,7 @@ const UserManagement = () => {
 
   return (
     <div style={{ display: 'flex' }}>
-      <Sidebar selected="settings" />
+      <Sidebar />
       <div style={{ flex: 1, marginLeft: 220 }}>
         <Header />
         <div className="page-wrapper" style={{ padding: 20 }}>
@@ -330,18 +333,20 @@ const UserManagement = () => {
                   >
                     Refresh
                   </Button>
-                  <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => {
-                      setFormError('')
-                      setFileList([])
-                      setAddModalOpen(true)
-                    }}
-                    style={{ background: 'rgb(245, 34, 45)', borderColor: 'rgb(245, 34, 45)' }}
-                  >
-                    Add User
-                  </Button>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin']}>
+                    <Button
+                      type="primary"
+                      icon={<PlusOutlined />}
+                      onClick={() => {
+                        setFormError('')
+                        setFileList([])
+                        setAddModalOpen(true)
+                      }}
+                      style={{ background: 'rgb(245, 34, 45)', borderColor: 'rgb(245, 34, 45)' }}
+                    >
+                      Add User
+                    </Button>
+                  </RoleBasedComponentAccess>
                 </Space>
               </div>
             }

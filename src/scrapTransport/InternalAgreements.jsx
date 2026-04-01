@@ -35,6 +35,8 @@ import Header from '../layouts/Header'
 import Sidebar from '../layouts/Sidebar'
 import { useInternalAgreements } from '../api/useInternalAgreements'
 import { UPLOADED_FILE_URL } from '../api/config'
+import { useAuth } from '../auth/AuthProvider'
+import RoleBasedComponentAccess from '../components/accessControl/RoleBasedComponentAccess'
 
 const { Title, Text } = Typography
 const { Option } = Select
@@ -49,6 +51,8 @@ const fmtDate = (v) => {
 }
 
 const InternalAgreements = () => {
+  const { user } = useAuth()
+  const userRole = user?.role || user?.email?.role
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
 
@@ -291,6 +295,7 @@ const InternalAgreements = () => {
                 label: 'Edit',
                 icon: <EditOutlined />,
                 onClick: () => openEdit(record),
+                allowedRoles: ['super_admin', 'supervisor']
               }] : []),
               { type: 'divider' },
               {
@@ -299,8 +304,9 @@ const InternalAgreements = () => {
                 icon: <DeleteOutlined />,
                 danger: true,
                 onClick: () => handleDelete(record),
+                allowedRoles: ['super_admin', 'supervisor']
               },
-            ],
+            ].filter(item => !item.allowedRoles || item.allowedRoles.includes(userRole)),
           }}
           trigger={['click']}
           placement="bottomRight"
@@ -338,9 +344,11 @@ const InternalAgreements = () => {
                   <span>Agreements</span>
                   <Tag color="red">{total}</Tag>
                 </Space>
-                <Button type="primary" icon={<PlusOutlined />} onClick={openAdd}>
-                  Add Agreement
-                </Button>
+                <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+                  <Button type="primary" icon={<PlusOutlined />} onClick={openAdd}>
+                    Add Agreement
+                  </Button>
+                </RoleBasedComponentAccess>
               </div>
             }
           >

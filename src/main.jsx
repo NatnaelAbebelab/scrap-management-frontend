@@ -47,6 +47,7 @@ import ApprovalNoteReport from './reports/ApprovalNoteReport'
 import MaterialRequisitionReceiptReport from './reports/MaterialRequisitionReceiptReport'
 import MaterialIssueReceiptReport from './reports/MaterialIssueReceiptReport'
 import StockManagement from './stockManagement/StockManagement'
+import RoleBasedComponentAccess from './components/accessControl/RoleBasedComponentAccess'
 
 import { ConfigProvider } from 'antd'
 
@@ -83,24 +84,77 @@ root.render(
             <Route path="/raw-material/issue" element={<RequireAuth><MaterialIssue /></RequireAuth>} />
 
             <Route path="/settings" element={<RequireAuth><SettingsDashboard /></RequireAuth>} />
-            <Route path="/settings/user-management" element={<RequireAuth><UserManagement /></RequireAuth>} />
+            <Route
+              path="/settings/user-management"
+              element={
+                <RequireAuth>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+                    <UserManagement />
+                  </RoleBasedComponentAccess>
+                </RequireAuth>
+              } />
             <Route path="/settings/materials" element={<RequireAuth><MaterialManagement /></RequireAuth>} />
-            <Route path="/settings/melting-plants" element={<RequireAuth><MeltingPlants /></RequireAuth>} />
-            <Route path="/settings/grn-serial" element={<RequireAuth><GrnSerialSettings /></RequireAuth>} />
-            <Route path="/settings/stock-beginning-balance" element={<RequireAuth><StockBeginningBalance /></RequireAuth>} />
+            <Route
+              path="/settings/melting-plants"
+              element={
+                <RequireAuth>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+                    <MeltingPlants />
+                  </RoleBasedComponentAccess>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/settings/grn-serial"
+              element={
+                <RequireAuth>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+                    <GrnSerialSettings />
+                  </RoleBasedComponentAccess>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/settings/stock-beginning-balance"
+              element={
+                <RequireAuth>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+                    <StockBeginningBalance />
+                  </RoleBasedComponentAccess>
+                </RequireAuth>
+              }
+            />
 
             {/* Scrap Purchase */}
             <Route
               path="/scrap-purchase/csv-excel-uploader"
-              element={<RequireAuth><CsvExcelUploader /></RequireAuth>}
+              element={
+                <RequireAuth>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'weight_man']}>
+                    <CsvExcelUploader />
+                  </RoleBasedComponentAccess>
+                </RequireAuth>
+              }
             />
             <Route
               path="/scrap-purchase/purchase-records"
-              element={<RequireAuth><PurchaseRecords /></RequireAuth>}
+              element={
+                <RequireAuth>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager']}>
+                    <PurchaseRecords />
+                  </RoleBasedComponentAccess>
+                </RequireAuth>
+              }
             />
             <Route
               path="/scrap-purchase/material-rate"
-              element={<RequireAuth><MaterialRate /></RequireAuth>}
+              element={
+                <RequireAuth>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager']}>
+                    <MaterialRate />
+                  </RoleBasedComponentAccess>
+                </RequireAuth>
+              }
             />
             <Route
               path="/scrap-purchase/stock"
@@ -110,17 +164,35 @@ root.render(
             {/* Customer Management */}
             <Route
               path="/customer-management"
-              element={<RequireAuth><CustomerList /></RequireAuth>}
+              element={
+                <RequireAuth>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchase_head', 'supervisor', 'finance']}>
+                    <CustomerList />
+                  </RoleBasedComponentAccess>
+                </RequireAuth>
+              }
             />
 
             {/* Scrap Transport */}
             <Route
               path="/scrap-transport/internal-agencies"
-              element={<RequireAuth><InternalAgencies /></RequireAuth>}
+              element={
+                <RequireAuth>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'finance', 'manager']}>
+                    <InternalAgencies />
+                  </RoleBasedComponentAccess>
+                </RequireAuth>
+              }
             />
             <Route
               path="/scrap-transport/internal-agreements"
-              element={<RequireAuth><InternalAgreements /></RequireAuth>}
+              element={
+                <RequireAuth>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'finance', 'manager']}>
+                    <InternalAgreements />
+                  </RoleBasedComponentAccess>
+                </RequireAuth>
+              }
             />
             <Route
               path="/scrap-transport/upload-transport-data"
