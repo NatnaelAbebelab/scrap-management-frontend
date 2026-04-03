@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useAuth } from '../auth/AuthProvider'
 import { useNavigate } from 'react-router-dom'
+import { STATIC_FILES_URL } from '../api/config'
 import { Menu, Typography, Tooltip } from 'antd'
 import { Link, useLocation } from 'react-router-dom'
 import {
@@ -391,7 +392,7 @@ const Sidebar = ({ selected }) => {
           border: '1px solid #f0f0f0'
         }}>
           <img
-            src="/steely.jpg"
+            src={`${STATIC_FILES_URL}steely.jpg`}
             alt="Steely Logo"
             style={{
               width: '100%',
@@ -406,7 +407,7 @@ const Sidebar = ({ selected }) => {
           fontSize: '16px',
           fontWeight: 600
         }}>
-          Material Requisition
+          Scrap Management System
         </Title>
         <Text style={{
           color: '#8c8c8c',
@@ -414,7 +415,7 @@ const Sidebar = ({ selected }) => {
           display: 'block',
           marginTop: '4px'
         }}>
-          Scrap Management System
+          Steely R.M.I P.L.C
         </Text>
       </div>
 
@@ -473,7 +474,7 @@ const Sidebar = ({ selected }) => {
             color: '#8c8c8c',
             fontSize: '11px'
           }}>
-            © 2026 Scrap Transport
+            © 2026 Scrap Management System. Steely R.M.I. IT Directorate.
           </Text>
         </div>
       </div>

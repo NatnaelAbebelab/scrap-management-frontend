@@ -2,6 +2,7 @@ import React from 'react';
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import PDFHeader from './PDFHeader';
 import { formatDate } from '../../utils/dateFormatter';
+import { STATIC_FILES_URL } from '../../api/config';
 
 const styles = StyleSheet.create({
   page: {
@@ -90,7 +91,7 @@ const StockCardPDF = ({ records, totals }) => {
       {paginatedData.map((pageData, pageIndex) => (
         <Page key={pageIndex} size="A4" style={styles.page}>
           <PDFHeader
-            logoSrc="/steely.jpg"
+            logoSrc={`${STATIC_FILES_URL}steely.jpg`}
             companyName="STEELY R.M.I.  Pvt. Ltd. Co."
             documentNumber="SRMI-OF-119"
             title="RAW MATERIAL STOCK CARD"

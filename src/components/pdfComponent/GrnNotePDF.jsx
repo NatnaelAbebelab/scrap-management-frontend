@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import PDFHeader from './PDFHeader';
+import { STATIC_FILES_URL } from '../../api/config';
 
 const styles = StyleSheet.create({
   page: {
@@ -147,7 +148,7 @@ const GrnNotePDF = ({ data }) => {
       <Page size="A4" style={styles.page}>
         {/* 1. New Grid Header Section */}
         <PDFHeader
-          logoSrc="/steely.jpg"
+          logoSrc={`${STATIC_FILES_URL}steely.jpg`}
           companyName="STEELY R.M.I.  Pvt. Ltd. Co."
           documentNumber="SRMI-OF-119"
           title="RAW MATERIAL GOODS RECEIVED NOTE"

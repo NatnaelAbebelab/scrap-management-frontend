@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Form, Input, Button, Card, message } from 'antd'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from './AuthProvider'
-import { API_BASE_URL } from '../api/config'
+import { API_BASE_URL, STATIC_FILES_URL } from '../api/config'
 
 const Login = () => {
   const [loading, setLoading] = useState(false)
@@ -76,7 +76,7 @@ const Login = () => {
     <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <Card style={{ width: 420, borderRadius: 8 }}>
         <div style={{ textAlign: 'center', marginBottom: 16 }}>
-          <img src="/steely.png" alt="Steely RMI Logo" style={{ maxWidth: 320, width: '100%', marginBottom: 8 }} />
+          <img src={`${STATIC_FILES_URL}steely.png`} alt="Steely RMI Logo" style={{ maxWidth: 320, width: '100%', marginBottom: 8 }} />
         </div>
         <h2 style={{ marginTop: 0 }}>Sign in</h2>
         <Form layout="vertical" onFinish={onFinish}>
