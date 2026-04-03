@@ -22,7 +22,7 @@ const AggregateGrnReport = () => {
   const [form] = Form.useForm()
   const [reportData, setReportData] = useState({ data: [], totals: {} })
   const [filters, setFilters] = useState({ period: 'daily' }) // default period
-  
+
   const [statusOptions, setStatusOptions] = useState([])
   const [materialOptions, setMaterialOptions] = useState([])
   const [loadingOptions, setLoadingOptions] = useState(false)
@@ -47,9 +47,9 @@ const AggregateGrnReport = () => {
         fetchStatusList(),
         fetchMaterialTypes()
       ])
-      
+
       setStatusOptions(Array.isArray(statuses) ? statuses : [])
-      
+
       if (typeof materialsRaw === 'object' && !Array.isArray(materialsRaw)) {
         const materialsArray = Object.entries(materialsRaw).map(([key, value]) => ({
           id: key,
@@ -156,7 +156,7 @@ const AggregateGrnReport = () => {
             </div>
             <Space>
               <Button icon={<DownloadOutlined />} onClick={handleExport} loading={exporting}>Export Excel</Button>
-              <Button type="primary" icon={<PrinterOutlined />}>Print Report</Button>
+              {/* <Button type="primary" icon={<PrinterOutlined />}>Print Report</Button> */}
             </Space>
           </div>
 

@@ -118,7 +118,7 @@ const CustomerPlainReport = () => {
         { title: 'Remaining Amount (Br.)', dataIndex: 'remaining_amount' },
         { title: 'Registered On', dataIndex: 'created_at' }
       ]
-      
+
       await exportCustomerPlainReport({ tin: searchTin }, exportCols, reportData.summary)
       message.success('Report exported successfully!')
     } catch (err) {
@@ -142,7 +142,7 @@ const CustomerPlainReport = () => {
               <Button icon={<DownloadOutlined />} onClick={handleExport} loading={exporting}>
                 Export Excel
               </Button>
-              <Button type="primary" icon={<PrinterOutlined />}>Print Report</Button>
+              {/* <Button type="primary" icon={<PrinterOutlined />}>Print Report</Button> */}
             </Space>
           </div>
 

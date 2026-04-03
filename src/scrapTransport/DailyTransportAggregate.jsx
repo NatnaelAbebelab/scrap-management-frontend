@@ -274,7 +274,7 @@ const DailyTransportAggregate = () => {
                       icon={<ClearOutlined />}
                       style={{ borderRadius: 6 }}
                     >
-                      Reset
+                      Reset Filters
                     </Button>
                   </Space>
                 </div>

@@ -151,7 +151,7 @@ const Sidebar = ({ selected }) => {
         {
           key: 'scrap-purchase:material-rate',
           label: withTooltip(<Link to="/scrap-purchase/material-rate" style={getStyle('scrap-purchase:material-rate')}>Material Rate</Link>, 'Material Rate'),
-          allowedRoles: ['super_admin', 'weight_man', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager'],
+          allowedRoles: ['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager'],
         }
       ]
     },
@@ -243,20 +243,6 @@ const Sidebar = ({ selected }) => {
           ]
         },
         {
-          key: 'reports:scrap-transport',
-          label: withTooltip(<span style={getStyle('reports:scrap-transport')}>Scrap Transport Report</span>, 'Scrap Transport Report'),
-          children: [
-            {
-              key: 'reports:scrap-transport:agency-performance',
-              label: withTooltip(<Link to="/reports/scrap-transport/agency-performance" style={getStyle('reports:scrap-transport:agency-performance')}>Agency Performance</Link>, 'Agency Performance')
-            },
-            {
-              key: 'reports:scrap-transport:raw-scrap-report',
-              label: withTooltip(<Link to="/reports/scrap-transport/raw-scrap-report" style={getStyle('reports:scrap-transport:raw-scrap-report')}>Raw Scrap Transport Report</Link>, 'Raw Scrap Transport Report')
-            }
-          ]
-        },
-        {
           key: 'reports:stock-reports',
           label: withTooltip(<span style={getStyle('reports:stock-reports')}>Stock Reports</span>, 'Stock Reports'),
           children: [
@@ -293,6 +279,20 @@ const Sidebar = ({ selected }) => {
             {
               key: 'reports:raw-material:issue',
               label: withTooltip(<Link to="/reports/raw-material/issue-report" style={getStyle('reports:raw-material:issue')}>Material Issue Report</Link>, 'Material Issue Report')
+            }
+          ]
+        },
+        {
+          key: 'reports:scrap-transport',
+          label: withTooltip(<span style={getStyle('reports:scrap-transport')}>Scrap Transport Report</span>, 'Scrap Transport Report'),
+          children: [
+            {
+              key: 'reports:scrap-transport:agency-performance',
+              label: withTooltip(<Link to="/reports/scrap-transport/agency-performance" style={getStyle('reports:scrap-transport:agency-performance')}>Agency Performance</Link>, 'Agency Performance')
+            },
+            {
+              key: 'reports:scrap-transport:raw-scrap-report',
+              label: withTooltip(<Link to="/reports/scrap-transport/raw-scrap-report" style={getStyle('reports:scrap-transport:raw-scrap-report')}>Raw Scrap Transport Report</Link>, 'Raw Scrap Transport Report')
             }
           ]
         },

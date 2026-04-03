@@ -204,7 +204,6 @@ const PlainGrnReport = () => {
             </div>
             <Space>
               <Button icon={<DownloadOutlined />} onClick={handleExport} loading={exporting}>Export Excel</Button>
-              <Button type="primary" icon={<PrinterOutlined />}>Print Report</Button>
             </Space>
           </div>
 
