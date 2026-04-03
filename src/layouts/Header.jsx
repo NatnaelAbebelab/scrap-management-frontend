@@ -34,7 +34,7 @@ const Header = ({ onMenuClick }) => {
   // NEW: Get user data from localStorage 'email' key as requested
   const getStoredUserData = () => {
     try {
-      const stored = localStorage.getItem('ce_user')
+      const stored = localStorage.getItem('email')
       return stored ? JSON.parse(stored) : null
     } catch (e) {
       return null
@@ -42,7 +42,7 @@ const Header = ({ onMenuClick }) => {
   }
 
   const storedUserData = getStoredUserData()
-  const displayUser = storedUserData.email || auth?.user || {}
+  const displayUser = storedUserData || auth?.user || {}
 
   // Format role: super_admin -> Super Admin
   const formatRole = (role) => {
