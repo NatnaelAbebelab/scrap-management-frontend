@@ -44,32 +44,33 @@ const Sidebar = ({ selected }) => {
                       : path === '/scrap-transport/upload-transport-data' ? 'scrap-transport:upload-transport-data'
                         : path === '/scrap-transport/daily-aggregate' ? 'scrap-transport:daily-aggregate'
                           : path === '/raw-material/issue' ? 'raw-material:issue'
-                            : path === '/settings/user-management' ? 'user-management'
-                              : path === '/settings/materials' ? 'settings:materials'
-                                : path === '/settings/melting-plants' ? 'settings:melting-plants'
-                                  : path === '/settings/grn-serial' ? 'settings:grn-serial'
-                                    : path === '/settings/stock-beginning-balance' ? 'settings:stock-beginning-balance'
-                                      : path === '/profile' ? 'settings:profile'
-                                        : path === '/reports/plain-report' ? 'reports:purchase-grn:plain-report'
-                                          : path === '/reports/aggregate-report' ? 'reports:purchase-grn:aggregate-report'
-                                            : path === '/reports/customer-plain-report' ? 'reports:purchase-grn:customer-plain-report'
-                                              : path === '/reports/customer-aggregate-report' ? 'reports:purchase-grn:customer-aggregate-report'
-                                                : path.startsWith('/reports/aggregate-purchase') ? 'reports:aggregate-purchase'
-                                                  : path.startsWith('/reports/scrap-transport/agency-performance') ? 'reports:scrap-transport:agency-performance'
-                                                    : path.startsWith('/reports/scrap-transport/raw-scrap-report') ? 'reports:scrap-transport:raw-scrap-report'
-                                                      : path === '/reports/stock-report' ? 'reports:stock-reports:stock-report'
-                                                        : path === '/reports/stock-card' ? 'reports:stock-reports:stock-card'
-                                                          : path === '/reports/stock-aggregated-report' ? 'reports:stock-reports:stock-aggregated-report'
-                                                            : path.startsWith('/reports/stock') ? 'reports:stock-reports'
-                                                              : path === '/reports/raw-material/requisition-receipt' ? 'reports:raw-material:requisition-receipt'
-                                                                : path === '/reports/raw-material/issue-receipt' ? 'reports:raw-material:issue-receipt'
-                                                                  : path.startsWith('/reports/raw-material/requisition') ? 'reports:raw-material:requisition'
-                                                                    : path.startsWith('/reports/raw-material/issue-report') ? 'reports:raw-material:issue'
-                                                                      : path.startsWith('/reports/grn-note-report') ? 'reports:purchase-grn:grn-note-report'
-                                                                        : path.startsWith('/reports/approval-note-report') ? 'reports:purchase-grn:approval-note-report'
-                                                                          : path.startsWith('/reports') ? 'reports'
-                                                                            : path.startsWith('/settings') ? 'settings'
-                                                                              : 'dashboard'
+                            : path === '/raw-material/requisition' ? 'raw-material:requisition'
+                              : path === '/settings/user-management' ? 'user-management'
+                                : path === '/settings/materials' ? 'settings:materials'
+                                  : path === '/settings/melting-plants' ? 'settings:melting-plants'
+                                    : path === '/settings/grn-serial' ? 'settings:grn-serial'
+                                      : path === '/settings/stock-beginning-balance' ? 'settings:stock-beginning-balance'
+                                        : path === '/profile' ? 'settings:profile'
+                                          : path === '/reports/plain-report' ? 'reports:purchase-grn:plain-report'
+                                            : path === '/reports/aggregate-report' ? 'reports:purchase-grn:aggregate-report'
+                                              : path === '/reports/customer-plain-report' ? 'reports:purchase-grn:customer-plain-report'
+                                                : path === '/reports/customer-aggregate-report' ? 'reports:purchase-grn:customer-aggregate-report'
+                                                  : path.startsWith('/reports/aggregate-purchase') ? 'reports:aggregate-purchase'
+                                                    : path.startsWith('/reports/scrap-transport/agency-performance') ? 'reports:scrap-transport:agency-performance'
+                                                      : path.startsWith('/reports/scrap-transport/raw-scrap-report') ? 'reports:scrap-transport:raw-scrap-report'
+                                                        : path === '/reports/stock-report' ? 'reports:stock-reports:stock-report'
+                                                          : path === '/reports/stock-card' ? 'reports:stock-reports:stock-card'
+                                                            : path === '/reports/stock-aggregated-report' ? 'reports:stock-reports:stock-aggregated-report'
+                                                              : path.startsWith('/reports/stock') ? 'reports:stock-reports'
+                                                                : path === '/reports/raw-material/requisition-receipt' ? 'reports:raw-material:requisition-receipt'
+                                                                  : path === '/reports/raw-material/issue-receipt' ? 'reports:raw-material:issue-receipt'
+                                                                    : path.startsWith('/reports/raw-material/requisition') ? 'reports:raw-material:requisition'
+                                                                      : path.startsWith('/reports/raw-material/issue-report') ? 'reports:raw-material:issue'
+                                                                        : path.startsWith('/reports/grn-note-report') ? 'reports:purchase-grn:grn-note-report'
+                                                                          : path.startsWith('/reports/approval-note-report') ? 'reports:purchase-grn:approval-note-report'
+                                                                            : path.startsWith('/reports') ? 'reports'
+                                                                              : path.startsWith('/settings') ? 'settings'
+                                                                                : 'dashboard'
 
   const activeKey = selected || inferred
 
@@ -194,10 +195,11 @@ const Sidebar = ({ selected }) => {
       key: 'raw-material',
       icon: <DatabaseOutlined style={getStyle('raw-material')} />,
       label: withTooltip(<span style={getStyle('raw-material')}>Raw Material</span>, 'Raw Material'),
+      allowedRoles: ['super_admin', 'supervisor'],
       children: [
         {
           key: 'raw-material:requisition',
-          label: withTooltip(<Link to="/raw-material/requisition" style={getStyle('raw-material:requisition')}>Material Requisition</Link>, 'Material Requisition')
+          label: withTooltip(<Link to="/raw-material/requisition" style={getStyle('raw-material:requisition')}>Raw Material Requisition</Link>, 'Raw Material Requisition')
         },
         {
           key: 'raw-material:issue',

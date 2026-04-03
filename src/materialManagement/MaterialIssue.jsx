@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, CheckCircleOutlined, ExclamationCircleOutlined, MoreOutlined, SearchOutlined } from '@ant-design/icons'
+import { useState, useEffect } from 'react'
+import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, CheckCircleOutlined, ExclamationCircleOutlined, MoreOutlined, SearchOutlined, ReloadOutlined } from '@ant-design/icons'
 import { Card, Button, Form, Input, Space, Modal, message, Typography, Table, Tag, DatePicker, Select, Divider, Dropdown, InputNumber } from 'antd'
 import { useMaterialIssue } from '../api/useMaterialIssue'
 import Header from '../layouts/Header'
@@ -8,6 +8,8 @@ import DataTableWithPagination from '../components/DataTableWithPagination'
 import dayjs from 'dayjs'
 import { formatDate } from '../utils/dateFormatter'
 import { extractApiError } from '../utils/messageFormatter'
+import RoleBasedComponentAccess from '../components/accessControl/RoleBasedComponentAccess'
+import useRoleAccess from '../components/accessControl/useRoleAccess'
 
 const { Title, Text } = Typography
 const { RangePicker } = DatePicker
@@ -21,6 +23,7 @@ const MaterialIssue = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedReq, setSelectedReq] = useState(null)
   const [form] = Form.useForm()
+  const { filterByRole } = useRoleAccess()
 
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
@@ -114,13 +117,15 @@ const MaterialIssue = () => {
               key: 'edit',
               label: 'Edit',
               icon: <EditOutlined />,
-              onClick: () => handleEditClick(record)
+              onClick: () => handleEditClick(record),
+              allowedRoles: ['super_admin', 'supervisor']
             },
             {
               key: 'status',
               label: 'Change Status',
               icon: <CheckCircleOutlined />,
-              onClick: () => handleChangeStatusPrompt([record._id])
+              onClick: () => handleChangeStatusPrompt([record._id]),
+              allowedRoles: ['super_admin', 'supervisor']
             },
             {
               type: 'divider'
@@ -130,13 +135,14 @@ const MaterialIssue = () => {
               label: 'Delete',
               icon: <DeleteOutlined />,
               danger: true,
-              onClick: () => showDeleteConfirm(record)
+              onClick: () => showDeleteConfirm(record),
+              allowedRoles: ['super_admin', 'supervisor']
             }
           );
         }
 
         return (
-          <Dropdown menu={{ items }} trigger={['click']}>
+          <Dropdown menu={{ items: filterByRole(items) }} trigger={['click']}>
             <Button type="text" icon={<MoreOutlined />} />
           </Dropdown>
         );
@@ -281,6 +287,19 @@ const MaterialIssue = () => {
     setPage(1)
   }
 
+  const handleResetFilters = () => {
+    const initialFilters = {
+      requisition_no: '',
+      issue_no: '',
+      issue_status: null,
+      start_date: null,
+      end_date: null
+    }
+    setTempFilters(initialFilters)
+    setFilters(initialFilters)
+    setPage(1)
+  }
+
   const onReqChange = (val) => {
     const req = approvedRequisitions.find(r => r._id === val)
     setSelectedReq(req)
@@ -302,21 +321,25 @@ const MaterialIssue = () => {
             </div>
             <Space>
               {selectedRowKeys.length > 0 && (
-                <Button
-                  icon={<CheckCircleOutlined />}
-                  onClick={() => handleChangeStatusPrompt(selectedRowKeys)}
-                >
-                  Change {selectedRowKeys.length} Statuses
-                </Button>
+                <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+                  <Button
+                    icon={<CheckCircleOutlined />}
+                    onClick={() => handleChangeStatusPrompt(selectedRowKeys)}
+                  >
+                    Change {selectedRowKeys.length} Statuses
+                  </Button>
+                </RoleBasedComponentAccess>
               )}
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => setModalVisible(true)}
-                style={{ height: '40px', borderRadius: '8px' }}
-              >
-                Add Material Issue
-              </Button>
+              <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={() => setModalVisible(true)}
+                  style={{ borderRadius: '8px' }}
+                >
+                  Add Material Issue
+                </Button>
+              </RoleBasedComponentAccess>
             </Space>
           </div>
 
@@ -366,12 +389,18 @@ const MaterialIssue = () => {
               </div>
               <Button
                 type="primary"
-                size="large"
                 icon={<SearchOutlined />}
                 onClick={handleApplyFilters}
                 style={{ borderRadius: '8px', minWidth: '120px' }}
               >
                 Search
+              </Button>
+              <Button
+                icon={<ReloadOutlined />}
+                onClick={handleResetFilters}
+                style={{ borderRadius: '8px' }}
+              >
+                Reset Filters
               </Button>
             </div>
           </Card>

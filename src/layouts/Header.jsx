@@ -34,7 +34,7 @@ const Header = ({ onMenuClick }) => {
   // NEW: Get user data from localStorage 'email' key as requested
   const getStoredUserData = () => {
     try {
-      const stored = localStorage.getItem('email')
+      const stored = localStorage.getItem('ce_user')
       return stored ? JSON.parse(stored) : null
     } catch (e) {
       return null
@@ -42,7 +42,7 @@ const Header = ({ onMenuClick }) => {
   }
 
   const storedUserData = getStoredUserData()
-  const displayUser = storedUserData || auth?.user || {}
+  const displayUser = storedUserData.email || auth?.user || {}
 
   // Format role: super_admin -> Super Admin
   const formatRole = (role) => {
@@ -115,6 +115,7 @@ const Header = ({ onMenuClick }) => {
     if (path.startsWith('/scrap-transport/internal-agencies')) return 'Internal Agencies'
     if (path.startsWith('/scrap-transport/internal-agreements')) return 'Agencies Agreements'
     if (path.startsWith('/raw-material/requisition')) return 'Material Requisition'
+    if (path.startsWith('/raw-material/issue')) return 'Material Issue'
     if (path.startsWith('/scrap-transport/upload-transport-data')) return 'Scrap Transport Data'
     if (path.startsWith('/scrap-transport/daily-aggregate')) return 'Daily Scrap Transport'
     return 'Scrap Transport'

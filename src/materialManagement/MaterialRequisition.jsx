@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, CheckCircleOutlined, ExclamationCircleOutlined, MoreOutlined, SearchOutlined } from '@ant-design/icons'
+import { useState, useEffect } from 'react'
+import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, CheckCircleOutlined, ExclamationCircleOutlined, MoreOutlined, SearchOutlined, ReloadOutlined } from '@ant-design/icons'
 import { Card, Button, Form, Input, Space, Modal, message, Typography, Table, Tag, DatePicker, Select, Divider, Dropdown } from 'antd'
 import { useMaterialRequisition } from '../api/useMaterialRequisition'
 import Header from '../layouts/Header'
@@ -7,6 +7,8 @@ import Sidebar from '../layouts/Sidebar'
 import DataTableWithPagination from '../components/DataTableWithPagination'
 import dayjs from 'dayjs'
 import { formatDate } from '../utils/dateFormatter'
+import RoleBasedComponentAccess from '../components/accessControl/RoleBasedComponentAccess'
+import useRoleAccess from '../components/accessControl/useRoleAccess'
 
 const { Title, Text } = Typography
 const { RangePicker } = DatePicker
@@ -18,6 +20,7 @@ const MaterialRequisition = () => {
   const [editingRequisition, setEditingRequisition] = useState(null)
   const [selectedRequisition, setSelectedRequisition] = useState(null)
   const [form] = Form.useForm()
+  const { filterByRole } = useRoleAccess()
 
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
@@ -111,13 +114,15 @@ const MaterialRequisition = () => {
               key: 'edit',
               label: 'Edit',
               icon: <EditOutlined />,
-              onClick: () => handleEditClick(record)
+              onClick: () => handleEditClick(record),
+              allowedRoles: ['super_admin', 'supervisor']
             },
             {
               key: 'approve',
               label: 'Approve',
               icon: <CheckCircleOutlined />,
-              onClick: () => showApproveConfirm(record)
+              onClick: () => showApproveConfirm(record),
+              allowedRoles: ['super_admin', 'supervisor']
             }
           );
         }
@@ -129,13 +134,14 @@ const MaterialRequisition = () => {
               label: 'Delete',
               icon: <DeleteOutlined />,
               danger: true,
-              onClick: () => showDeleteConfirm(record)
+              onClick: () => showDeleteConfirm(record),
+              allowedRoles: ['super_admin', 'supervisor']
             }
           );
         }
 
         return (
-          <Dropdown menu={{ items }} trigger={['click']}>
+          <Dropdown menu={{ items: filterByRole(items) }} trigger={['click']}>
             <Button type="text" icon={<MoreOutlined />} />
           </Dropdown>
         );
@@ -267,6 +273,19 @@ const MaterialRequisition = () => {
     setPage(1)
   }
 
+  const handleResetFilters = () => {
+    const initialFilters = {
+      plant: null,
+      start_date: null,
+      end_date: null,
+      requisition_no: null,
+      status: null
+    }
+    setTempFilters(initialFilters)
+    setFilters(initialFilters)
+    setPage(1)
+  }
+
   return (
     <div style={{ display: 'flex' }}>
       <Sidebar />
@@ -278,14 +297,16 @@ const MaterialRequisition = () => {
               <Title level={3}>Material Requisition Management</Title>
               <Text type="secondary">Create and manage raw material requisitions for melting plants.</Text>
             </div>
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => setModalVisible(true)}
-              style={{ height: '40px', borderRadius: '8px' }}
-            >
-              Add Requisition
-            </Button>
+            <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => setModalVisible(true)}
+                style={{ borderRadius: '8px' }}
+              >
+                Add Requisition
+              </Button>
+            </RoleBasedComponentAccess>
           </div>
 
           <Card style={{ borderRadius: '10px', marginBottom: 16 }}>
@@ -341,12 +362,18 @@ const MaterialRequisition = () => {
               </div>
               <Button
                 type="primary"
-                size="large"
                 icon={<SearchOutlined />}
                 onClick={handleApplyFilters}
                 style={{ borderRadius: '8px', minWidth: '120px' }}
               >
                 Search
+              </Button>
+              <Button
+                icon={<ReloadOutlined />}
+                onClick={handleResetFilters}
+                style={{ borderRadius: '8px' }}
+              >
+                Reset Fiters
               </Button>
             </div>
           </Card>
