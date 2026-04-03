@@ -140,7 +140,7 @@ root.render(
               path="/scrap-purchase/purchase-records"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager']}>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'weight_man', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager']}>
                     <PurchaseRecords />
                   </RoleBasedComponentAccess>
                 </RequireAuth>
@@ -150,7 +150,7 @@ root.render(
               path="/scrap-purchase/material-rate"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager']}>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'weight_man', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager']}>
                     <MaterialRate />
                   </RoleBasedComponentAccess>
                 </RequireAuth>

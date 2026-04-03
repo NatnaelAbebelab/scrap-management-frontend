@@ -55,26 +55,21 @@ const Sidebar = ({ selected }) => {
                                             : path === '/reports/customer-plain-report' ? 'reports:purchase-grn:customer-plain-report'
                                               : path === '/reports/customer-aggregate-report' ? 'reports:purchase-grn:customer-aggregate-report'
                                                 : path.startsWith('/reports/aggregate-purchase') ? 'reports:aggregate-purchase'
-                                                  : path.startsWith('/reports/daily-purchase-performance') ? 'reports:daily-purchase-performance'
-                                                    : path.startsWith('/reports/scrap-transport/agency-performance') ? 'reports:scrap-transport:agency-performance'
-                                                      : path.startsWith('/reports/scrap-transport/raw-scrap-report') ? 'reports:scrap-transport:raw-scrap-report'
-                                                        : path.startsWith('/reports/daily-scrap-move-aggregate') ? 'reports:daily-scrap-move-aggregate'
-                                                          : path.startsWith('/reports/agency-performance') ? 'reports:agency-performance'
-                                                            : path === '/reports/stock-report' ? 'reports:stock-reports:stock-report'
-                                                              : path === '/reports/stock-card' ? 'reports:stock-reports:stock-card'
-                                                                : path === '/reports/stock-aggregated-report' ? 'reports:stock-reports:stock-aggregated-report'
-                                                                  : path.startsWith('/reports/stock') ? 'reports:stock-reports'
-                                                                    : path === '/reports/raw-material/requisition-receipt' ? 'reports:raw-material:requisition-receipt'
-                                                                      : path === '/reports/raw-material/issue-receipt' ? 'reports:raw-material:issue-receipt'
-                                                                        : path.startsWith('/reports/raw-material/requisition') ? 'reports:raw-material:requisition'
-                                                                          : path.startsWith('/reports/raw-material/issue-report') ? 'reports:raw-material:issue'
-                                                                            : path.startsWith('/reports/grn-note-report') ? 'reports:purchase-grn:grn-note-report'
-                                                                              : path.startsWith('/reports/approval-note-report') ? 'reports:purchase-grn:approval-note-report'
-                                                                                : path.startsWith('/reports/grn-receipt') ? 'reports:grn-receipt'
-                                                                                  : path.startsWith('/reports/scrap-purchase-approval-receipt') ? 'reports:scrap-purchase-approval-receipt'
-                                                                                    : path.startsWith('/reports') ? 'reports'
-                                                                                      : path.startsWith('/settings') ? 'settings'
-                                                                                        : 'dashboard'
+                                                  : path.startsWith('/reports/scrap-transport/agency-performance') ? 'reports:scrap-transport:agency-performance'
+                                                    : path.startsWith('/reports/scrap-transport/raw-scrap-report') ? 'reports:scrap-transport:raw-scrap-report'
+                                                      : path === '/reports/stock-report' ? 'reports:stock-reports:stock-report'
+                                                        : path === '/reports/stock-card' ? 'reports:stock-reports:stock-card'
+                                                          : path === '/reports/stock-aggregated-report' ? 'reports:stock-reports:stock-aggregated-report'
+                                                            : path.startsWith('/reports/stock') ? 'reports:stock-reports'
+                                                              : path === '/reports/raw-material/requisition-receipt' ? 'reports:raw-material:requisition-receipt'
+                                                                : path === '/reports/raw-material/issue-receipt' ? 'reports:raw-material:issue-receipt'
+                                                                  : path.startsWith('/reports/raw-material/requisition') ? 'reports:raw-material:requisition'
+                                                                    : path.startsWith('/reports/raw-material/issue-report') ? 'reports:raw-material:issue'
+                                                                      : path.startsWith('/reports/grn-note-report') ? 'reports:purchase-grn:grn-note-report'
+                                                                        : path.startsWith('/reports/approval-note-report') ? 'reports:purchase-grn:approval-note-report'
+                                                                          : path.startsWith('/reports') ? 'reports'
+                                                                            : path.startsWith('/settings') ? 'settings'
+                                                                              : 'dashboard'
 
   const activeKey = selected || inferred
 
@@ -150,12 +145,12 @@ const Sidebar = ({ selected }) => {
         {
           key: 'scrap-purchase:purchase-records',
           label: withTooltip(<Link to="/scrap-purchase/purchase-records" style={getStyle('scrap-purchase:purchase-records')}>Purchase Records</Link>, 'Purchase Records'),
-          allowedRoles: ['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager']
+          allowedRoles: ['super_admin', 'weight_man', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager']
         },
         {
           key: 'scrap-purchase:material-rate',
           label: withTooltip(<Link to="/scrap-purchase/material-rate" style={getStyle('scrap-purchase:material-rate')}>Material Rate</Link>, 'Material Rate'),
-          allowedRoles: ['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager'],
+          allowedRoles: ['super_admin', 'weight_man', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager'],
         }
       ]
     },
@@ -246,10 +241,6 @@ const Sidebar = ({ selected }) => {
           ]
         },
         {
-          key: 'reports:daily-purchase-performance',
-          label: withTooltip(<Link to="/reports/daily-purchase-performance" style={getStyle('reports:daily-purchase-performance')}>Daily Purchase Performance Report</Link>, 'Daily Purchase Performance Report')
-        },
-        {
           key: 'reports:scrap-transport',
           label: withTooltip(<span style={getStyle('reports:scrap-transport')}>Scrap Transport Report</span>, 'Scrap Transport Report'),
           children: [
@@ -262,14 +253,6 @@ const Sidebar = ({ selected }) => {
               label: withTooltip(<Link to="/reports/scrap-transport/raw-scrap-report" style={getStyle('reports:scrap-transport:raw-scrap-report')}>Raw Scrap Transport Report</Link>, 'Raw Scrap Transport Report')
             }
           ]
-        },
-        {
-          key: 'reports:daily-scrap-move-aggregate',
-          label: withTooltip(<Link to="/reports/daily-scrap-move-aggregate" style={getStyle('reports:daily-scrap-move-aggregate')}>Daily Scrap Move Aggregate Report</Link>, 'Daily Scrap Move Aggregate Report')
-        },
-        {
-          key: 'reports:agency-performance',
-          label: withTooltip(<Link to="/reports/agency-performance" style={getStyle('reports:agency-performance')}>Agency Performance Report</Link>, 'Agency Performance Report')
         },
         {
           key: 'reports:stock-reports',
@@ -311,18 +294,6 @@ const Sidebar = ({ selected }) => {
             }
           ]
         },
-        {
-          key: 'reports:material-issue',
-          label: withTooltip(<Link to="/reports/material-issue" style={getStyle('reports:material-issue')}>Material Issue</Link>, 'Material Issue')
-        },
-        {
-          key: 'reports:grn-receipt',
-          label: withTooltip(<Link to="/reports/grn-receipt" style={getStyle('reports:grn-receipt')}>GRN Receipt</Link>, 'GRN Receipt')
-        },
-        {
-          key: 'reports:scrap-purchase-approval-receipt',
-          label: withTooltip(<Link to="/reports/scrap-purchase-approval-receipt" style={getStyle('reports:scrap-purchase-approval-receipt')}>Scrap Purchase Approval Receipt</Link>, 'Scrap Purchase Approval Receipt')
-        }
       ]
     },
     {

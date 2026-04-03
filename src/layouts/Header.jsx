@@ -31,6 +31,34 @@ const Header = ({ onMenuClick }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
+  // NEW: Get user data from localStorage 'email' key as requested
+  const getStoredUserData = () => {
+    try {
+      const stored = localStorage.getItem('ce_user')
+      return stored ? JSON.parse(stored) : null
+    } catch (e) {
+      return null
+    }
+  }
+
+  const storedUserData = getStoredUserData()
+  const displayUser = storedUserData.email || auth?.user || {}
+
+  // Format role: super_admin -> Super Admin
+  const formatRole = (role) => {
+    if (!role) return 'Administrator'
+    return role
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  }
+
+  const fullName = displayUser.first_name && displayUser.last_name
+    ? `${displayUser.first_name} ${displayUser.last_name}`
+    : (displayUser.name || 'User')
+
+  const displayRole = formatRole(displayUser.role)
+
   const isPublicRoute = location.pathname === '/interactions/complaint' || location.pathname === '/interactions/performa'
 
   if (isPublicRoute) return null
@@ -146,7 +174,7 @@ const Header = ({ onMenuClick }) => {
           </Text>
           {auth?.token && (
             <div style={{ fontSize: '12px', color: '#8c8c8c', marginTop: '2px' }}>
-              Welcome back, {auth?.user?.name || 'User'}
+              Welcome back, {fullName}
             </div>
           )}
         </div>
@@ -234,10 +262,10 @@ const Header = ({ onMenuClick }) => {
                 />
                 <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.2' }}>
                   <Text strong style={{ fontSize: '14px' }}>
-                    {auth?.user?.name || 'User'}
+                    {fullName}
                   </Text>
                   <Text style={{ fontSize: '12px', color: '#8c8c8c' }}>
-                    {auth?.user?.role || 'Administrator'}
+                    {displayRole}
                   </Text>
                 </div>
                 <DownOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
