@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { tokenService } from './tokenService';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, STATIC_PATH } from '../config';
+
 
 export const authService = {
   refreshToken: async (): Promise<string | null> => {
@@ -34,6 +35,6 @@ export const authService = {
   logout: (): void => {
     tokenService.clearAuthData();
     // Redirect to login page
-    window.location.href = '/login';
+    window.location.href = `${STATIC_PATH}login`;
   }
 };

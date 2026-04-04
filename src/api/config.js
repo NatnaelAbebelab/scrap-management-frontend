@@ -7,6 +7,7 @@ export const API_BASE_URL = 'http://127.0.0.1:7000/api/v1'
 export const FILE_UPLOAD_URL = `${API_BASE_URL}/service/upload-file/`
 export const UPLOADED_FILE_URL = (filename) => `http://127.0.0.1:7000/media/uploaded-files/${filename}`
 export const STATIC_FILES_URL = `http://localhost:3000/`
+export const STATIC_PATH = `http://localhost:3000/` // Front-end path
 
 // --- User Management ---
 export const USERS_GET_URL = `${API_BASE_URL}/user/get`

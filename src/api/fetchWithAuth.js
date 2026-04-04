@@ -16,7 +16,7 @@
  *   const res = await authFetch('/some/url', { method: 'GET' })
  */
 
-import { API_BASE_URL } from './config'
+import { API_BASE_URL, STATIC_PATH } from './config'
 
 // Django URL conf shows: api/v1/user/ is the user service prefix
 const TOKEN_REFRESH_URL = `${API_BASE_URL}/user/token/refresh/`
@@ -52,7 +52,7 @@ export const createFetchWithAuth = (auth) => {
     if (!storedRefresh) {
       // No refresh token available – force logout
       auth.logout()
-      window.location.href = '/login'
+      window.location.href = `${STATIC_PATH}login`
       return res
     }
 
@@ -92,7 +92,7 @@ export const createFetchWithAuth = (auth) => {
     } catch (_err) {
       // Refresh failed – force logout
       auth.logout()
-      window.location.href = '/login'
+      window.location.href = `${STATIC_PATH}login`
       return res
     }
   }

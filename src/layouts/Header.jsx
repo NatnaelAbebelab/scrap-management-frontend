@@ -21,6 +21,7 @@ import {
 } from 'antd'
 import { useAuth } from '../auth/AuthProvider'
 import { useLocation } from 'react-router-dom'
+import { STATIC_PATH } from '../api/config'
 
 const { Text } = Typography
 const { Search } = Input
@@ -67,7 +68,7 @@ const Header = ({ onMenuClick }) => {
     try {
       // Made awaitable so the backend request fires reliably before unmount
       await auth.logout()
-      navigate('/login')
+      window.location.href = `${STATIC_PATH}login`
     } catch (err) {
       console.error('Logout failed', err)
     }

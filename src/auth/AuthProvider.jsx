@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
-import { USER_LOGOUT_URL } from '../api/config'
+import { USER_LOGOUT_URL, STATIC_PATH } from '../api/config'
 
 const AuthContext = createContext(null)
 
@@ -101,8 +101,15 @@ export const useAuth = () => {
 export const RequireAuth = ({ children }) => {
   const auth = useAuth()
   const { pathname } = window.location
+
+  useEffect(() => {
+    if (!auth?.token) {
+      window.location.href = `${STATIC_PATH}login`
+    }
+  }, [auth?.token])
+
   if (!auth?.token) {
-    return <Navigate to="/login" replace state={{ from: pathname }} />
+    return null
   }
   return children
 }

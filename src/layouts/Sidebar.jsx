@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useAuth } from '../auth/AuthProvider'
 import { useNavigate } from 'react-router-dom'
-import { STATIC_FILES_URL } from '../api/config'
+import { STATIC_FILES_URL, STATIC_PATH } from '../api/config'
 import { Menu, Typography, Tooltip } from 'antd'
 import { Link, useLocation } from 'react-router-dom'
 import {
@@ -454,7 +454,7 @@ const Sidebar = ({ selected }) => {
               key: 'logout',
               icon: <LogoutOutlined style={{ fontSize: '16px' }} />,
               label: 'Logout',
-              onClick: () => { logout(); navigate('/login') },
+              onClick: () => { logout(); window.location.href = `${STATIC_PATH}login` },
               style: {
                 color: 'rgb(245, 34, 45)',
                 borderRadius: '6px',

@@ -21,6 +21,7 @@ import Header from '../layouts/Header'
 import Sidebar from '../layouts/Sidebar'
 import { useProfile } from '../api/useProfile'
 import { useAuth } from '../auth/AuthProvider'
+import { STATIC_PATH } from '../api/config'
 
 const { Title, Text } = Typography
 
@@ -105,7 +106,7 @@ const Profile = () => {
         } else {
           localStorage.removeItem('ce_user')
         }
-        navigate('/login')
+        window.location.href = `${STATIC_PATH}login`
       }, 1500)
 
     } catch (err) {
