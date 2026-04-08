@@ -177,7 +177,7 @@ const StockManagement = () => {
             <Col xs={24} sm={12} lg={6}>
               <Card bordered={false} style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderLeft: '4px solid #52c41a' }}>
                 <Statistic
-                  title="Total Sourced"
+                  title="Total Purchase Quantity"
                   value={summary?.totals?.total_purchase_qty || 0}
                   suffix="Kg"
                   prefix={<ShoppingCartOutlined style={{ marginRight: 8, color: '#52c41a' }} />}
@@ -201,7 +201,7 @@ const StockManagement = () => {
             <Col xs={24} sm={12} lg={6}>
               <Card bordered={false} style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderLeft: '4px solid rgb(245, 34, 45)' }}>
                 <Statistic
-                  title="Net Stock (Current)"
+                  title="Stock Balance"
                   value={summary?.active_balance?.current_qty || 0}
                   suffix="Kg"
                   prefix={<BarChartOutlined style={{ marginRight: 8, color: 'rgb(245, 34, 45)' }} />}

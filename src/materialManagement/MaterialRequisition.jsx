@@ -130,6 +130,13 @@ const MaterialRequisition = () => {
         if (record.requisition_status === 'request_issued') {
           items.push(
             {
+              key: 'approve',
+              label: 'Approve',
+              icon: <CheckCircleOutlined />,
+              onClick: () => showApproveConfirm(record),
+              allowedRoles: ['super_admin', 'supervisor']
+            },
+            {
               key: 'delete',
               label: 'Delete',
               icon: <DeleteOutlined />,

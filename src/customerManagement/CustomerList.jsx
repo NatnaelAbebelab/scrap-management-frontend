@@ -250,7 +250,7 @@ const CustomerList = () => {
           <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <Title level={3} style={{ marginBottom: 4 }}>Customer Management</Title>
-              <Text type="secondary">Manage scrap sellers, their details, and review associated balances.</Text>
+              {/* <Text type="secondary">Manage scrap sellers, their details, and review associated balances.</Text> */}
             </div>
             <Space>
               <RoleBasedComponentAccess allowedRoles={['super_admin', 'finance']}>
