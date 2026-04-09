@@ -30,7 +30,7 @@ export const apiRequest = async <T = any>(options: ApiRequestOptions): Promise<S
   const { url, method, data, params, pagination, headers, responseType } = options;
 
   let requestParams = { ...params };
-  
+
   // Handing pagination gracefully
   if (pagination) {
     if (pagination.page !== undefined) requestParams.page = pagination.page;
@@ -64,7 +64,7 @@ export const apiRequest = async <T = any>(options: ApiRequestOptions): Promise<S
       return {
         result: error.response.data?.result || 'error',
         message: formatErrorMessage(error.response.data?.message || error.response.data?.detail) || 'An error occurred during the request.',
-        content: error.response.data?.content || error.response.data,
+        content: error.response.data?.content !== undefined ? error.response.data.content : error.response.data,
         status: error.response.status,
       };
     } else if (error.request) {
