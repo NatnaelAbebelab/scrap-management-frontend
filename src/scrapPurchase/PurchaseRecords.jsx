@@ -659,8 +659,8 @@ const PurchaseRecords = () => {
                   </Tag>
                 ) : '-'}
               </Descriptions.Item>
-              <Descriptions.Item label="Recorded On" span={1}>
-                <Text>{formatDate(viewRecord.created_at)}</Text>
+              <Descriptions.Item label="GRN No" span={1}>
+                <Text strong>{viewRecord.grn_no ?? '-'}</Text>
               </Descriptions.Item>
 
               <Descriptions.Item label="First Weight" span={1}>

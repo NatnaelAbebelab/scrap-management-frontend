@@ -5,7 +5,9 @@ import {
   CUSTOMER_EDIT_URL,
   CUSTOMER_FILTER_URL,
   CUSTOMER_DELETE_URL,
-  CUSTOMER_PAY_URL
+  CUSTOMER_PAY_URL,
+  CUSTOMER_PAYMENT_SUMMARY_URL,
+  GET_CUSTOMER_GRN
 } from './config'
 import { useAuth } from '../auth/AuthProvider'
 import { createFetchWithAuth } from './fetchWithAuth'
@@ -21,7 +23,7 @@ export const useCustomerManagement = () => {
     setLoading(true)
     setError(null)
     try {
-      const url = tin 
+      const url = tin
         ? `${CUSTOMER_FILTER_URL}?tin=${encodeURIComponent(tin)}`
         : `${CUSTOMERS_GET_URL}?page=${page}&page_size=${pageSize}`
 
@@ -147,16 +149,27 @@ export const useCustomerManagement = () => {
     }
   }
 
-  const fetchCustomerGrns = async (tin) => {
+  const fetchCustomerGrns = async (tin, status) => {
     try {
-      const response = await authFetch(`${CUSTOMER_FILTER_URL}?tin=${encodeURIComponent(tin)}`, { method: 'GET' })
-      if (!response.ok) {
-        throw new Error('Failed to fetch customer GRNs')
+      let url = `${GET_CUSTOMER_GRN}?tin=${encodeURIComponent(tin)}`
+      if (status) {
+        url += `&status=${encodeURIComponent(status)}`
       }
+
+      const response = await authFetch(url, { method: 'GET' })
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}))
+        throw new Error(errData.message || 'Operation failed')
+      }
+
       const data = await response.json()
-      if (data.result === 'error') throw new Error(data.message)
-      
-      return data.data?.grns || []
+      if (data.result === 'error') throw new Error(data.message || 'Operation failed')
+
+      if (!data.data || data.data.length === 0) {
+        throw new Error('There is no "' + status.toUpperCase() + '" GRN(s) that can be paid')
+      }
+
+      return data.data
     } catch (err) {
       console.error(err)
       throw err
@@ -193,6 +206,36 @@ export const useCustomerManagement = () => {
     }
   }
 
+  const getPaymentSummary = async (tin, recordNos) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await authFetch(CUSTOMER_PAYMENT_SUMMARY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tin: tin,
+          record_no: recordNos
+        })
+      })
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}))
+        throw new Error(errData.message || 'Failed to fetch payment summary')
+      }
+
+      const data = await response.json()
+      if (data.result === 'error') throw new Error(data.message)
+
+      return data.data
+    } catch (err) {
+      setError(err.message)
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     fetchCustomers,
     addCustomer,
@@ -200,6 +243,7 @@ export const useCustomerManagement = () => {
     deleteCustomer,
     fetchCustomerGrns,
     payCustomer,
+    getPaymentSummary,
     loading,
     error
   }

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { Card, Typography, Table, Button, Space, Input, Modal, Form, Dropdown, message, Row, Col, Popconfirm, Select } from 'antd'
-import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, EllipsisOutlined, DollarOutlined } from '@ant-design/icons'
+import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, EllipsisOutlined, DollarOutlined, FileTextOutlined } from '@ant-design/icons'
 import Sidebar from '../layouts/Sidebar'
 import Header from '../layouts/Header'
 import { useCustomerManagement } from '../api/useCustomerManagement'
 import { formatDate } from '../utils/dateFormatter'
 import { useAuth } from '../auth/AuthProvider'
 import RoleBasedComponentAccess from '../components/accessControl/RoleBasedComponentAccess'
+import { pdf } from '@react-pdf/renderer'
+import CustomerPaymentSummaryPDF from '../components/pdfComponent/CustomerPaymentSummaryPDF'
 
 const { Title, Text } = Typography
 
@@ -15,13 +17,18 @@ const capitalize = (s) => typeof s === 'string' && s ? s.charAt(0).toUpperCase()
 const CustomerList = () => {
   const [form] = Form.useForm()
   const [payForm] = Form.useForm()
+  const [summaryForm] = Form.useForm()
   const { user } = useAuth()
   const userRole = user?.role || user?.email?.role
-  const { fetchCustomers, addCustomer, editCustomer, deleteCustomer, fetchCustomerGrns, payCustomer, loading } = useCustomerManagement()
+  const { fetchCustomers, addCustomer, editCustomer, deleteCustomer, fetchCustomerGrns, payCustomer, getPaymentSummary, loading } = useCustomerManagement()
 
   const [isPayModalVisible, setIsPayModalVisible] = useState(false)
   const [payGrnOptions, setPayGrnOptions] = useState([])
   const [loadingGrns, setLoadingGrns] = useState(false)
+
+  const [isSummaryModalVisible, setIsSummaryModalVisible] = useState(false)
+  const [summaryGrnOptions, setSummaryGrnOptions] = useState([])
+  const [loadingSummaryGrns, setLoadingSummaryGrns] = useState(false)
 
   const [customers, setCustomers] = useState([])
   const [total, setTotal] = useState(0)
@@ -255,6 +262,15 @@ const CustomerList = () => {
             <Space>
               <RoleBasedComponentAccess allowedRoles={['super_admin', 'finance']}>
                 <Button
+                  icon={<FileTextOutlined />}
+                  onClick={() => setIsSummaryModalVisible(true)}
+                >
+                  Get Payment Summary
+                </Button>
+              </RoleBasedComponentAccess>
+
+              <RoleBasedComponentAccess allowedRoles={['super_admin', 'finance']}>
+                <Button
                   icon={<DollarOutlined />}
                   onClick={() => setIsPayModalVisible(true)}
                 >
@@ -402,14 +418,12 @@ const CustomerList = () => {
                 }
                 setLoadingGrns(true)
                 try {
-                  const grns = await fetchCustomerGrns(tinValue)
+                  const grns = await fetchCustomerGrns(tinValue, 'approved')
                   const options = grns
-                    .filter(g => g.status === 'approved')
                     .map(g => ({ value: g.record_no, label: g.record_no }))
                   setPayGrnOptions(options)
                 } catch (err) {
                   setPayGrnOptions([])
-                  message.error('Failed to load GRNs for TIN')
                 } finally {
                   setLoadingGrns(false)
                 }
@@ -431,15 +445,14 @@ const CustomerList = () => {
                   }
                   setLoadingGrns(true)
                   try {
-                    const grns = await fetchCustomerGrns(tinValue)
+                    const grns = await fetchCustomerGrns(tinValue, 'approved')
                     // Ensure the dropdown populates precisely with approved record_nos
                     const options = grns
-                      .filter(g => g.status === 'approved')
                       .map(g => ({ value: String(g.record_no), label: String(g.record_no) }))
                     setPayGrnOptions(options)
                   } catch (err) {
                     setPayGrnOptions([])
-                    message.error('Failed to load GRNs for TIN')
+                    message.error(err.message || 'Failed to load GRNs for TIN')
                   } finally {
                     setLoadingGrns(false)
                   }
@@ -456,6 +469,108 @@ const CustomerList = () => {
               }}>Cancel</Button>
               <Button type="primary" htmlType="submit" loading={loading} style={{ background: 'rgb(245, 34, 45)' }}>
                 Process Payment
+              </Button>
+            </Space>
+          </div>
+        </Form>
+      </Modal>
+
+      <Modal
+        title="Get Payment Summary"
+        open={isSummaryModalVisible}
+        onCancel={() => {
+          setIsSummaryModalVisible(false)
+          summaryForm.resetFields()
+          setSummaryGrnOptions([])
+        }}
+        footer={null}
+        destroyOnClose
+      >
+        <Form
+          form={summaryForm}
+          layout="vertical"
+          onFinish={async (values) => {
+            message.loading({ content: 'Generating Payment Summary...', key: 'summary_loading' });
+            try {
+              const summaryData = await getPaymentSummary(values.tin, values.record_nos);
+              const blob = await pdf(<CustomerPaymentSummaryPDF data={summaryData} />).toBlob();
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `${values.tin}_payment_summary.pdf`;
+              link.click();
+              URL.revokeObjectURL(url);
+              message.success({ content: 'Payment Summary generated successfully', key: 'summary_loading', duration: 2 });
+              setIsSummaryModalVisible(false)
+              summaryForm.resetFields()
+              setSummaryGrnOptions([])
+            } catch (err) {
+              message.error({ content: err.message || 'Failed to generate payment summary', key: 'summary_loading' });
+            }
+          }}
+        >
+          <Form.Item name="tin" label="Customer TIN" rules={[{ required: true, message: 'TIN is required' }]}>
+            <Input
+              placeholder="Enter TIN"
+              onBlur={async (e) => {
+                const tinValue = e.target.value
+                if (!tinValue) {
+                  setSummaryGrnOptions([])
+                  summaryForm.setFieldsValue({ record_nos: [] })
+                  return
+                }
+                setLoadingSummaryGrns(true)
+                try {
+                  const grns = await fetchCustomerGrns(tinValue, 'paid')
+                  const options = grns
+                    .map(g => ({ value: String(g.record_no), label: String(g.record_no) }))
+                  setSummaryGrnOptions(options)
+                } catch (err) {
+                  setSummaryGrnOptions([])
+                } finally {
+                  setLoadingSummaryGrns(false)
+                }
+              }}
+            />
+          </Form.Item>
+          <Form.Item name="record_nos" label="Select Records for Summary" rules={[{ required: true, message: 'Please select at least one record' }]}>
+            <Select
+              mode="multiple"
+              placeholder="Select Record Nos"
+              options={summaryGrnOptions}
+              loading={loadingSummaryGrns}
+              onDropdownVisibleChange={async (open) => {
+                if (open) {
+                  const tinValue = summaryForm.getFieldValue('tin')
+                  if (!tinValue) {
+                    message.warning('Please enter a TIN first')
+                    return
+                  }
+                  setLoadingSummaryGrns(true)
+                  try {
+                    const grns = await fetchCustomerGrns(tinValue, 'paid')
+                    const options = grns
+                      .map(g => ({ value: String(g.record_no), label: String(g.record_no) }))
+                    setSummaryGrnOptions(options)
+                  } catch (err) {
+                    setSummaryGrnOptions([])
+                    message.error(err.message || 'Failed to load GRNs for TIN')
+                  } finally {
+                    setLoadingSummaryGrns(false)
+                  }
+                }
+              }}
+            />
+          </Form.Item>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+            <Space>
+              <Button onClick={() => {
+                setIsSummaryModalVisible(false)
+                summaryForm.resetFields()
+                setSummaryGrnOptions([])
+              }}>Cancel</Button>
+              <Button type="primary" htmlType="submit" loading={loading} style={{ background: 'rgb(245, 34, 45)' }}>
+                Get Summary
               </Button>
             </Space>
           </div>
