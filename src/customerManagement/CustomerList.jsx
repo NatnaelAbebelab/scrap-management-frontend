@@ -494,13 +494,20 @@ const CustomerList = () => {
             try {
               const summaryData = await getPaymentSummary(values.tin, values.record_nos);
               const blob = await pdf(<CustomerPaymentSummaryPDF data={summaryData} />).toBlob();
-              const url = URL.createObjectURL(blob);
-              const link = document.createElement('a');
-              link.href = url;
-              link.download = `${values.tin}_payment_summary.pdf`;
-              link.click();
-              URL.revokeObjectURL(url);
-              message.success({ content: 'Payment Summary generated successfully', key: 'summary_loading', duration: 2 });
+              const file = new File([blob], `Customer payment summery - ${values.tin}.pdf`, { type: 'application/pdf' });
+              const url = URL.createObjectURL(file);
+              
+              const newTab = window.open(url, '_blank');
+              
+              // Fallback if popup blocked
+              if (!newTab) {
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `Customer payment summery - ${values.tin}.pdf`;
+                link.click();
+              }
+
+              message.success({ content: 'Payment Summary opened in new tab', key: 'summary_loading', duration: 2 });
               setIsSummaryModalVisible(false)
               summaryForm.resetFields()
               setSummaryGrnOptions([])

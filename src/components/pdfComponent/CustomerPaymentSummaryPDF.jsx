@@ -60,11 +60,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center',
   },
-  colRowNo: { width: '8%', borderLeftWidth: 1, borderColor: '#000' },
-  colDate: { width: '15%' },
-  colGrn: { width: '17%' },
-  colQty: { width: '22%' },
-  colPrice: { width: '23%' },
+  colRowNo: { width: '5%', borderLeftWidth: 1, borderColor: '#000' },
+  colDate: { width: '12%' },
+  colWeight: { width: '12%' },
+  colGrn: { width: '11%' },
+  colGrade: { width: '10%' },
+  colQty: { width: '17%' },
+  colPrice: { width: '18%' },
   colTotal: { width: '15%' },
   summaryTableRow: {
     flexDirection: 'row',
@@ -124,7 +126,7 @@ const CustomerPaymentSummaryPDF = ({ data }) => {
   }
 
   return (
-    <Document title="Customer Payment Summary">
+    <Document>
       {pages.map((pageGrns, pageIndex) => (
         <Page size="A4" style={styles.page} key={pageIndex}>
           <PDFHeader
@@ -158,7 +160,9 @@ const CustomerPaymentSummaryPDF = ({ data }) => {
             <View style={[styles.tableRow, styles.tableHeader]}>
               <Text style={[styles.tableColBase, styles.colRowNo]}>Row No</Text>
               <Text style={[styles.tableColBase, styles.colDate]}>Date</Text>
+              <Text style={[styles.tableColBase, styles.colWeight]}>Weight Record No</Text>
               <Text style={[styles.tableColBase, styles.colGrn]}>GRN/Serial No</Text>
+              <Text style={[styles.tableColBase, styles.colGrade]}>Grade</Text>
               <Text style={[styles.tableColBase, styles.colQty]}>Quantity</Text>
               <Text style={[styles.tableColBase, styles.colPrice]}>Unit Price</Text>
               <Text style={[styles.tableColBase, styles.colTotal]}>Total</Text>
@@ -169,31 +173,47 @@ const CustomerPaymentSummaryPDF = ({ data }) => {
               const dateVal = item.first_date ? item.first_date.replace(/\./g, '/') : '-';
               const grnOrSerial = (item.grn_no && item.grn_no !== '-' && item.grn_no.trim() !== '') ? `${item.grn_no}/${item.serial_no}` : `${item.serial_no}`;
 
-              // Formatting quantities
-              const qtyList = [];
-              if (parseFloat(item.heavy_grade) > 0) qtyList.push(`H: ${parseFloat(item.heavy_grade).toFixed(2)}`);
-              if (parseFloat(item.medium_grade) > 0) qtyList.push(`M: ${parseFloat(item.medium_grade).toFixed(2)}`);
-              if (parseFloat(item.light_grade) > 0) qtyList.push(`L: ${parseFloat(item.light_grade).toFixed(2)}`);
+              const recordNo = item.record_no || '-';
 
-              // Formatting prices
-              const priceList = [];
-              if (parseFloat(item.heavy_rate) > 0) priceList.push(`H: ${parseFloat(item.heavy_rate).toFixed(2)}`);
-              if (parseFloat(item.medium_rate) > 0) priceList.push(`M: ${parseFloat(item.medium_rate).toFixed(2)}`);
-              if (parseFloat(item.light_rate) > 0) priceList.push(`L: ${parseFloat(item.light_rate).toFixed(2)}`);
+              const grades = [];
+              if (parseFloat(item.heavy_grade) > 0) {
+                grades.push({ name: 'H', qty: parseFloat(item.heavy_grade).toFixed(2), price: parseFloat(item.heavy_rate).toFixed(2) });
+              }
+              if (parseFloat(item.medium_grade) > 0) {
+                grades.push({ name: 'M', qty: parseFloat(item.medium_grade).toFixed(2), price: parseFloat(item.medium_rate).toFixed(2) });
+              }
+              if (parseFloat(item.light_grade) > 0) {
+                grades.push({ name: 'L', qty: parseFloat(item.light_grade).toFixed(2), price: parseFloat(item.light_rate).toFixed(2) });
+              }
 
               return (
                 <View style={styles.tableRow} key={idx}>
                   <Text style={[styles.tableColBase, styles.colRowNo]}>{rowNo}</Text>
                   <Text style={[styles.tableColBase, styles.colDate]}>{dateVal}</Text>
+                  <Text style={[styles.tableColBase, styles.colWeight]}>{recordNo}</Text>
                   <Text style={[styles.tableColBase, styles.colGrn]}>{grnOrSerial}</Text>
 
-                  <Text style={[styles.tableColBase, styles.colQty]}>
-                    {qtyList.length > 0 ? qtyList.join('\n') : '-'}
-                  </Text>
-
-                  <Text style={[styles.tableColBase, styles.colPrice]}>
-                    {priceList.length > 0 ? priceList.join('\n') : '-'}
-                  </Text>
+                  <View style={{ width: '45%', flexDirection: 'column', borderRightWidth: 1, borderColor: '#000' }}>
+                    {grades.length > 1 ? grades.map((g, i) => (
+                      <View style={{ flexDirection: 'row', flexGrow: 1, borderBottomWidth: i === grades.length - 1 ? 0 : 1, borderColor: '#000', alignItems: 'stretch' }} key={i}>
+                        <Text style={[styles.tableColBase, { width: '22.22%' }]}>{g.name}</Text>
+                        <Text style={[styles.tableColBase, { width: '37.78%' }]}>{g.qty}</Text>
+                        <Text style={[styles.tableColBase, { width: '40%', borderRightWidth: 0 }]}>{g.price}</Text>
+                      </View>
+                    )) : grades.length === 1 ? (
+                      <View style={{ flexDirection: 'row', flexGrow: 1, alignItems: 'stretch' }}>
+                        <Text style={[styles.tableColBase, { width: '22.22%' }]}>{grades[0].name}</Text>
+                        <Text style={[styles.tableColBase, { width: '37.78%' }]}>{grades[0].qty}</Text>
+                        <Text style={[styles.tableColBase, { width: '40%', borderRightWidth: 0 }]}>{grades[0].price}</Text>
+                      </View>
+                    ) : (
+                      <View style={{ flexDirection: 'row', flexGrow: 1, alignItems: 'stretch' }}>
+                        <Text style={[styles.tableColBase, { width: '22.22%' }]}>-</Text>
+                        <Text style={[styles.tableColBase, { width: '37.78%' }]}>-</Text>
+                        <Text style={[styles.tableColBase, { width: '40%', borderRightWidth: 0 }]}>-</Text>
+                      </View>
+                    )}
+                  </View>
 
                   <Text style={[styles.tableColBase, styles.colTotal]}>
                     {parseFloat(item.net_price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
