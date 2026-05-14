@@ -329,7 +329,7 @@ const Sidebar = ({ selected }) => {
         {
           key: 'settings:stock-beginning-balance',
           label: withTooltip(<Link to="/settings/stock-beginning-balance" style={getStyle('settings:stock-beginning-balance')}>Stock Beginning Balance</Link>, 'Stock Beginning Balance'),
-          allowedRoles: ['super_admin']
+          allowedRoles: ['super_admin', 'supervisor']
         },
         {
           key: 'settings:profile',
