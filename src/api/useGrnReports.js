@@ -104,7 +104,7 @@ export const useGrnReports = () => {
 
       exportToExcel({
         filename: 'plain_grn_report',
-        sheetName: 'Plain GRN Report',
+        sheetName: 'Detailed GRN Report',
         columns: exportColumns,
         data: records,
         totals: totalsMap

@@ -126,6 +126,10 @@ const MaterialRequisitionReceiptPDF = ({ data }) => {
             <Text style={styles.label}>Requisition No: </Text>
             <Text style={styles.topValue}>{content.requisition_no}</Text>
           </View>
+          <View style={styles.topRow}>
+            <Text style={styles.label}>Department: </Text>
+            <Text style={[styles.topValue, { textTransform: 'capitalize' }]}>{content.melting_plant?.plant_name}</Text>
+          </View>
         </View>
 
         <View style={styles.table}>

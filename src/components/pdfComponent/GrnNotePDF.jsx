@@ -175,7 +175,7 @@ const GrnNotePDF = ({ data }) => {
         <View style={styles.midSection}>
           <View style={styles.midRow}>
             <Text style={styles.label}>Received from: </Text>
-            <Text style={styles.underline}>{content.customer_first_name} {content.customer_last_name} {content.customer_business_name}</Text>
+            <Text style={styles.underline}>{content.customer_first_name} {content.customer_last_name} {content.customer_business_name} {`(${content.customer})`}</Text>
             <Text style={[styles.label, { marginLeft: 20 }]}>Plate No.: </Text>
             <Text style={[styles.underline, { flexGrow: 0, width: 80 }]}>{content.plate_no}</Text>
           </View>

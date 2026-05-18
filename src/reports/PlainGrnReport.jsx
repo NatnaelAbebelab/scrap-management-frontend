@@ -199,7 +199,7 @@ const PlainGrnReport = () => {
         <div className="page-wrapper" style={{ padding: 20 }}>
           <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <Title level={3} style={{ marginBottom: 4 }}>Plain GRN Report</Title>
+              <Title level={3} style={{ marginBottom: 4 }}>Detail GRN Report</Title>
               <Text type="secondary">Detailed purchase and weight report for scrap purchase records.</Text>
             </div>
             <Space>
