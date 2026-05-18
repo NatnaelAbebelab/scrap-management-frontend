@@ -77,6 +77,12 @@ const MaterialRequisition = () => {
       render: (text) => <Text style={{ fontWeight: 700 }}>{Number(text).toFixed(2)}</Text>
     },
     {
+      title: 'Unissued Quantity',
+      dataIndex: 'unreceived_quantity',
+      key: 'unreceived_quantity',
+      render: (text) => <Text style={{ fontWeight: 700 }}>{Number(text).toFixed(2)}</Text>
+    },
+    {
       title: 'Price (ETB)',
       dataIndex: 'total_requisition_price',
       key: 'total_requisition_price',
@@ -108,22 +114,15 @@ const MaterialRequisition = () => {
           }
         ];
 
-        if (record.requisition_status === 'new') {
+        if (record.requisition_status === 'new' || record.requisition_status === 'request_issued') {
           items.push(
             {
               key: 'edit',
               label: 'Edit',
               icon: <EditOutlined />,
               onClick: () => handleEditClick(record),
-              allowedRoles: ['super_admin', 'supervisor']
+              allowedRoles: ['super_admin', 'forman']
             },
-            {
-              key: 'approve',
-              label: 'Approve',
-              icon: <CheckCircleOutlined />,
-              onClick: () => showApproveConfirm(record),
-              allowedRoles: ['super_admin', 'supervisor']
-            }
           );
         }
 
@@ -134,7 +133,7 @@ const MaterialRequisition = () => {
               label: 'Approve',
               icon: <CheckCircleOutlined />,
               onClick: () => showApproveConfirm(record),
-              allowedRoles: ['super_admin', 'supervisor']
+              allowedRoles: ['super_admin', 'department_head']
             },
             {
               key: 'delete',
@@ -142,7 +141,7 @@ const MaterialRequisition = () => {
               icon: <DeleteOutlined />,
               danger: true,
               onClick: () => showDeleteConfirm(record),
-              allowedRoles: ['super_admin', 'supervisor']
+              allowedRoles: ['super_admin', 'department_head']
             }
           );
         }
@@ -304,7 +303,7 @@ const MaterialRequisition = () => {
               <Title level={3}>Material Requisition Management</Title>
               <Text type="secondary">Create and manage raw material requisitions for melting plants.</Text>
             </div>
-            <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+            <RoleBasedComponentAccess allowedRoles={['super_admin', 'forman']}>
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
@@ -487,7 +486,7 @@ const MaterialRequisition = () => {
                   <div>
                     <Text strong style={{ color: '#595959' }}>Status:</Text>
                     <div style={{ marginTop: 4 }}>
-                      {columns[5].render(selectedRequisition.requisition_status)}
+                      {columns[6].render(selectedRequisition.requisition_status)}
                     </div>
                   </div>
                   <div>
@@ -501,6 +500,10 @@ const MaterialRequisition = () => {
                   <div>
                     <Text strong style={{ color: '#595959' }}>Total Quantity:</Text>
                     <div style={{ fontWeight: 700, marginTop: 4, fontSize: '15px' }}>{Number(selectedRequisition.total_requisition_quantity).toFixed(2)}</div>
+                  </div>
+                  <div>
+                    <Text strong style={{ color: '#595959' }}>Unissued Quantity:</Text>
+                    <div style={{ fontWeight: 700, marginTop: 4, fontSize: '15px' }}>{Number(selectedRequisition.unreceived_quantity).toFixed(2)}</div>
                   </div>
                   <div>
                     <Text strong style={{ color: '#595959' }}>Total Price:</Text>

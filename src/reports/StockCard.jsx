@@ -34,7 +34,7 @@ const StockCardReport = () => {
       // Prepend Beginning Balance row
       const beginningRow = {
         _id: 'beginning_balance',
-        weight_date: null,
+        weight_date: totals.beginning_set_date || null,
         transaction_type: 'BEGINNING',
         grn_no: '-',
         issue_no: '-',
@@ -93,7 +93,7 @@ const StockCardReport = () => {
   const handleExport = () => {
     // 1. Prepare data rows (AOA style)
     const dataRows = reportData.records.map(record => [
-      record.isBeginning ? 'Beginning Balance' : (record.weight_date ? formatDate(record.weight_date) : '-'),
+      record.weight_date ? formatDate(record.weight_date) : '-',
       record.isBeginning ? '-' : (record.grn_no || '-'),
       record.isBeginning ? '-' : (record.issue_no || '-'),
       record.isBeginning ? '-' : (record.purchased_qty || 0),
@@ -163,9 +163,9 @@ const StockCardReport = () => {
       key: 'transaction_type',
       render: (type, record) => (
         record.isBeginning ? <Text strong>BEGINNING</Text> :
-        <Tag color={type === 'purchase' ? 'green' : 'orange'} style={{ textTransform: 'uppercase', fontWeight: 600 }}>
-          {type}
-        </Tag>
+          <Tag color={type === 'purchase' ? 'green' : 'orange'} style={{ textTransform: 'uppercase', fontWeight: 600 }}>
+            {type}
+          </Tag>
       )
     },
     {

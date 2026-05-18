@@ -14,7 +14,7 @@ const StockReport = () => {
   const [form] = Form.useForm()
   const [reportData, setReportData] = useState({ records: [], totals: {} })
   const [filters, setFilters] = useState({})
-  
+
   const { fetchStockCard, loading } = useStockManagement()
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const StockReport = () => {
       // Prepend Beginning Balance row
       const beginningRow = {
         _id: 'beginning_balance',
-        weight_date: null,
+        weight_date: totals.beginning_set_date || null,
         transaction_type: 'BEGINNING',
         grn_no: '-',
         issue_no: '-',
@@ -73,7 +73,7 @@ const StockReport = () => {
       filename: 'Stock_Report',
       sheetName: 'Stock Card',
       columns: [
-        { title: 'Date', dataIndex: 'weight_date', exportValue: (v, record) => record.isBeginning ? 'Beginning Balance' : (v ? formatDate(v) : '-') },
+        { title: 'Date', dataIndex: 'weight_date', exportValue: (v) => v ? formatDate(v) : '-' },
         { title: 'GRN No', dataIndex: 'grn_no', exportValue: (v, record) => record.isBeginning ? '-' : v },
         { title: 'Issue No', dataIndex: 'issue_no', exportValue: (v, record) => record.isBeginning ? '-' : v },
         { title: 'Purchased Qty (Kg)', dataIndex: 'purchased_qty', exportValue: (v, record) => record.isBeginning ? '-' : v },
@@ -92,10 +92,10 @@ const StockReport = () => {
 
   const columns = [
     {
-      title: 'Weight Date',
+      title: 'Date',
       dataIndex: 'weight_date',
       key: 'weight_date',
-      render: (v, record) => <Text style={{ fontFamily: "'CircularStd', sans-serif" }}>{record.isBeginning ? '-' : (v ? formatDate(v) : '-')}</Text>
+      render: (v) => <Text style={{ fontFamily: "'CircularStd', sans-serif" }}>{v ? formatDate(v) : '-'}</Text>
     },
     {
       title: 'Trans. Type',
@@ -103,9 +103,9 @@ const StockReport = () => {
       key: 'transaction_type',
       render: (type, record) => (
         record.isBeginning ? <Text strong>BEGINNING</Text> :
-        <Tag color={type === 'purchase' ? 'green' : 'orange'} style={{ textTransform: 'uppercase', fontWeight: 600 }}>
-          {type}
-        </Tag>
+          <Tag color={type === 'purchase' ? 'green' : 'orange'} style={{ textTransform: 'uppercase', fontWeight: 600 }}>
+            {type}
+          </Tag>
       )
     },
     {
@@ -184,9 +184,9 @@ const StockReport = () => {
               <Text type="secondary">In-depth stock card analysis for the selected period.</Text>
             </div>
             <Space>
-              <Button 
-                type="primary" 
-                style={{ backgroundColor: '#1890ff', borderColor: '#1890ff', borderRadius: 6 }} 
+              <Button
+                type="primary"
+                style={{ backgroundColor: '#1890ff', borderColor: '#1890ff', borderRadius: 6 }}
                 icon={<DownloadOutlined />}
                 onClick={handleExport}
                 loading={loading}
@@ -211,28 +211,28 @@ const StockReport = () => {
           </Card>
 
           <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-             <Col xs={24} sm={12} lg={6}>
-                <Card bordered={false} style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderLeft: '4px solid #52c41a' }}>
-                  <Statistic
-                    title="Total Purchases"
-                    value={reportData.totals.total_purchase_qty || 0}
-                    suffix="Kg"
-                    valueStyle={{ color: '#52c41a', fontFamily: "'CircularStd', sans-serif" }}
-                  />
-                  <Text style={{ fontSize: 13, fontWeight: 600, fontFamily: "'CircularStd', sans-serif" }}>Value: Br. {reportData.totals.total_purchase_value?.toLocaleString()}</Text>
-                </Card>
-             </Col>
-             <Col xs={24} sm={12} lg={6}>
-                <Card bordered={false} style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderLeft: '4px solid #faad14' }}>
-                  <Statistic
-                    title="Total Issues"
-                    value={reportData.totals.total_issue_qty || 0}
-                    suffix="Kg"
-                    valueStyle={{ color: '#faad14', fontFamily: "'CircularStd', sans-serif" }}
-                  />
-                  <Text style={{ fontSize: 13, fontWeight: 600, fontFamily: "'CircularStd', sans-serif" }}>Value: Br. {reportData.totals.total_issue_value?.toLocaleString()}</Text>
-                </Card>
-             </Col>
+            <Col xs={24} sm={12} lg={6}>
+              <Card bordered={false} style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderLeft: '4px solid #52c41a' }}>
+                <Statistic
+                  title="Total Purchases"
+                  value={reportData.totals.total_purchase_qty || 0}
+                  suffix="Kg"
+                  valueStyle={{ color: '#52c41a', fontFamily: "'CircularStd', sans-serif" }}
+                />
+                <Text style={{ fontSize: 13, fontWeight: 600, fontFamily: "'CircularStd', sans-serif" }}>Value: Br. {reportData.totals.total_purchase_value?.toLocaleString()}</Text>
+              </Card>
+            </Col>
+            <Col xs={24} sm={12} lg={6}>
+              <Card bordered={false} style={{ borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', borderLeft: '4px solid #faad14' }}>
+                <Statistic
+                  title="Total Issues"
+                  value={reportData.totals.total_issue_qty || 0}
+                  suffix="Kg"
+                  valueStyle={{ color: '#faad14', fontFamily: "'CircularStd', sans-serif" }}
+                />
+                <Text style={{ fontSize: 13, fontWeight: 600, fontFamily: "'CircularStd', sans-serif" }}>Value: Br. {reportData.totals.total_issue_value?.toLocaleString()}</Text>
+              </Card>
+            </Col>
           </Row>
 
           <Card style={{ borderRadius: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: 'none' }}>

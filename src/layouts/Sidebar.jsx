@@ -196,14 +196,16 @@ const Sidebar = ({ selected }) => {
       key: 'raw-material',
       icon: <DatabaseOutlined style={getStyle('raw-material')} />,
       label: withTooltip(<span style={getStyle('raw-material')}>Raw Material</span>, 'Raw Material'),
-      allowedRoles: ['super_admin', 'supervisor'],
+      allowedRoles: ['super_admin', 'forman', 'department_head', 'store_keeper', 'purchaser', 'supervisor'],
       children: [
         {
           key: 'raw-material:requisition',
+          allowedRoles: ['super_admin', 'forman', 'department_head'],
           label: withTooltip(<Link to="/raw-material/requisition" style={getStyle('raw-material:requisition')}>Raw Material Requisition</Link>, 'Raw Material Requisition')
         },
         {
           key: 'raw-material:issue',
+          allowedRoles: ['super_admin', 'store_keeper', 'purchaser', 'supervisor'],
           label: withTooltip(<Link to="/raw-material/issue" style={getStyle('raw-material:issue')}>Raw Material Issue</Link>, 'Raw Material Issue')
         }
       ]
@@ -219,7 +221,7 @@ const Sidebar = ({ selected }) => {
           children: [
             {
               key: 'reports:purchase-grn:plain-report',
-              label: withTooltip(<Link to="/reports/plain-report" style={getStyle('reports:purchase-grn:plain-report')}>Plain GRN Report</Link>, 'Plain GRN Report')
+              label: withTooltip(<Link to="/reports/plain-report" style={getStyle('reports:purchase-grn:plain-report')}>Detail GRN Report</Link>, 'Plain GRN Report')
             },
             {
               key: 'reports:purchase-grn:aggregate-report',
@@ -227,7 +229,7 @@ const Sidebar = ({ selected }) => {
             },
             {
               key: 'reports:purchase-grn:customer-plain-report',
-              label: withTooltip(<Link to="/reports/customer-plain-report" style={getStyle('reports:purchase-grn:customer-plain-report')}>Customer Plain Report</Link>, 'Customer Plain Report')
+              label: withTooltip(<Link to="/reports/customer-plain-report" style={getStyle('reports:purchase-grn:customer-plain-report')}>Customer Detail Report</Link>, 'Customer Plain Report')
             },
             {
               key: 'reports:purchase-grn:customer-aggregate-report',

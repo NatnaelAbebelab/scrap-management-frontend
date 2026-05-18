@@ -118,7 +118,7 @@ const MaterialIssue = () => {
               label: 'Edit',
               icon: <EditOutlined />,
               onClick: () => handleEditClick(record),
-              allowedRoles: ['super_admin', 'supervisor']
+              allowedRoles: ['super_admin', 'store_keeper', 'purchaser', 'supervisor']
             },
             {
               key: 'status',
@@ -190,8 +190,6 @@ const MaterialIssue = () => {
             onChange={(val) => (window.tempStatus = val)}
             getPopupContainer={triggerNode => triggerNode.parentElement}
           >
-            <Option value="new">New</Option>
-            <Option value="issued">Issued</Option>
             <Option value="approved">Approved</Option>
           </Select>
         </div>
@@ -330,7 +328,7 @@ const MaterialIssue = () => {
                   </Button>
                 </RoleBasedComponentAccess>
               )}
-              <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+              <RoleBasedComponentAccess allowedRoles={['super_admin', 'store_keeper', 'purchaser']}>
                 <Button
                   type="primary"
                   icon={<PlusOutlined />}
@@ -454,7 +452,7 @@ const MaterialIssue = () => {
               {selectedReq && (
                 <div style={{ marginBottom: 16, padding: '8px 12px', background: '#f5f5f5', borderRadius: '4px' }}>
                   <Text type="secondary">Available Requisition Quantity: </Text>
-                  <Text strong>{selectedReq.total_requisition_quantity}</Text>
+                  <Text strong>{selectedReq.unreceived_quantity}</Text>
                 </div>
               )}
 
@@ -558,6 +556,10 @@ const MaterialIssue = () => {
                       <div>
                         <Text strong style={{ color: '#595959' }}>Requisition Qty:</Text>
                         <div style={{ fontWeight: 700, marginTop: 4 }}>{selectedIssue.material_requisition_detail.total_requisition_quantity?.toLocaleString()} Kg</div>
+                      </div>
+                      <div>
+                        <Text strong style={{ color: '#595959' }}>Unissued Qty:</Text>
+                        <div style={{ fontWeight: 700, marginTop: 4 }}>{selectedIssue.material_requisition_detail.unreceived_quantity?.toLocaleString()} Kg</div>
                       </div>
                     </div>
 

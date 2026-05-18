@@ -124,6 +124,7 @@ export const useMaterialIssue = ({ page = 1, pageSize = 10, filters = {} } = {})
 
     if (lastResponse && lastResponse.result === 'success') {
       await fetchIssues()
+      await fetchApprovedRequisitions()
     }
     return lastResponse
   }
