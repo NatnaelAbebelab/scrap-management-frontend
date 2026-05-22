@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import PDFHeader from './PDFHeader';
 import { STATIC_FILES_URL } from '../../api/config';
 
@@ -226,7 +226,7 @@ const GrnNotePDF = ({ data }) => {
             <Text>Prepared by ____________________    Signature ____________</Text>
           </View>
           <View style={styles.signRow}>
-            <Text>Weightunng by _________________   Signature _____________</Text>
+            <Text>Weighting by _________________   Signature _____________</Text>
           </View>
           <View style={styles.signRow}>
             <Text>Received by __________________     Signature _______________</Text>

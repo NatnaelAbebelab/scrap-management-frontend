@@ -1,6 +1,6 @@
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import PDFHeader from './PDFHeader';
-import { STATIC_FILES_URL } from '../../api/config';
+import { STATIC_FILES_URL, UPLOADED_FILE_URL } from '../../api/config';
 
 const styles = StyleSheet.create({
   page: {
@@ -85,11 +85,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '24%',
   },
+  signatureContainer: {
+    height: 30,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  signatureImage: {
+    width: 60,
+    height: 30,
+    objectFit: 'contain',
+  },
   signLine: {
     width: '100%',
     borderBottomWidth: 1,
     borderBottomColor: '#000',
-    marginTop: 30, // Increased for signature space
+    marginTop: 2,
     marginBottom: 4,
   },
   signLabel: {
@@ -209,21 +221,41 @@ const ApprovalNotePDF = ({ data }) => {
           <View style={styles.footerRow}>
             <View style={styles.signBlock}>
               <Text>Prepared by</Text>
+              <View style={styles.signatureContainer}>
+                {content.prepared_by_signature && (
+                  <Image src={UPLOADED_FILE_URL(content.prepared_by_signature)} style={styles.signatureImage} />
+                )}
+              </View>
               <View style={styles.signLine} />
               <Text style={styles.signLabel}>(Store Keeper)</Text>
             </View>
             <View style={styles.signBlock}>
               <Text>Checked by</Text>
+              <View style={styles.signatureContainer}>
+                {content.inspected_by_signature && (
+                  <Image src={UPLOADED_FILE_URL(content.inspected_by_signature)} style={styles.signatureImage} />
+                )}
+              </View>
               <View style={styles.signLine} />
               <Text style={styles.signLabel}>(Scrap Inspection)</Text>
             </View>
             <View style={styles.signBlock}>
               <Text>Verified by</Text>
+              <View style={styles.signatureContainer}>
+                {content.verified_by_signature && (
+                  <Image src={UPLOADED_FILE_URL(content.verified_by_signature)} style={styles.signatureImage} />
+                )}
+              </View>
               <View style={styles.signLine} />
               <Text style={styles.signLabel}>(Scrap Purchase Head)</Text>
             </View>
             <View style={styles.signBlock}>
               <Text>Authorized by</Text>
+              <View style={styles.signatureContainer}>
+                {content.approved_by_signature && (
+                  <Image src={UPLOADED_FILE_URL(content.approved_by_signature)} style={styles.signatureImage} />
+                )}
+              </View>
               <View style={styles.signLine} />
               <Text style={styles.signLabel}>(Pro & Finance Dep Head)</Text>
             </View>

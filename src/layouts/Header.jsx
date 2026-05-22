@@ -27,23 +27,22 @@ const { Text } = Typography
 const { Search } = Input
 
 const Header = ({ onMenuClick }) => {
-  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [setIsFullscreen] = useState(false)
   const auth = useAuth()
-  const navigate = useNavigate()
   const location = useLocation()
 
   // NEW: Get user data from localStorage 'email' key as requested
   const getStoredUserData = () => {
     try {
       const stored = localStorage.getItem('ce_user')
-      return stored ? JSON.parse(stored) : null
+      return stored ? JSON.parse(stored) : (auth?.user || null)
     } catch (e) {
-      return null
+      return auth?.user || null
     }
   }
 
   const storedUserData = getStoredUserData()
-  const displayUser = storedUserData.email || auth?.user || {}
+  const displayUser = storedUserData?.email || auth?.user || {}
 
   // Format role: super_admin -> Super Admin
   const formatRole = (role) => {
@@ -59,10 +58,6 @@ const Header = ({ onMenuClick }) => {
     : (displayUser.name || 'User')
 
   const displayRole = formatRole(displayUser.role)
-
-  const isPublicRoute = location.pathname === '/interactions/complaint' || location.pathname === '/interactions/performa'
-
-  if (isPublicRoute) return null
 
   const handleLogout = async () => {
     try {
