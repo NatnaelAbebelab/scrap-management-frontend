@@ -123,9 +123,9 @@ const InternalAgreements = () => {
           contract_duration_months: String(contract_duration_months),
         },
         agreementsArray: (agreements || []).map((r) => ({
-          min_weight: String(r.min_weight),
-          max_weight: r.max_weight != null ? String(r.max_weight) : 'MAX_FLAG',
-          rate: String(r.rate),
+          min_weight: r.min_weight !== '' && r.min_weight != null ? Number(r.min_weight) : 0,
+          max_weight: r.max_weight !== '' && r.max_weight != null ? Number(r.max_weight) : 'MAX_FLAG',
+          rate: r.rate !== '' && r.rate != null ? Number(r.rate) : 0,
         })),
         proofFile: addProofFile,
       })
@@ -390,7 +390,7 @@ const InternalAgreements = () => {
                         pagination={false}
                         columns={[
                           { title: 'Min Weight (kg)', dataIndex: 'min_weight', key: 'min_weight', align: 'center', render: (v) => Number(v).toLocaleString() },
-                          { title: 'Max Weight (kg)', dataIndex: 'max_weight', key: 'max_weight', align: 'center', render: (v) => { const n = Number(v); return n > 1e15 ? '∞' : n.toLocaleString() } },
+                          { title: 'Max Weight (kg)', dataIndex: 'max_weight', key: 'max_weight', align: 'center', render: (v) => { const n = Number(v); return n >= 999999 ? '∞' : n.toLocaleString() } },
                           { title: 'Rate (Br/kg)', dataIndex: 'rate', key: 'rate', align: 'center', render: (v) => Number(v).toLocaleString() },
                         ]}
                       />

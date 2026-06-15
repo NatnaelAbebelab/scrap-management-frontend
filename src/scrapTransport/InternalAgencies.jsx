@@ -649,7 +649,7 @@ const InternalAgencies = () => {
                           pagination={false}
                           columns={[
                             { title: 'Min Weight (kg)', dataIndex: 'min_weight', key: 'min_weight', align: 'center', render: (v) => Number(v).toLocaleString() },
-                            { title: 'Max Weight (kg)', dataIndex: 'max_weight', key: 'max_weight', align: 'center', render: (v) => { const n = Number(v); return n > 1e15 ? '∞' : n.toLocaleString() } },
+                            { title: 'Max Weight (kg)', dataIndex: 'max_weight', key: 'max_weight', align: 'center', render: (v) => { const n = Number(v); return n >= 999999 ? '∞' : n.toLocaleString() } },
                             { title: 'Rate (Br/kg)', dataIndex: 'rate', key: 'rate', align: 'center', render: (v) => Number(v).toLocaleString() },
                           ]}
                         />

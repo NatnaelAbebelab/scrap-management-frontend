@@ -78,18 +78,18 @@ const UploadTransportData = () => {
 
       // Handle complex skipped_records structure
       let skippedCount = 0
-      if (typeof response.skipped_records === 'number') {
-        skippedCount = response.skipped_records
-      } else if (response.skipped_records && typeof response.skipped_records === 'object') {
-        const dropped = response.skipped_records.dropped_rows?.length || 0
-        const invalid = response.skipped_records.invalid_data?.length || 0
+      if (typeof response.content.skipped_records === 'number') {
+        skippedCount = response.content.skipped_records
+      } else if (response.content.skipped_records && typeof response.content.skipped_records === 'object') {
+        const dropped = response.content.skipped_records.dropped_rows?.length || 0
+        const invalid = response.content.skipped_records.invalid_data?.length || 0
         skippedCount = dropped + invalid
       }
 
       setUploadResult({
         type: 'success',
         message: response.message || 'File uploaded successfully',
-        created: response.created_records || 0,
+        created: response.content.created_records || 0,
         skipped: skippedCount,
       })
       message.success(response.message || 'File uploaded successfully')

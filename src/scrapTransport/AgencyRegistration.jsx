@@ -546,7 +546,7 @@ const AgencyRegistration = () => {
                       if (v === null || v === undefined) return '-'
                       const n = Number(v)
                       // Very large float = "unlimited"
-                      return n > 1e15 ? '∞ (Unlimited)' : n.toLocaleString()
+                      return n >= 999999 ? '∞ (Unlimited)' : n.toLocaleString()
                     },
                   },
                   {
