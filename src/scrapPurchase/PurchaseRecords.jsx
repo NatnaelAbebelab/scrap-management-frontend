@@ -281,21 +281,21 @@ const PurchaseRecords = () => {
         label: 'Add Waste Deduction',
         icon: <EditOutlined />,
         onClick: () => handleAddWaste(record),
-        allowedRoles: ['super_admin', 'purchaser', 'inspector']
+        allowedRoles: ['super_admin', 'purchaser', 'store_keeper', 'inspector']
       },
       {
         key: 'edit',
         label: 'Change Status',
         icon: <EditOutlined />,
         onClick: () => handleOpenStatusModal(record),
-        allowedRoles: ['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor']
+        allowedRoles: ['super_admin', 'purchaser', 'store_keeper', 'inspector', 'purchase_head', 'supervisor', 'property_admin_finance']
       },
       {
         key: 'rollback',
         label: 'Roll Back Status',
         icon: <RollbackOutlined />,
         onClick: () => handleRollback(record.record_no),
-        allowedRoles: ['super_admin', 'purchaser', 'inspector', 'purchase_head']
+        allowedRoles: ['super_admin', 'purchaser', 'store_keeper', 'inspector', 'purchase_head']
       },
       {
         key: 'pay',
@@ -310,7 +310,7 @@ const PurchaseRecords = () => {
         icon: <DeleteOutlined />,
         danger: true,
         onClick: () => handleDelete(record),
-        allowedRoles: ['super_admin', 'supervisor']
+        allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
       },
     ]
 
@@ -450,7 +450,7 @@ const PurchaseRecords = () => {
             </div>
 
             <Space>
-              <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'purchase_head']}>
+              <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance', 'purchase_head']}>
                 {selectedRowKeys.length > 0 && (
                   <Button
                     danger
@@ -478,7 +478,7 @@ const PurchaseRecords = () => {
                 </Button>
               </RoleBasedComponentAccess>
 
-              <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor']}>
+              <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchaser', 'store_keeper', 'inspector', 'purchase_head', 'supervisor', 'property_admin_finance']}>
                 <Button
                   type="primary"
                   icon={<EditOutlined />}
@@ -835,7 +835,7 @@ const PurchaseRecords = () => {
           </Text>
 
           <Row gutter={16}>
-            <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchaser']}>
+            <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchaser', 'store_keeper']}>
               <Col span={8}>
                 <Form.Item name="scale_img" label="Scale Image">
                   <FileUploadInput placeholder="Upload scale proof" />

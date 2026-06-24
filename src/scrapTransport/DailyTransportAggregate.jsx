@@ -113,7 +113,7 @@ const DailyTransportAggregate = () => {
         icon: <CheckCircleOutlined />,
         disabled: record.status !== 'new',
         onClick: () => handleApproveAction([record._id]),
-        allowedRoles: ['super_admin', 'supervisor']
+        allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
       },
       {
         key: 'pay',

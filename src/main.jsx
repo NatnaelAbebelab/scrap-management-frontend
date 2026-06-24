@@ -88,7 +88,7 @@ root.render(
               path="/settings/user-management"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance']}>
                     <UserManagement />
                   </RoleBasedComponentAccess>
                 </RequireAuth>
@@ -98,9 +98,7 @@ root.render(
               path="/settings/melting-plants"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
-                    <MeltingPlants />
-                  </RoleBasedComponentAccess>
+                  <MeltingPlants />
                 </RequireAuth>
               }
             />
@@ -108,9 +106,7 @@ root.render(
               path="/settings/grn-serial"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
-                    <GrnSerialSettings />
-                  </RoleBasedComponentAccess>
+                  <GrnSerialSettings />
                 </RequireAuth>
               }
             />
@@ -118,7 +114,7 @@ root.render(
               path="/settings/stock-beginning-balance"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance']}>
                     <StockBeginningBalance />
                   </RoleBasedComponentAccess>
                 </RequireAuth>
@@ -140,7 +136,7 @@ root.render(
               path="/scrap-purchase/purchase-records"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'weight_man', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager']}>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'weight_man', 'purchaser', 'store_keeper', 'inspector', 'purchase_head', 'supervisor', 'property_admin_finance', 'finance', 'manager']}>
                     <PurchaseRecords />
                   </RoleBasedComponentAccess>
                 </RequireAuth>
@@ -150,7 +146,7 @@ root.render(
               path="/scrap-purchase/material-rate"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager']}>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchaser', 'store_keeper', 'inspector', 'purchase_head', 'supervisor', 'property_admin_finance', 'finance', 'manager']}>
                     <MaterialRate />
                   </RoleBasedComponentAccess>
                 </RequireAuth>
@@ -166,7 +162,7 @@ root.render(
               path="/customer-management"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchase_head', 'supervisor', 'finance']}>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchase_head', 'supervisor', 'property_admin_finance', 'finance']}>
                     <CustomerList />
                   </RoleBasedComponentAccess>
                 </RequireAuth>
@@ -178,7 +174,7 @@ root.render(
               path="/scrap-transport/internal-agencies"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'finance', 'manager']}>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance', 'finance', 'manager']}>
                     <InternalAgencies />
                   </RoleBasedComponentAccess>
                 </RequireAuth>
@@ -188,7 +184,7 @@ root.render(
               path="/scrap-transport/internal-agreements"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'finance', 'manager']}>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance', 'finance', 'manager']}>
                     <InternalAgreements />
                   </RoleBasedComponentAccess>
                 </RequireAuth>
@@ -196,11 +192,23 @@ root.render(
             />
             <Route
               path="/scrap-transport/upload-transport-data"
-              element={<RequireAuth><UploadTransportData /></RequireAuth>}
+              element={
+                <RequireAuth>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'weight_man', 'property_admin_finance', 'finance', 'manager']}>
+                    <UploadTransportData />
+                  </RoleBasedComponentAccess>
+                </RequireAuth>
+              }
             />
             <Route
               path="/scrap-transport/daily-aggregate"
-              element={<RequireAuth><DailyTransportAggregate /></RequireAuth>}
+              element={
+                <RequireAuth>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance', 'finance', 'manager']}>
+                    <DailyTransportAggregate />
+                  </RoleBasedComponentAccess>
+                </RequireAuth>
+              }
             />
 
             {/* Reports */}

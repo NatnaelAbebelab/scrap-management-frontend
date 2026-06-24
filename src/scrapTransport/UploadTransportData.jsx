@@ -6,6 +6,7 @@ import Sidebar from '../layouts/Sidebar'
 import DataTableWithPagination from '../components/DataTableWithPagination'
 import { useTransportData } from '../api/useTransportData'
 import { formatDate } from '../utils/dateFormatter'
+import RoleBasedComponentAccess from '../components/accessControl/RoleBasedComponentAccess'
 
 const { Title, Text } = Typography
 const { RangePicker } = DatePicker
@@ -237,18 +238,20 @@ const UploadTransportData = () => {
                 Upload raw factory scrap records via CSV and view the imported data.
               </Text>
             </div>
-            <Button
-              type="primary"
-              icon={<UploadOutlined />}
-              onClick={handleUploadClick}
-              style={{
-                borderRadius: 6,
-                background: 'rgb(245, 34, 45)',
-                marginTop: 4
-              }}
-            >
-              Upload CSV
-            </Button>
+            <RoleBasedComponentAccess allowedRoles={['super_admin', 'weight_man']}>
+              <Button
+                type="primary"
+                icon={<UploadOutlined />}
+                onClick={handleUploadClick}
+                style={{
+                  borderRadius: 6,
+                  background: 'rgb(245, 34, 45)',
+                  marginTop: 4
+                }}
+              >
+                Upload CSV
+              </Button>
+            </RoleBasedComponentAccess>
           </div>
 
           <Card style={{

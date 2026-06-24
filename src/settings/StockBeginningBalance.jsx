@@ -5,6 +5,7 @@ import Header from '../layouts/Header'
 import Sidebar from '../layouts/Sidebar'
 import { useStockBalance } from '../api/useStockBalance'
 import { formatDate } from '../utils/dateFormatter'
+import RoleBasedComponentAccess from '../components/accessControl/RoleBasedComponentAccess'
 
 const { Title, Text } = Typography
 
@@ -40,59 +41,61 @@ const StockBeginningBalance = () => {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 450px) 1fr', gap: '24px' }}>
             {/* Form Section */}
-            <Card title="Initialize New Balance" style={{ borderRadius: 10 }}>
-              <Form
-                form={form}
-                layout="vertical"
-                onFinish={onFinish}
-              >
-                <Form.Item
-                  name="beginning_qty"
-                  label="Beginning Quantity"
-                  rules={[{ required: true, message: 'Please input the beginning quantity' }]}
+            <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance']}>
+              <Card title="Initialize New Balance" style={{ borderRadius: 10 }}>
+                <Form
+                  form={form}
+                  layout="vertical"
+                  onFinish={onFinish}
                 >
-                  <InputNumber
-                    style={{ width: '100%' }}
-                    placeholder="e.g., 100000"
-                    min={0}
-                    size="large"
-                  />
-                </Form.Item>
-                <Form.Item
-                  name="beginning_value"
-                  label="Beginning Value"
-                  rules={[{ required: true, message: 'Please input the beginning value' }]}
-                >
-                  <InputNumber
-                    style={{ width: '100%' }}
-                    placeholder="e.g., 500000"
-                    min={0}
-                    size="large"
-                  />
-                </Form.Item>
-                <Form.Item style={{ marginTop: 24 }}>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={loading}
-                    icon={<SyncOutlined spin={loading} />}
-                    block
-                    size="large"
-                    style={{ borderRadius: '8px' }}
+                  <Form.Item
+                    name="beginning_qty"
+                    label="Beginning Quantity"
+                    rules={[{ required: true, message: 'Please input the beginning quantity' }]}
                   >
-                    Submit Beginning Balance
-                  </Button>
-                </Form.Item>
-              </Form>
-              <Alert
-                title="Note"
-                showIcon
-                description="Initializing a new balance will set the current stock state. Only use this when starting a new period or correcting overall stock."
-                type="info"
-                icon={<InfoCircleOutlined />}
-                style={{ marginTop: 16 }}
-              />
-            </Card>
+                    <InputNumber
+                      style={{ width: '100%' }}
+                      placeholder="e.g., 100000"
+                      min={0}
+                      size="large"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="beginning_value"
+                    label="Beginning Value"
+                    rules={[{ required: true, message: 'Please input the beginning value' }]}
+                  >
+                    <InputNumber
+                      style={{ width: '100%' }}
+                      placeholder="e.g., 500000"
+                      min={0}
+                      size="large"
+                    />
+                  </Form.Item>
+                  <Form.Item style={{ marginTop: 24 }}>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      loading={loading}
+                      icon={<SyncOutlined spin={loading} />}
+                      block
+                      size="large"
+                      style={{ borderRadius: '8px' }}
+                    >
+                      Submit Beginning Balance
+                    </Button>
+                  </Form.Item>
+                </Form>
+                <Alert
+                  title="Note"
+                  showIcon
+                  description="Initializing a new balance will set the current stock state. Only use this when starting a new period or correcting overall stock."
+                  type="info"
+                  icon={<InfoCircleOutlined />}
+                  style={{ marginTop: 16 }}
+                />
+              </Card>
+            </RoleBasedComponentAccess>
 
             {/* Current Status Section */}
             <Card

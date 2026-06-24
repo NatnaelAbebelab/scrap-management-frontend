@@ -147,12 +147,12 @@ const Sidebar = ({ selected }) => {
         {
           key: 'scrap-purchase:purchase-records',
           label: withTooltip(<Link to="/scrap-purchase/purchase-records" style={getStyle('scrap-purchase:purchase-records')}>Purchase Records</Link>, 'Purchase Records'),
-          allowedRoles: ['super_admin', 'weight_man', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager']
+          allowedRoles: ['super_admin', 'weight_man', 'purchaser', 'store_keeper', 'inspector', 'purchase_head', 'supervisor', 'property_admin_finance', 'finance', 'manager']
         },
         {
           key: 'scrap-purchase:material-rate',
           label: withTooltip(<Link to="/scrap-purchase/material-rate" style={getStyle('scrap-purchase:material-rate')}>Material Rate</Link>, 'Material Rate'),
-          allowedRoles: ['super_admin', 'purchaser', 'inspector', 'purchase_head', 'supervisor', 'finance', 'manager'],
+          allowedRoles: ['super_admin', 'purchaser', 'store_keeper', 'inspector', 'purchase_head', 'supervisor', 'property_admin_finance', 'finance', 'manager'],
         }
       ]
     },
@@ -165,30 +165,33 @@ const Sidebar = ({ selected }) => {
       key: 'customer-management',
       icon: <TeamOutlined style={getStyle('customer-management')} />,
       label: withTooltip(<Link to="/customer-management" style={getStyle('customer-management')}>Customer Management</Link>, 'Customer Management'),
-      allowedRoles: ['super_admin', 'purchase_head', 'supervisor', 'finance']
+      allowedRoles: ['super_admin', 'purchase_head', 'supervisor', 'property_admin_finance', 'finance']
     },
     {
       key: 'scrap-transport',
       icon: <CarOutlined style={getStyle('scrap-transport')} />,
       label: withTooltip(<span style={getStyle('scrap-transport')}>Scrap Transport</span>, 'Scrap Transport'),
+      allowedRoles: ['super_admin', 'weight_man','supervisor', 'property_admin_finance', 'finance', 'manager'],
       children: [
         {
           key: 'scrap-transport:internal-agencies',
           label: withTooltip(<Link to="/scrap-transport/internal-agencies" style={getStyle('scrap-transport:internal-agencies')}>Internal Agencies</Link>, 'Internal Agencies'),
-          allowedRoles: ['super_admin', 'supervisor', 'finance', 'manager']
+          allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance', 'finance', 'manager']
         },
         {
           key: 'scrap-transport:internal-agreements',
           label: withTooltip(<Link to="/scrap-transport/internal-agreements" style={getStyle('scrap-transport:internal-agreements')}>Agencies Agreements</Link>, 'Agencies Agreements'),
-          allowedRoles: ['super_admin', 'supervisor', 'finance', 'manager']
+          allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance', 'finance', 'manager']
         },
         {
           key: 'scrap-transport:upload-transport-data',
-          label: withTooltip(<Link to="/scrap-transport/upload-transport-data" style={getStyle('scrap-transport:upload-transport-data')}>Raw Scrap Transport Data</Link>, 'Raw Scrap Transport Data')
+          label: withTooltip(<Link to="/scrap-transport/upload-transport-data" style={getStyle('scrap-transport:upload-transport-data')}>Raw Scrap Transport Data</Link>, 'Raw Scrap Transport Data'),
+          allowedRoles: ['super_admin', 'weight_man', 'supervisor', 'property_admin_finance', 'finance', 'manager']
         },
         {
           key: 'scrap-transport:daily-aggregate',
-          label: withTooltip(<Link to="/scrap-transport/daily-aggregate" style={getStyle('scrap-transport:daily-aggregate')}>Daily Transport Aggregate</Link>, 'Daily Transport Aggregate')
+          label: withTooltip(<Link to="/scrap-transport/daily-aggregate" style={getStyle('scrap-transport:daily-aggregate')}>Daily Transport Aggregate</Link>, 'Daily Transport Aggregate'),
+          allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance', 'finance', 'manager']
         },
       ]
     },
@@ -196,7 +199,7 @@ const Sidebar = ({ selected }) => {
       key: 'raw-material',
       icon: <DatabaseOutlined style={getStyle('raw-material')} />,
       label: withTooltip(<span style={getStyle('raw-material')}>Raw Material</span>, 'Raw Material'),
-      allowedRoles: ['super_admin', 'forman', 'department_head', 'store_keeper', 'purchaser', 'supervisor'],
+      allowedRoles: ['super_admin', 'forman', 'department_head', 'store_keeper', 'purchaser', 'supervisor', 'property_admin_finance'],
       children: [
         {
           key: 'raw-material:requisition',
@@ -205,7 +208,7 @@ const Sidebar = ({ selected }) => {
         },
         {
           key: 'raw-material:issue',
-          allowedRoles: ['super_admin', 'store_keeper', 'purchaser', 'supervisor'],
+          allowedRoles: ['super_admin', 'store_keeper', 'purchaser', 'supervisor', 'property_admin_finance'],
           label: withTooltip(<Link to="/raw-material/issue" style={getStyle('raw-material:issue')}>Raw Material Issue</Link>, 'Raw Material Issue')
         }
       ]
@@ -305,13 +308,13 @@ const Sidebar = ({ selected }) => {
       key: 'user-management',
       icon: <UserOutlined style={getStyle('user-management')} />,
       label: withTooltip(<Link to="/settings/user-management" style={getStyle('user-management')}>User Management</Link>, 'User Management'),
-      allowedRoles: ['super_admin', 'supervisor']
+      allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
     },
     {
       key: 'settings',
       icon: <SettingOutlined style={getStyle('settings')} />,
       label: withTooltip(<span style={getStyle('settings')}>Settings</span>, 'Settings'),
-      allowedRoles: ['super_admin', 'supervisor'],
+      allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance', 'finance', 'manager', 'purchaser', 'store_keeper', 'inspector', 'purchase_head', 'weight_man'],
       children: [
         // {
         //   key: 'settings:materials',
@@ -321,22 +324,22 @@ const Sidebar = ({ selected }) => {
         {
           key: 'settings:melting-plants',
           label: withTooltip(<Link to="/settings/melting-plants" style={getStyle('settings:melting-plants')}>Melting Plant</Link>, 'Melting Plant'),
-          allowedRoles: ['super_admin', 'supervisor']
+          //allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
         },
         {
           key: 'settings:grn-serial',
           label: withTooltip(<Link to="/settings/grn-serial" style={getStyle('settings:grn-serial')}>GRN Serial Number</Link>, 'GRN Serial Number'),
-          allowedRoles: ['super_admin']
+          //allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
         },
         {
           key: 'settings:stock-beginning-balance',
           label: withTooltip(<Link to="/settings/stock-beginning-balance" style={getStyle('settings:stock-beginning-balance')}>Stock Beginning Balance</Link>, 'Stock Beginning Balance'),
-          allowedRoles: ['super_admin', 'supervisor']
+          allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
         },
         {
           key: 'settings:profile',
           label: withTooltip(<Link to="/profile" style={getStyle('settings:profile')}>My Profile</Link>, 'My Profile'),
-          allowedRoles: ['super_admin', 'supervisor', 'finance', 'manager', 'purchaser', 'inspector', 'purchase_head', 'weight_man']
+          allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance', 'finance', 'manager', 'purchaser', 'store_keeper', 'inspector', 'purchase_head', 'weight_man']
         }
       ]
     }

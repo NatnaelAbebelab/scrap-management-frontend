@@ -57,7 +57,7 @@ const Header = ({ onMenuClick }) => {
     ? `${displayUser.first_name} ${displayUser.last_name}`
     : (displayUser.name || 'User')
 
-  const displayRole = formatRole(displayUser.role)
+  const displayRole = displayUser.role_label || formatRole(displayUser.role)
 
   const handleLogout = async () => {
     try {
@@ -124,11 +124,11 @@ const Header = ({ onMenuClick }) => {
       icon: <UserOutlined />,
       label: <Link to="/profile">Profile</Link>,
     },
-    {
-      key: 'settings',
-      icon: <SettingOutlined />,
-      label: <Link to="/settings">Settings</Link>,
-    },
+    // {
+    //   key: 'settings',
+    //   icon: <SettingOutlined />,
+    //   label: <Link to="/settings">Settings</Link>,
+    // },
     {
       type: 'divider'
     },

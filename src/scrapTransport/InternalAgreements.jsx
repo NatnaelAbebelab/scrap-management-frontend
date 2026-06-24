@@ -295,7 +295,7 @@ const InternalAgreements = () => {
                 label: 'Edit',
                 icon: <EditOutlined />,
                 onClick: () => openEdit(record),
-                allowedRoles: ['super_admin', 'supervisor']
+                allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
               }] : []),
               { type: 'divider' },
               {
@@ -304,7 +304,7 @@ const InternalAgreements = () => {
                 icon: <DeleteOutlined />,
                 danger: true,
                 onClick: () => handleDelete(record),
-                allowedRoles: ['super_admin', 'supervisor']
+                allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
               },
             ].filter(item => !item.allowedRoles || item.allowedRoles.includes(userRole)),
           }}
@@ -344,7 +344,7 @@ const InternalAgreements = () => {
                   <span>Agreements</span>
                   <Tag color="red">{total}</Tag>
                 </Space>
-                <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+                <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance']}>
                   <Button type="primary" icon={<PlusOutlined />} onClick={openAdd}>
                     Add Agreement
                   </Button>

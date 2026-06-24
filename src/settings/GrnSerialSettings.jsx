@@ -4,6 +4,7 @@ import { CheckCircleOutlined, SyncOutlined } from '@ant-design/icons'
 import Header from '../layouts/Header'
 import Sidebar from '../layouts/Sidebar'
 import { useGrnSerial } from '../api/useGrnSerial'
+import RoleBasedComponentAccess from '../components/accessControl/RoleBasedComponentAccess'
 
 const { Title, Text } = Typography
 
@@ -64,32 +65,34 @@ const GrnSerialSettings = () => {
             Set the starting number for Good Received Notes (GRN). This should only be done once or when a manual reset is required.
           </Text>
 
-          <Card style={{ marginTop: 24, borderRadius: 10 }}>
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={onFinish}
-              style={{ maxWidth: 400 }}
-            >
-              <Form.Item
-                name="initial_serial_number"
-                label="Initial Serial Number"
-                rules={[{ required: true, message: 'Please input the initial serial number' }]}
+          <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance']}>
+            <Card style={{ marginTop: 24, borderRadius: 10 }}>
+              <Form
+                form={form}
+                layout="vertical"
+                onFinish={onFinish}
+                style={{ maxWidth: 400 }}
               >
-                <InputNumber style={{ width: '100%' }} placeholder="e.g., 5000" />
-              </Form.Item>
-              <Form.Item>
-                <Button 
-                  type="primary" 
-                  htmlType="submit" 
-                  loading={isLoading}
-                  icon={<SyncOutlined spin={isLoading} />}
+                <Form.Item
+                  name="initial_serial_number"
+                  label="Initial Serial Number"
+                  rules={[{ required: true, message: 'Please input the initial serial number' }]}
                 >
-                  Initialize Serial Number
-                </Button>
-              </Form.Item>
-            </Form>
-          </Card>
+                  <InputNumber style={{ width: '100%' }} placeholder="e.g., 5000" />
+                </Form.Item>
+                <Form.Item>
+                  <Button 
+                    type="primary" 
+                    htmlType="submit" 
+                    loading={isLoading}
+                    icon={<SyncOutlined spin={isLoading} />}
+                  >
+                    Initialize Serial Number
+                  </Button>
+                </Form.Item>
+              </Form>
+            </Card>
+          </RoleBasedComponentAccess>
 
           <Card title="Current Serial Configurations" style={{ marginTop: 24, borderRadius: 10 }}>
             <Table

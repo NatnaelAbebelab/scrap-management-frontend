@@ -172,9 +172,11 @@ const UserManagement = () => {
           case 'super_admin': color = 'volcano'; break;
           case 'weight_man': color = 'cyan'; break;
           case 'purchaser': color = 'green'; break;
+          case 'store_keeper': color = 'green'; break;
           case 'inspector': color = 'geekblue'; break;
           case 'purchase_head': color = 'purple'; break;
           case 'supervisor': color = 'magenta'; break;
+          case 'property_admin_finance': color = 'magenta'; break;
           case 'finance': color = 'gold'; break;
           case 'manager': color = 'red'; break;
         }
@@ -202,7 +204,7 @@ const UserManagement = () => {
         </Space>
       ),
     },
-  ].filter(col => col.key !== 'action' || hasAccess(['super_admin']))
+  ].filter(col => col.key !== 'action' || hasAccess(['super_admin', 'supervisor', 'property_admin_finance']))
 
   const props = {
     onRemove: (file) => {
@@ -333,7 +335,7 @@ const UserManagement = () => {
                   >
                     Refresh
                   </Button>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin']}>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance']}>
                     <Button
                       type="primary"
                       icon={<PlusOutlined />}

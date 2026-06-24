@@ -118,14 +118,14 @@ const MaterialIssue = () => {
               label: 'Edit',
               icon: <EditOutlined />,
               onClick: () => handleEditClick(record),
-              allowedRoles: ['super_admin', 'store_keeper', 'purchaser', 'supervisor']
+              allowedRoles: ['super_admin', 'store_keeper', 'purchaser', 'store_keeper', 'supervisor', 'property_admin_finance']
             },
             {
               key: 'status',
               label: 'Change Status',
               icon: <CheckCircleOutlined />,
               onClick: () => handleChangeStatusPrompt([record._id]),
-              allowedRoles: ['super_admin', 'supervisor']
+              allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
             },
             {
               type: 'divider'
@@ -136,7 +136,7 @@ const MaterialIssue = () => {
               icon: <DeleteOutlined />,
               danger: true,
               onClick: () => showDeleteConfirm(record),
-              allowedRoles: ['super_admin', 'supervisor']
+              allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
             }
           );
         }
@@ -319,7 +319,7 @@ const MaterialIssue = () => {
             </div>
             <Space>
               {selectedRowKeys.length > 0 && (
-                <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor']}>
+                <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance']}>
                   <Button
                     icon={<CheckCircleOutlined />}
                     onClick={() => handleChangeStatusPrompt(selectedRowKeys)}
@@ -328,7 +328,7 @@ const MaterialIssue = () => {
                   </Button>
                 </RoleBasedComponentAccess>
               )}
-              <RoleBasedComponentAccess allowedRoles={['super_admin', 'store_keeper', 'purchaser']}>
+              <RoleBasedComponentAccess allowedRoles={['super_admin', 'store_keeper', 'purchaser', 'store_keeper']}>
                 <Button
                   type="primary"
                   icon={<PlusOutlined />}

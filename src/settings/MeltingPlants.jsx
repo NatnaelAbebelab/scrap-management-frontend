@@ -5,6 +5,7 @@ import { useMeltingPlants } from '../api/useMeltingPlants'
 import Header from '../layouts/Header'
 import Sidebar from '../layouts/Sidebar'
 import DataTableWithPagination from '../components/DataTableWithPagination'
+import RoleBasedComponentAccess from '../components/accessControl/RoleBasedComponentAccess'
 
 const { Title, Text } = Typography
 
@@ -43,18 +44,21 @@ const MeltingPlants = () => {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
-        <Space size="middle">
-          <Button
-            type="text"
-            icon={<EditOutlined style={{ color: '#1890ff' }} />}
-            onClick={() => handleEditClick(record)}
-          />
-          <Button
-            type="text"
-            icon={<DeleteOutlined style={{ color: '#ff4d4f' }} />}
-            onClick={() => showDeleteConfirm(record)}
-          />
-        </Space>
+        <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance']}>
+          <Space size="middle">
+            <Button
+              type="text"
+              icon={<EditOutlined style={{ color: '#1890ff' }} />}
+              onClick={() => handleEditClick(record)}
+            />
+            <Button
+              type="text"
+              icon={<DeleteOutlined style={{ color: '#ff4d4f' }} />}
+              onClick={() => showDeleteConfirm(record)}
+            />
+            
+          </Space>
+        </RoleBasedComponentAccess>
       )
     }
   ]
@@ -128,14 +132,16 @@ const MeltingPlants = () => {
 
           <Card style={{ borderRadius: '10px' }}>
             <div style={{ marginBottom: 16 }}>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => setModalVisible(true)}
-                style={{ height: '40px', borderRadius: '8px' }}
-              >
-                Add New Melting Plant
-              </Button>
+              <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance']}>
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={() => setModalVisible(true)}
+                  style={{ height: '40px', borderRadius: '8px' }}
+                >
+                  Add New Melting Plant
+                </Button>
+              </RoleBasedComponentAccess>
             </div>
 
             <DataTableWithPagination
