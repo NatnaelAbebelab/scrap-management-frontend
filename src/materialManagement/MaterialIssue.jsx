@@ -118,7 +118,7 @@ const MaterialIssue = () => {
               label: 'Edit',
               icon: <EditOutlined />,
               onClick: () => handleEditClick(record),
-              allowedRoles: ['super_admin', 'store_keeper', 'purchaser', 'store_keeper', 'supervisor', 'property_admin_finance']
+              allowedRoles: ['super_admin', 'store_keeper', 'supervisor', 'property_admin_finance']
             },
             {
               key: 'status',
@@ -328,7 +328,7 @@ const MaterialIssue = () => {
                   </Button>
                 </RoleBasedComponentAccess>
               )}
-              <RoleBasedComponentAccess allowedRoles={['super_admin', 'store_keeper', 'purchaser', 'store_keeper']}>
+              <RoleBasedComponentAccess allowedRoles={['super_admin', 'store_keeper']}>
                 <Button
                   type="primary"
                   icon={<PlusOutlined />}

@@ -121,7 +121,7 @@ const MaterialRequisition = () => {
               label: 'Edit',
               icon: <EditOutlined />,
               onClick: () => handleEditClick(record),
-              allowedRoles: ['super_admin', 'forman']
+              allowedRoles: ['super_admin', 'forman', 'production_department_head', 'department_head']
             },
           );
         }
@@ -133,7 +133,7 @@ const MaterialRequisition = () => {
               label: 'Approve',
               icon: <CheckCircleOutlined />,
               onClick: () => showApproveConfirm(record),
-              allowedRoles: ['super_admin', 'department_head']
+              allowedRoles: ['super_admin', 'production_department_head', 'department_head']
             },
             {
               key: 'delete',
@@ -141,7 +141,7 @@ const MaterialRequisition = () => {
               icon: <DeleteOutlined />,
               danger: true,
               onClick: () => showDeleteConfirm(record),
-              allowedRoles: ['super_admin', 'department_head']
+              allowedRoles: ['super_admin', 'production_department_head', 'department_head']
             }
           );
         }

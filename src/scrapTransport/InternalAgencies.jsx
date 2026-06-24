@@ -414,21 +414,21 @@ const InternalAgencies = () => {
                     label: 'Edit Agreement',
                     icon: <FileTextOutlined />,
                     onClick: () => fetchAndOpenEditAgreement(record),
-                    allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
+                    allowedRoles: ['super_admin', 'property_admin_head', 'supervisor', 'property_admin_finance']
                   }
                   : {
                     key: 'agreement',
                     label: 'Add Agreement',
                     icon: <FileTextOutlined />,
                     onClick: () => openAddAgreement(record),
-                    allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
+                    allowedRoles: ['super_admin', 'property_admin_head', 'supervisor', 'property_admin_finance']
                   },
                 {
                   key: 'edit',
                   label: 'Edit',
                   icon: <EditOutlined />,
                   onClick: () => openEdit(record),
-                  allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
+                  allowedRoles: ['super_admin', 'property_admin_head', 'supervisor', 'property_admin_finance']
                 },
                 { type: 'divider' },
                 {
@@ -437,7 +437,7 @@ const InternalAgencies = () => {
                   icon: <DeleteOutlined />,
                   danger: true,
                   onClick: () => handleDelete(record),
-                  allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
+                  allowedRoles: ['super_admin', 'property_admin_head', 'supervisor', 'property_admin_finance']
                 },
               ].filter(item => !item.allowedRoles || item.allowedRoles.includes(userRole)),
             }}
@@ -505,7 +505,7 @@ const InternalAgencies = () => {
                   <span>Agencies</span>
                   <Tag color="red">{total}</Tag>
                 </Space>
-                <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance']}>
+                <RoleBasedComponentAccess allowedRoles={['super_admin', 'property_admin_head', 'supervisor', 'property_admin_finance']}>
                   <Button
                     type="primary"
                     icon={<PlusOutlined />}

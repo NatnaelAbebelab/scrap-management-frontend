@@ -80,8 +80,28 @@ root.render(
 
             <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
 
-            <Route path="/raw-material/requisition" element={<RequireAuth><MaterialRequisition /></RequireAuth>} />
-            <Route path="/raw-material/issue" element={<RequireAuth><MaterialIssue /></RequireAuth>} />
+            {/* <Route path="/raw-material/requisition" element={<RequireAuth><MaterialRequisition /></RequireAuth>} /> */}
+            <Route
+              path="/raw-material/requisition"
+              element={
+                <RequireAuth>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'forman', 'production_department_head', 'department_head', 'store_keeper', 'supervisor', 'property_admin_finance']}>
+                    <MaterialRequisition />
+                  </RoleBasedComponentAccess>
+                </RequireAuth>
+              } 
+            />
+            {/* <Route path="/raw-material/issue" element={<RequireAuth><MaterialIssue /></RequireAuth>} /> */}
+            <Route
+              path="/raw-material/issue"
+              element={
+                <RequireAuth>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'forman', 'production_department_head', 'department_head', 'store_keeper', 'supervisor', 'property_admin_finance']}>
+                    <MaterialIssue />
+                  </RoleBasedComponentAccess>
+                </RequireAuth>
+              } 
+            />
 
             <Route path="/settings" element={<RequireAuth><SettingsDashboard /></RequireAuth>} />
             <Route
@@ -92,7 +112,8 @@ root.render(
                     <UserManagement />
                   </RoleBasedComponentAccess>
                 </RequireAuth>
-              } />
+              } 
+            />
             <Route path="/settings/materials" element={<RequireAuth><MaterialManagement /></RequireAuth>} />
             <Route
               path="/settings/melting-plants"
@@ -174,7 +195,7 @@ root.render(
               path="/scrap-transport/internal-agencies"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance', 'finance', 'manager']}>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'property_admin_head', 'supervisor', 'property_admin_finance', 'finance', 'manager']}>
                     <InternalAgencies />
                   </RoleBasedComponentAccess>
                 </RequireAuth>
@@ -184,7 +205,7 @@ root.render(
               path="/scrap-transport/internal-agreements"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance', 'finance', 'manager']}>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'property_admin_head', 'supervisor', 'property_admin_finance', 'finance', 'manager']}>
                     <InternalAgreements />
                   </RoleBasedComponentAccess>
                 </RequireAuth>
@@ -194,7 +215,7 @@ root.render(
               path="/scrap-transport/upload-transport-data"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'weight_man', 'property_admin_finance', 'finance', 'manager']}>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'property_admin_head', 'supervisor', 'weight_man', 'property_admin_finance', 'finance', 'manager']}>
                     <UploadTransportData />
                   </RoleBasedComponentAccess>
                 </RequireAuth>
@@ -204,7 +225,7 @@ root.render(
               path="/scrap-transport/daily-aggregate"
               element={
                 <RequireAuth>
-                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance', 'finance', 'manager']}>
+                  <RoleBasedComponentAccess allowedRoles={['super_admin', 'property_admin_head', 'supervisor', 'property_admin_finance', 'finance', 'manager']}>
                     <DailyTransportAggregate />
                   </RoleBasedComponentAccess>
                 </RequireAuth>

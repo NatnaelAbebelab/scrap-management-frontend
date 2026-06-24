@@ -49,12 +49,14 @@ const Login = () => {
       const token = data?.tokens?.access || data?.tokens?.token
       const refreshToken = data?.tokens?.refresh || null
 
-      const user = {
-        email: data?.logged_user,
-        role: data?.role,
-        message: data?.message,
-        result: data?.result
-      }
+      const user = typeof data?.logged_user === 'object'
+        ? data.logged_user
+        : {
+            email: data?.logged_user,
+            role: data?.role,
+            message: data?.message,
+            result: data?.result
+          }
 
       if (!token) {
         console.warn('No usable token found in login response; received:', data)
@@ -96,3 +98,4 @@ const Login = () => {
 }
 
 export default Login
+

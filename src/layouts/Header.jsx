@@ -31,18 +31,25 @@ const Header = ({ onMenuClick }) => {
   const auth = useAuth()
   const location = useLocation()
 
-  // NEW: Get user data from localStorage 'email' key as requested
+  // Get user data from localStorage and support both old and new login response shapes.
   const getStoredUserData = () => {
     try {
       const stored = localStorage.getItem('ce_user')
-      return stored ? JSON.parse(stored) : (auth?.user || null)
+      if (stored) return JSON.parse(stored)
+      const authUser = localStorage.getItem('authUser')
+      if (authUser) return JSON.parse(authUser)
+      return auth?.user || null
     } catch (e) {
       return auth?.user || null
     }
   }
 
   const storedUserData = getStoredUserData()
-  const displayUser = storedUserData?.email || auth?.user || {}
+  const displayUser = storedUserData?.logged_user
+    || (typeof storedUserData?.email === 'object' ? storedUserData.email : null)
+    || storedUserData
+    || auth?.user
+    || {}
 
   // Format role: super_admin -> Super Admin
   const formatRole = (role) => {
@@ -55,7 +62,7 @@ const Header = ({ onMenuClick }) => {
 
   const fullName = displayUser.first_name && displayUser.last_name
     ? `${displayUser.first_name} ${displayUser.last_name}`
-    : (displayUser.name || 'User')
+    : (displayUser.first_name || displayUser.name || displayUser.username || displayUser.email || (typeof displayUser === 'string' ? displayUser : 'User'))
 
   const displayRole = displayUser.role_label || formatRole(displayUser.role)
 
@@ -276,3 +283,4 @@ const Header = ({ onMenuClick }) => {
 }
 
 export default Header
+

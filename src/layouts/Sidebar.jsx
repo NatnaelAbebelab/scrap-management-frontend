@@ -171,27 +171,27 @@ const Sidebar = ({ selected }) => {
       key: 'scrap-transport',
       icon: <CarOutlined style={getStyle('scrap-transport')} />,
       label: withTooltip(<span style={getStyle('scrap-transport')}>Scrap Transport</span>, 'Scrap Transport'),
-      allowedRoles: ['super_admin', 'weight_man','supervisor', 'property_admin_finance', 'finance', 'manager'],
+      allowedRoles: ['super_admin', 'weight_man', 'property_admin_head', 'supervisor', 'property_admin_finance', 'finance', 'manager'],
       children: [
         {
           key: 'scrap-transport:internal-agencies',
           label: withTooltip(<Link to="/scrap-transport/internal-agencies" style={getStyle('scrap-transport:internal-agencies')}>Internal Agencies</Link>, 'Internal Agencies'),
-          allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance', 'finance', 'manager']
+          allowedRoles: ['super_admin', 'property_admin_head', 'supervisor', 'property_admin_finance', 'finance', 'manager']
         },
         {
           key: 'scrap-transport:internal-agreements',
           label: withTooltip(<Link to="/scrap-transport/internal-agreements" style={getStyle('scrap-transport:internal-agreements')}>Agencies Agreements</Link>, 'Agencies Agreements'),
-          allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance', 'finance', 'manager']
+          allowedRoles: ['super_admin', 'property_admin_head', 'supervisor', 'property_admin_finance', 'finance', 'manager']
         },
         {
           key: 'scrap-transport:upload-transport-data',
           label: withTooltip(<Link to="/scrap-transport/upload-transport-data" style={getStyle('scrap-transport:upload-transport-data')}>Raw Scrap Transport Data</Link>, 'Raw Scrap Transport Data'),
-          allowedRoles: ['super_admin', 'weight_man', 'supervisor', 'property_admin_finance', 'finance', 'manager']
+          allowedRoles: ['super_admin', 'weight_man', 'property_admin_head', 'supervisor', 'property_admin_finance', 'finance', 'manager']
         },
         {
           key: 'scrap-transport:daily-aggregate',
           label: withTooltip(<Link to="/scrap-transport/daily-aggregate" style={getStyle('scrap-transport:daily-aggregate')}>Daily Transport Aggregate</Link>, 'Daily Transport Aggregate'),
-          allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance', 'finance', 'manager']
+          allowedRoles: ['super_admin', 'property_admin_head', 'supervisor', 'property_admin_finance', 'finance', 'manager']
         },
       ]
     },
@@ -199,16 +199,16 @@ const Sidebar = ({ selected }) => {
       key: 'raw-material',
       icon: <DatabaseOutlined style={getStyle('raw-material')} />,
       label: withTooltip(<span style={getStyle('raw-material')}>Raw Material</span>, 'Raw Material'),
-      allowedRoles: ['super_admin', 'forman', 'department_head', 'store_keeper', 'purchaser', 'supervisor', 'property_admin_finance'],
+      allowedRoles: ['super_admin', 'forman', 'production_department_head', 'department_head', 'store_keeper', 'supervisor', 'property_admin_finance'],
       children: [
         {
           key: 'raw-material:requisition',
-          allowedRoles: ['super_admin', 'forman', 'department_head'],
+          allowedRoles: ['super_admin', 'forman', 'production_department_head', 'department_head', 'store_keeper', 'supervisor', 'property_admin_finance'],
           label: withTooltip(<Link to="/raw-material/requisition" style={getStyle('raw-material:requisition')}>Raw Material Requisition</Link>, 'Raw Material Requisition')
         },
         {
           key: 'raw-material:issue',
-          allowedRoles: ['super_admin', 'store_keeper', 'purchaser', 'supervisor', 'property_admin_finance'],
+          allowedRoles: ['super_admin', 'forman', 'production_department_head', 'department_head', 'store_keeper', 'supervisor', 'property_admin_finance'],
           label: withTooltip(<Link to="/raw-material/issue" style={getStyle('raw-material:issue')}>Raw Material Issue</Link>, 'Raw Material Issue')
         }
       ]
