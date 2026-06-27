@@ -6,8 +6,8 @@ export const API_BASE_URL = 'http://192.168.25.51:8000/api/v1'
 // --- File Upload ---
 export const FILE_UPLOAD_URL = `${API_BASE_URL}/service/upload-file/`
 export const UPLOADED_FILE_URL = (filename) => `http://192.168.25.51:8000/media/uploaded-files/${filename}`
-export const STATIC_FILES_URL = `http://localhost:3000/`
-export const STATIC_PATH = `http://localhost:3000/` // Front-end path
+export const STATIC_FILES_URL = `http://192.168.25.51/scrap-management-fe/`
+export const STATIC_PATH = `http://192.168.25.51/scrap-management-fe/` // Front-end path
 
 // --- User Management ---
 export const USERS_GET_URL = `${API_BASE_URL}/user/get`

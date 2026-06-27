@@ -63,7 +63,7 @@ root.render(
       }}
     >
       <AuthProvider>
-        <BrowserRouter> {/*basename="/scrap-management-fe" */}
+        <BrowserRouter basename="/scrap-management-fe"> {/*basename="/scrap-management-fe" */}
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/otp-verification" element={<OtpVerification />} />

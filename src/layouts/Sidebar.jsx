@@ -159,7 +159,8 @@ const Sidebar = ({ selected }) => {
     {
       key: 'stock-management',
       icon: <InboxOutlined style={getStyle('stock-management')} />,
-      label: withTooltip(<Link to="/scrap-purchase/stock" style={getStyle('stock-management')}>Stock Management</Link>, 'Stock Management')
+      label: withTooltip(<Link to="/scrap-purchase/stock" style={getStyle('stock-management')}>Stock Management</Link>, 'Stock Management'),
+      allowedRoles: ['super_admin', 'store_keeper', 'purchase_head', 'supervisor', 'property_admin_finance', 'finance']
     },
     {
       key: 'customer-management',
