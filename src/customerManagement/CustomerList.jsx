@@ -190,7 +190,7 @@ const CustomerList = () => {
             icon: <EditOutlined />,
             label: 'Edit Customer',
             onClick: () => handleOpenModal(record),
-            allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance', 'finance']
+            allowedRoles: ['super_admin', 'purchase_head', 'supervisor', 'property_admin_finance', 'finance']
           },
           {
             key: 'delete',
@@ -206,7 +206,7 @@ const CustomerList = () => {
                 <span style={{ color: '#ff4d4f' }}>Delete Customer</span>
               </Popconfirm>
             ),
-            allowedRoles: ['super_admin', 'supervisor', 'property_admin_finance']
+            allowedRoles: ['super_admin', 'purchase_head', 'supervisor', 'property_admin_finance']
           }
         ].filter(item => !item.allowedRoles || item.allowedRoles.includes(userRole))
 
@@ -278,7 +278,7 @@ const CustomerList = () => {
                 </Button>
               </RoleBasedComponentAccess>
 
-              <RoleBasedComponentAccess allowedRoles={['super_admin', 'supervisor', 'property_admin_finance', 'finance']}>
+              <RoleBasedComponentAccess allowedRoles={['super_admin', 'purchase_head', 'supervisor', 'property_admin_finance', 'finance']}>
                 <Button
                   type="primary"
                   icon={<PlusOutlined />}

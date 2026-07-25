@@ -36,13 +36,23 @@ export const useProfile = () => {
     setLoading(true)
     setError(null)
     try {
-      let signatureFileName = existingSignature || ''
+      let signatureFileName = existingSignature || null
+
+      // Only attempt upload if a NEW file was selected
       if (fileList && fileList.length > 0) {
         const uploadResult = await uploadFile(fileList[0].originFileObj, FILE_UPLOAD_URL)
-        signatureFileName = uploadResult?.file_name || ''
+        signatureFileName = uploadResult?.file_name || signatureFileName
       }
 
-      const payload = { ...values, signature: signatureFileName }
+      // Build payload
+      const payload = { ...values }
+
+      // Only attach signature to payload if it's not null/undefined/empty
+      if (signatureFileName) {
+        payload.signature = signatureFileName
+      } else {
+        delete payload.signature // Ensure signature isn't sent as ""
+      }
 
       const res = await authFetch(USER_UPDATE_PROFILE_URL, {
         method: 'PUT',
@@ -64,18 +74,15 @@ export const useProfile = () => {
         throw new Error(data?.message || text || 'Failed to update profile')
       }
 
-      // Automatically refresh user data in the context if applicable
-      // Not implemented here as it depends on AuthProvider structure, 
-      // but ideally this triggers a user data reload.
-
-      return await res.json()
+      // Return the parsed JSON directly (don't call res.json() again)
+      return data
     } catch (err) {
       setError(err.message || 'Failed to update profile')
       throw err
     } finally {
       setLoading(false)
     }
-  }
+}
 
   const changePassword = async (values) => {
     setLoading(true)

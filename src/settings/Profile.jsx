@@ -71,12 +71,22 @@ const Profile = () => {
     setFormError('')
     setFormSuccess('')
     try {
-      // Pass the values, current file upload, and the existing signature coming from the detailed GET API
       const existingSignature = profileData?.signature || null
-      await updateProfile(values, fileList, existingSignature)
+      const response = await updateProfile(values, fileList, existingSignature)
       setFormSuccess('Profile updated successfully!')
       setFileList([])
-      // Refresh the detailed specific user data
+
+      if (response?.data && auth?.updateUser) {
+        const d = response.data
+        auth.updateUser({
+          first_name: d.fname || d.first_name,
+          last_name: d.lname || d.last_name,
+          email: d.email,
+          phone: d.phone,
+          signature: d.signature,
+        })
+      }
+
       if (user?.id || user?._id) fetchProfile(user.id || user._id)
     } catch (err) {
       setFormError(err.message || 'Failed to update profile')

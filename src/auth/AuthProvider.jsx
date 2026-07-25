@@ -42,6 +42,15 @@ export const AuthProvider = ({ children }) => {
     setUser(u)
   }
 
+  const updateUser = (newData) => {
+    setUser((prev) => {
+      if (!prev) return prev
+      const updated = { ...prev, ...newData }
+      localStorage.setItem('ce_user', JSON.stringify(updated))
+      return updated
+    })
+  }
+
   const logout = async () => {
     try {
       if (token) {
@@ -88,7 +97,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ token, refreshToken, user, login, logout, setToken, setRefreshToken }}>
+    <AuthContext.Provider value={{ token, refreshToken, user, login, logout, updateUser, setToken, setRefreshToken }}>
       {children}
     </AuthContext.Provider>
   )
