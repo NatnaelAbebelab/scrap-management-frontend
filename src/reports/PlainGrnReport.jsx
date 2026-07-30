@@ -184,10 +184,10 @@ const PlainGrnReport = () => {
     },
     {
       title: 'Recorded On',
-      dataIndex: 'created_at',
-      key: 'created_at',
-      width: 180,
-      render: (v) => <Text style={{ fontFamily: "'CircularStd', sans-serif" }}>{formatDate(v)}</Text>
+      dataIndex: 'first_date',
+      key: 'first_date',
+      width: 130,
+      render: (v) => <Text style={{ fontFamily: "'CircularStd', sans-serif" }}>{formatDate(v) ?? '-'}</Text>
     }
   ]
 

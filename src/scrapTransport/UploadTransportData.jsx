@@ -97,7 +97,7 @@ const UploadTransportData = () => {
     } catch (err) {
       setUploadResult({
         type: 'error',
-        message: err.message || 'Failed to upload CSV file'
+        message: err.message || 'Upload failed. Please check your connection and try again.'
       })
     } finally {
       setUploading(false)
@@ -117,7 +117,8 @@ const UploadTransportData = () => {
     },
     fileList: uploadFile ? [uploadFile] : [],
     maxCount: 1,
-    accept: '.csv'
+    accept: '.csv',
+    disabled: uploading
   }
 
   const columns = [

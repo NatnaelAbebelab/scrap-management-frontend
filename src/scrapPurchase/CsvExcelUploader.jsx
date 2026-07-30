@@ -19,6 +19,7 @@ const CsvExcelUploader = () => {
     accept: '.csv',
     multiple: false,
     fileList,
+    disabled: isUploading,
     beforeUpload: (file) => {
       // Only keep the latest file
       setFileList([file])
@@ -45,7 +46,7 @@ const CsvExcelUploader = () => {
       setFileList([])
     } catch (err) {
       console.error('CSV upload failed', err)
-      message.error(err.message || 'CSV upload failed')
+      message.error(err.message || 'Upload failed. Please check your connection and try again.')
     }
   }
 

@@ -402,10 +402,10 @@ const PurchaseRecords = () => {
     },
     {
       title: 'Recorded On',
-      dataIndex: 'created_at',
-      key: 'created_at',
+      dataIndex: 'first_date',
+      key: 'first_date',
       width: 130,
-      render: (v) => <Text strong>{formatDate(v)}</Text>
+      render: (v) => <Text strong>{formatDate(v) ?? '-'}</Text>
     },
     {
       title: 'Action',
